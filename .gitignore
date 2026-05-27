@@ -1,0 +1,6 @@
+fpl_data
+*.csv
+*.json
+*.xlsx
+*.xls
+*.db
