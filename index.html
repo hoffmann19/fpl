@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FPL Title Race Visualizer | Mini-League Standings Animation</title>
+  <meta name="description" content="Watch the dramatic FPL mini-league title race unfold gameweek by gameweek with an animated bar chart race, interactive rank bump chart, and gameweek lineups pitch.">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon"><i class="fa-solid fa-trophy"></i></div>
+        <div>
+          <h1>FPL Title Race Visualizer</h1>
+          <p class="subtitle">Season Walkthrough & Standings Animation</p>
+        </div>
+      </div>
+      <div class="global-stats">
+        <div class="global-stat-card">
+          <span class="stat-label">Gameweek</span>
+          <span class="stat-value" id="header-gw">1</span>
+          <span class="stat-sub">of 38</span>
+        </div>
+        <div class="global-stat-card highlight">
+          <span class="stat-label">Current Leader</span>
+          <span class="stat-value" id="header-leader">Loading...</span>
+          <span class="stat-sub" id="header-leader-pts">0 pts</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Controls Bar -->
+    <section class="controls-bar glass">
+      <div class="playback-controls">
+        <button id="btn-play-pause" class="btn-primary" title="Play Animation">
+          <i class="fa-solid fa-play"></i> <span>Play</span>
+        </button>
+        
+        <div class="speed-selector">
+          <label for="select-speed"><i class="fa-solid fa-gauge-high"></i> Speed</label>
+          <select id="select-speed">
+            <option value="1500">Slow (1.5s)</option>
+            <option value="800" selected>Normal (0.8s)</option>
+            <option value="400">Fast (0.4s)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="timeline-container">
+        <span class="gw-indicator-label">GW 1</span>
+        <input type="range" id="timeline-slider" min="1" max="38" value="1" step="1">
+        <span class="gw-indicator-label">GW 38</span>
+      </div>
+    </section>
+
+    <!-- Main Grid Content -->
+    <main class="main-grid">
+      <!-- Left Column: Visualizations -->
+      <section class="viz-column glass">
+        <div class="viz-header">
+          <div class="tab-controls">
+            <button id="tab-bar-race" class="tab-btn active">
+              <i class="fa-solid fa-chart-bar"></i> Bar Chart Race
+            </button>
+            <button id="tab-bump-chart" class="tab-btn">
+              <i class="fa-solid fa-chart-line"></i> Rank Trajectory (Bump Chart)
+            </button>
+          </div>
+          <div class="viz-actions">
+            <button id="btn-reset" class="btn-secondary" title="Reset to GW 1">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="viz-content">
+          <!-- Bar Chart Race Panel -->
+          <div id="panel-bar-race" class="panel active">
+            <div class="bar-chart-race-container" id="bar-race-container">
+              <!-- Animated Bars will be injected here via JavaScript -->
+            </div>
+          </div>
+
+          <!-- Bump Chart Panel -->
+          <div id="panel-bump-chart" class="panel">
+            <div class="bump-chart-legend" id="bump-legend">
+              <!-- Legend items added dynamically -->
+            </div>
+            <div class="bump-chart-svg-wrapper">
+              <svg id="bump-chart-svg" width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="none">
+                <!-- SVG lines and points will be injected here -->
+              </svg>
+              <!-- Vertical tracker line -->
+              <div id="bump-tracker" class="bump-tracker-line"></div>
+              <div id="bump-tooltip" class="chart-tooltip hidden"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Details & Lineup Pitch -->
+      <section class="details-column">
+        <!-- Manager Detail Card -->
+        <div class="manager-card glass" id="manager-info-card">
+          <div class="manager-card-header">
+            <div class="manager-avatar" id="m-avatar" style="background-color: var(--primary);"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="manager-title-group">
+              <h2 id="m-name">Select a Manager</h2>
+              <p id="m-team">Click on any bar or line to view details</p>
+            </div>
+            <div class="manager-rank-badge" id="m-rank"># -</div>
+          </div>
+          <div class="manager-stats-grid">
+            <div class="m-stat">
+              <span class="m-stat-label">GW Points</span>
+              <span class="m-stat-value" id="m-gw-pts">-</span>
+            </div>
+            <div class="m-stat">
+              <span class="m-stat-label">GW Net (Hits)</span>
+              <span class="m-stat-value" id="m-gw-net-pts">-</span>
+            </div>
+            <div class="m-stat">
+              <span class="m-stat-label">Overall Points</span>
+              <span class="m-stat-value" id="m-overall-pts">-</span>
+            </div>
+            <div class="m-stat">
+              <span class="m-stat-label">Global FPL Rank</span>
+              <span class="m-stat-value" id="m-overall-rank">-</span>
+            </div>
+          </div>
+          <div class="manager-chips-row">
+            <div class="chip-badge active hidden" id="m-chip-badge">
+              <i class="fa-solid fa-bolt"></i> <span id="m-chip-name">Wildcard</span>
+            </div>
+            <div class="transfers-badge" id="m-transfers-badge">
+              <i class="fa-solid fa-right-left"></i> <span id="m-transfers-count">0</span> Transfers
+            </div>
+          </div>
+        </div>
+
+        <!-- Lineup pitch drawer -->
+        <div class="pitch-container glass">
+          <div class="pitch-header">
+            <h3><i class="fa-solid fa-vest-patches"></i> Gameweek Lineup</h3>
+            <span class="pitch-subtitle" id="pitch-manager-team">No manager selected</span>
+          </div>
+          
+          <div class="pitch-field-wrapper">
+            <!-- The Football Pitch -->
+            <div class="pitch-field">
+              <!-- Field Markings -->
+              <div class="pitch-line center-circle"></div>
+              <div class="pitch-line center-line"></div>
+              <div class="pitch-line penalty-box top"></div>
+              <div class="pitch-line penalty-box bottom"></div>
+              
+              <!-- Starting 11 players by rows -->
+              <div class="pitch-row row-fwd" id="pitch-row-FWD">
+                <!-- Forwards -->
+              </div>
+              <div class="pitch-row row-mid" id="pitch-row-MID">
+                <!-- Midfielders -->
+              </div>
+              <div class="pitch-row row-def" id="pitch-row-DEF">
+                <!-- Defenders -->
+              </div>
+              <div class="pitch-row row-gkp" id="pitch-row-GKP">
+                <!-- Goalkeeper -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Substitute Bench -->
+          <div class="pitch-bench">
+            <div class="bench-title"><i class="fa-solid fa-couch"></i> Substitute Bench</div>
+            <div class="bench-players" id="pitch-row-bench">
+              <!-- Sub players -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>FPL Title Race Visualizer &copy; 2026. Built with Vanilla CSS, SVG &amp; Javascript.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
