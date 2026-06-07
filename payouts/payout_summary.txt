@@ -1,0 +1,85 @@
+================================================================================
+FPL LEAGUE SUMMARY & PAYOUT REPORT
+================================================================================
+Total Gameweeks: 38
+Number of Managers: 13
+--------------------------------------------------------------------------------
+
+--- Gameweek Winners Breakdown ---
+GW   | Winning Points | Winners (Team - Manager)                      | Payout/Winner
+--------------------------------------------------------------------------------
+1    | 70             | idkprobwinthisyear2 (JJ Jasper)               | $15.00
+2    | 65             | Gooners (Ted Gansmann)                        | $15.00
+3    | 78             | idk (Kevin Vonarx)                            | $15.00
+4    | 82             | CaicedoMvP (Jordan Oz)                        | $15.00
+5    | 59             | breakSome1sClavicle (Charlie Chafin)          | $15.00
+6    | 87             | Midtable (Dan Hoffmann)                       | $15.00
+7    | 88             | Midtable (Dan Hoffmann)                       | $15.00
+8    | 92             | Avoiding demotion (jon shidal)                | $15.00
+9    | 56             | selly (Jason Sellers)                         | $15.00
+10   | 96             | Invincibles FC (Rob Wright)                   | $15.00
+11   | 54             | idkprobwinthisyear2 (JJ Jasper)               | $15.00
+12   | 78             | idkprobwinthisyear2 (JJ Jasper)               | $15.00
+13   | 85             | Midtable (Dan Hoffmann)                       | $15.00
+14   | 82             | Invincibles FC (Rob Wright)                   | $15.00
+15   | 68             | Wirtz My Age Again?! (Mason North), selly (Jason Sellers) | $7.50
+16   | 93             | Midtable (Dan Hoffmann), idkprobwinthisyear2 (JJ Jasper) | $7.50
+17   | 114            | selly (Jason Sellers)                         | $15.00
+18   | 67             | selly (Jason Sellers)                         | $15.00
+19   | 56             | FTF Bombers (Jonathan Sander)                 | $15.00
+20   | 68             | breakSome1sClavicle (Charlie Chafin)          | $15.00
+21   | 69             | breakSome1sClavicle (Charlie Chafin)          | $15.00
+22   | 51             | FTF Bombers (Jonathan Sander)                 | $15.00
+23   | 59             | CaicedoMvP (Jordan Oz)                        | $15.00
+24   | 76             | Sam’s Club (Sam Bertish)                      | $15.00
+25   | 89             | selly (Jason Sellers)                         | $15.00
+26   | 91             | idkprobwinthisyear2 (JJ Jasper)               | $15.00
+27   | 61             | idk (Kevin Vonarx)                            | $15.00
+28   | 85             | Invincibles FC (Rob Wright)                   | $15.00
+29   | 98             | Sam’s Club (Sam Bertish)                      | $15.00
+30   | 71             | Wirtz My Age Again?! (Mason North)            | $15.00
+31   | 76             | Midtable (Dan Hoffmann)                       | $15.00
+32   | 77             | Gooners (Ted Gansmann)                        | $15.00
+33   | 117            | Avoiding demotion (jon shidal)                | $15.00
+34   | 70             | Midtable (Dan Hoffmann)                       | $15.00
+35   | 64             | idk (Kevin Vonarx)                            | $15.00
+36   | 96             | Avoiding demotion (jon shidal)                | $15.00
+37   | 78             | selly (Jason Sellers)                         | $15.00
+38   | 70             | Pitch Perfect (Amanda Sander)                 | $15.00
+--------------------------------------------------------------------------------
+
+--- End of Season Standing (GW 38) Payouts ---
+Rank  | Manager Name         | Team Name                 | Final Points | Season Payout
+--------------------------------------------------------------------------------
+1     | Dan Hoffmann         | Midtable                  | 2350         | $320.00      
+2     | Rob Wright           | Invincibles FC            | 2323         | $220.00      
+3     | Mason North          | Wirtz My Age Again?!      | 2235         | $120.00      
+4     | jon shidal           | Avoiding demotion         | 2232         | $70.00       
+5     | JJ Jasper            | idkprobwinthisyear2       | 2203         | $0.00        
+6     | Jordan Oz            | CaicedoMvP                | 2186         | $0.00        
+7     | Sam Bertish          | Sam’s Club                | 2145         | $0.00        
+8     | Ted Gansmann         | Gooners                   | 2059         | $0.00        
+9     | Jason Sellers        | selly                     | 2053         | $0.00        
+10    | Kevin Vonarx         | idk                       | 2027         | $0.00        
+11    | Amanda Sander        | Pitch Perfect             | 1988         | $0.00        
+12    | Jonathan Sander      | FTF Bombers               | 1765         | $0.00        
+13    | Charlie Chafin       | breakSome1sClavicle       | 1708         | $0.00        
+--------------------------------------------------------------------------------
+
+--- Final Payout & Stats Summary (Sorted by Total Payout) ---
+Manager Name         | Team Name                 | GW Wins (Share) | GW Payout   | Final Rank | Season Payout | Total Payout
+--------------------------------------------------------------------------------------------------------------
+Dan Hoffmann         | Midtable                  | 5.50 (6 times)  | $82.50      | 1          | $320.00       | $402.50     
+Rob Wright           | Invincibles FC            | 3.00 (3 times)  | $45.00      | 2          | $220.00       | $265.00     
+Mason North          | Wirtz My Age Again?!      | 1.50 (2 times)  | $22.50      | 3          | $120.00       | $142.50     
+jon shidal           | Avoiding demotion         | 3.00 (3 times)  | $45.00      | 4          | $70.00        | $115.00     
+Jason Sellers        | selly                     | 5.50 (6 times)  | $82.50      | 9          | $0.00         | $82.50      
+JJ Jasper            | idkprobwinthisyear2       | 4.50 (5 times)  | $67.50      | 5          | $0.00         | $67.50      
+Kevin Vonarx         | idk                       | 3.00 (3 times)  | $45.00      | 10         | $0.00         | $45.00      
+Charlie Chafin       | breakSome1sClavicle       | 3.00 (3 times)  | $45.00      | 13         | $0.00         | $45.00      
+Jordan Oz            | CaicedoMvP                | 2.00 (2 times)  | $30.00      | 6          | $0.00         | $30.00      
+Sam Bertish          | Sam’s Club                | 2.00 (2 times)  | $30.00      | 7          | $0.00         | $30.00      
+Ted Gansmann         | Gooners                   | 2.00 (2 times)  | $30.00      | 8          | $0.00         | $30.00      
+Jonathan Sander      | FTF Bombers               | 2.00 (2 times)  | $30.00      | 12         | $0.00         | $30.00      
+Amanda Sander        | Pitch Perfect             | 1.00 (1 times)  | $15.00      | 11         | $0.00         | $15.00      
+==============================================================================================================
