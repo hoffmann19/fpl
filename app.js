@@ -6,7 +6,7 @@ let playbackInterval = null;
 let playbackSpeed = 800; // ms per gameweek
 let selectedManager = null;
 let activeTab = 'bar-race'; // 'bar-race' or 'bump-chart'
-let managerSeasonPlayers = {};
+let managerFormations = {};
 
 // Constants for SVG Bump Chart
 const SVG_WIDTH = 1000;
@@ -67,7 +67,8 @@ const elManagerChipName = document.getElementById('m-chip-name');
 const elManagerTransfersCount = document.getElementById('m-transfers-count');
 const elManagerTransfersIn = document.getElementById('m-transfers-in');
 const elManagerTransfersOut = document.getElementById('m-transfers-out');
-const elManagerSeasonMvps = document.getElementById('m-season-mvps');
+const elFormationPie = document.getElementById('m-formation-pie');
+const elFormationLegend = document.getElementById('m-formation-legend');
 const elManagerAvatar = document.getElementById('m-avatar');
 
 // Pitch Lineups
@@ -727,32 +728,54 @@ function updateManagerCard() {
     elManagerTransfersOut.appendChild(li);
   }
   
-  // Season MVPs list
-  elManagerSeasonMvps.innerHTML = '';
-  const mPlayers = managerSeasonPlayers[selectedManager] || {};
-  const sortedPlayers = Object.values(mPlayers).sort((a, b) => b.points - a.points).slice(0, 5);
+  // Render Formation Pie Chart
+  elFormationPie.innerHTML = '';
+  elFormationLegend.innerHTML = '';
   
-  if (sortedPlayers.length === 0) {
-    elManagerSeasonMvps.innerHTML = '<div class="transfer-none">No MVP data computed.</div>';
+  const formations = managerFormations[selectedManager] || {};
+  const sortedFormations = Object.entries(formations).sort((a, b) => b[1] - a[1]);
+  const totalWeeks = Object.values(formations).reduce((a, b) => a + b, 0);
+  
+  if (sortedFormations.length === 0 || totalWeeks === 0) {
+    elFormationPie.style.background = 'conic-gradient(var(--card-border) 0% 100%)';
+    elFormationLegend.innerHTML = '<div class="transfer-none">No formation data available.</div>';
   } else {
-    sortedPlayers.forEach(p => {
-      const row = document.createElement('div');
-      row.className = 'mvp-player-row';
-      row.innerHTML = `
-        <div class="mvp-player-info">
-          <div class="mvp-player-badge ${p.position}">${p.position}</div>
-          <div class="mvp-player-name-group">
-            <span class="mvp-player-name">${p.name}</span>
-            <span class="mvp-player-meta">${p.club}</span>
-          </div>
+    // Premium color palette for formations
+    const formationColors = [
+      '#00d2d3', // teal/accent
+      '#3742fa', // deep royal blue
+      '#ff4757', // coral red
+      '#ffa502', // orange
+      '#2ed573', // green
+      '#a55eea'  // purple
+    ];
+    
+    let gradientParts = [];
+    let currentPct = 0;
+    
+    sortedFormations.forEach(([formCode, count], idx) => {
+      const color = formationColors[idx % formationColors.length];
+      const pct = (count / totalWeeks) * 100;
+      const nextPct = currentPct + pct;
+      
+      gradientParts.push(`${color} ${currentPct.toFixed(1)}% ${nextPct.toFixed(1)}%`);
+      currentPct = nextPct;
+      
+      // Add to legend
+      const legendItem = document.createElement('div');
+      legendItem.className = 'formation-legend-item';
+      legendItem.innerHTML = `
+        <div class="formation-legend-label">
+          <span class="formation-legend-color" style="background: ${color}"></span>
+          <span>${formCode}</span>
         </div>
-        <div class="mvp-player-stats">
-          <span class="mvp-player-points">+${p.points} pts</span>
-          <span class="mvp-player-apps">${p.appearances} starts</span>
-        </div>
+        <span class="formation-legend-value">${count} weeks (${pct.toFixed(0)}%)</span>
       `;
-      elManagerSeasonMvps.appendChild(row);
+      elFormationLegend.appendChild(legendItem);
     });
+    
+    // Apply conic gradient background
+    elFormationPie.style.background = `conic-gradient(${gradientParts.join(', ')})`;
   }
 }
 
@@ -914,11 +937,11 @@ function formatGlobalRank(num) {
 }
 
 function calculateSeasonStats() {
-  managerSeasonPlayers = {};
+  managerFormations = {};
   
   // Initialize
   Object.keys(appData.managers).forEach(mgr => {
-    managerSeasonPlayers[mgr] = {};
+    managerFormations[mgr] = {};
   });
   
   // Go through all gameweeks
@@ -930,21 +953,25 @@ function calculateSeasonStats() {
       const lineup = lineups[mgr];
       if (!lineup) return;
       
+      let defCount = 0;
+      let midCount = 0;
+      let fwdCount = 0;
+      
       lineup.forEach(p => {
         if (p.starting) {
-          if (!managerSeasonPlayers[mgr][p.name]) {
-            managerSeasonPlayers[mgr][p.name] = {
-              name: p.name,
-              points: 0,
-              appearances: 0,
-              position: p.position,
-              club: p.club
-            };
-          }
-          managerSeasonPlayers[mgr][p.name].points += p.points;
-          managerSeasonPlayers[mgr][p.name].appearances += 1;
+          if (p.position === 'DEF') defCount++;
+          else if (p.position === 'MID') midCount++;
+          else if (p.position === 'FWD') fwdCount++;
         }
       });
+      
+      // Goalkeeper is always 1, so the other 10 are defCount-midCount-fwdCount
+      const formation = `${defCount}-${midCount}-${fwdCount}`;
+      
+      if (!managerFormations[mgr][formation]) {
+        managerFormations[mgr][formation] = 0;
+      }
+      managerFormations[mgr][formation]++;
     });
   });
 }

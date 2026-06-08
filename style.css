@@ -1072,14 +1072,14 @@ body {
   margin-top: 24px;
 }
 
-/* ─── Season MVPs ────────────────────────────────────────────────────────── */
-.season-mvps-section {
+/* ─── Formation Frequency ─────────────────────────────────────────────────── */
+.formation-section {
   margin-top: 18px;
   border-top: 1px solid var(--card-border);
   padding-top: 16px;
 }
 
-.season-mvps-section .section-title {
+.formation-section .section-title {
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1091,90 +1091,75 @@ body {
   gap: 6px;
 }
 
-.mvps-list {
+.formation-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.formation-pie-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.formation-pie {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: conic-gradient(var(--card-border) 0% 100%);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transition: background var(--transition-normal);
+}
+
+.formation-pie::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: #111420; /* matches --card-bg without transparency to block out the center */
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.formation-legend {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.mvp-player-row {
+.formation-legend-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 6px 12px;
-  transition: all 0.2s ease;
-}
-
-.mvp-player-row:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.mvp-player-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.mvp-player-badge {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: #fff;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
-}
-
-.mvp-player-badge.GKP {
-  background: linear-gradient(135deg, #ffa502, #ff7f50);
-}
-.mvp-player-badge.DEF {
-  background: linear-gradient(135deg, #1e90ff, #3742fa);
-}
-.mvp-player-badge.MID {
-  background: linear-gradient(135deg, #2ed573, #20bf6b);
-}
-.mvp-player-badge.FWD {
-  background: linear-gradient(135deg, #ff4757, #ff6b81);
-}
-
-.mvp-player-name-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.mvp-player-name {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem;
   color: var(--text-primary);
 }
 
-.mvp-player-meta {
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-}
-
-.mvp-player-stats {
-  text-align: right;
+.formation-legend-label {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
 }
 
-.mvp-player-points {
+.formation-legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.formation-legend-value {
   font-family: var(--font-mono);
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.mvp-player-apps {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
 }
