@@ -61,6 +61,8 @@ const elManagerOverallPts = document.getElementById('m-overall-pts');
 const elManagerOverallRank = document.getElementById('m-overall-rank');
 const elManagerTeamValue = document.getElementById('m-team-value');
 const elManagerBankValue = document.getElementById('m-bank-value');
+const elManagerBestRank = document.getElementById('m-best-rank');
+const elManagerFinalRank = document.getElementById('m-final-rank');
 const elManagerCaptainName = document.getElementById('m-captain-name');
 const elManagerChipBadge = document.getElementById('m-chip-badge');
 const elManagerChipName = document.getElementById('m-chip-name');
@@ -683,6 +685,25 @@ function updateManagerCard() {
   // Team Value & Bank
   elManagerTeamValue.innerText = mgrRecord.team_value ? `£${mgrRecord.team_value.toFixed(1)}M` : '—';
   elManagerBankValue.innerText = mgrRecord.bank !== undefined ? `£${mgrRecord.bank.toFixed(1)}M` : '—';
+  
+  // Calculate Best Rank and Final Rank
+  let bestRank = Infinity;
+  Object.keys(appData.gameweeks).forEach(gw => {
+    const standings = appData.gameweeks[gw].standings;
+    const record = standings.find(s => s.manager === selectedManager);
+    if (record && record.overall_rank && record.overall_rank < bestRank) {
+      bestRank = record.overall_rank;
+    }
+  });
+  
+  const availableGWs = Object.keys(appData.gameweeks).map(Number);
+  const maxGW = Math.max(...availableGWs);
+  const finalStandings = appData.gameweeks[maxGW.toString()].standings;
+  const finalRecord = finalStandings.find(s => s.manager === selectedManager);
+  const finalRank = finalRecord ? finalRecord.overall_rank : null;
+  
+  elManagerBestRank.innerText = bestRank !== Infinity ? bestRank.toLocaleString() : '—';
+  elManagerFinalRank.innerText = finalRank ? finalRank.toLocaleString() : '—';
   
   // Captain Row
   const capPointsStr = mgrRecord.captain_points !== undefined ? ` (${mgrRecord.captain_points} pts)` : '';
