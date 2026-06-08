@@ -5,3 +5,4 @@ fpl_data
 *.xls
 *.db
 !visualizer_data.json
+*.txt

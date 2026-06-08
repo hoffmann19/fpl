@@ -68,7 +68,8 @@ def main():
     # Initialize master CSV writers
     standings_headers = [
         "Gameweek", "Rank", "Team Name", "Manager Name", "GW Points", 
-        "GW Hits", "GW Net Points", "Overall Points", "Overall Rank", "Chip Played", "Transfers Made"
+        "GW Hits", "GW Net Points", "Overall Points", "Overall Rank", "Chip Played", "Transfers Made",
+        "Team Value", "Bank"
     ]
     lineups_headers = [
         "Gameweek", "Manager Name", "Team Name", "Player Name", "Club", "Position", 
@@ -163,7 +164,9 @@ def main():
                         ld.get("SeasonTotalPoints"),
                         ld.get("OverallRank"),
                         ld.get("ActiveChip") or "None",
-                        ld.get("Transfers", 0)
+                        ld.get("Transfers", 0),
+                        team.get("TeamValue", 0.0),
+                        team.get("BankValue", 0.0)
                     ])
                     
                     # Write to master CSV
@@ -178,7 +181,9 @@ def main():
                         ld.get("SeasonTotalPoints"),
                         ld.get("OverallRank"),
                         ld.get("ActiveChip") or "None",
-                        ld.get("Transfers", 0)
+                        ld.get("Transfers", 0),
+                        team.get("TeamValue", 0.0),
+                        team.get("BankValue", 0.0)
                     ])
             
             # Write individual and master lineups CSV

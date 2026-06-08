@@ -76,7 +76,10 @@
               <i class="fa-solid fa-chart-bar"></i> Bar Chart Race
             </button>
             <button id="tab-bump-chart" class="tab-btn">
-              <i class="fa-solid fa-chart-line"></i> Rank Trajectory (Bump Chart)
+              <i class="fa-solid fa-chart-line"></i> Rank Trajectory
+            </button>
+            <button id="tab-global-rank" class="tab-btn">
+              <i class="fa-solid fa-globe"></i> Global Rank
             </button>
           </div>
           <div class="viz-actions">
@@ -108,6 +111,20 @@
               <div id="bump-tooltip" class="chart-tooltip hidden"></div>
             </div>
           </div>
+
+          <!-- Global Rank Panel -->
+          <div id="panel-global-rank" class="panel">
+            <div class="bump-chart-legend" id="global-rank-legend">
+              <!-- Legend items added dynamically -->
+            </div>
+            <div class="bump-chart-svg-wrapper">
+              <svg id="global-rank-svg" width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="none">
+                <!-- Global rank SVG lines injected here -->
+              </svg>
+              <div id="global-rank-tracker" class="bump-tracker-line"></div>
+              <div id="global-rank-tooltip" class="chart-tooltip hidden"></div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -123,30 +140,67 @@
             </div>
             <div class="manager-rank-badge" id="m-rank"># -</div>
           </div>
-          <div class="manager-stats-grid">
-            <div class="m-stat">
+          <!-- Quick Stats Row -->
+          <div class="manager-quick-stats">
+            <div class="m-quick-stat">
               <span class="m-stat-label">GW Points</span>
               <span class="m-stat-value" id="m-gw-pts">-</span>
             </div>
-            <div class="m-stat">
-              <span class="m-stat-label">GW Net (Hits)</span>
+            <div class="m-quick-stat">
+              <span class="m-stat-label">Net (Hits)</span>
               <span class="m-stat-value" id="m-gw-net-pts">-</span>
             </div>
-            <div class="m-stat">
-              <span class="m-stat-label">Overall Points</span>
+            <div class="m-quick-stat">
+              <span class="m-stat-label">Total Pts</span>
               <span class="m-stat-value" id="m-overall-pts">-</span>
             </div>
-            <div class="m-stat">
-              <span class="m-stat-label">Global FPL Rank</span>
+            <div class="m-quick-stat">
+              <span class="m-stat-label">Global Rank</span>
               <span class="m-stat-value" id="m-overall-rank">-</span>
             </div>
+            <div class="m-quick-stat">
+              <span class="m-stat-label">Team Value</span>
+              <span class="m-stat-value" id="m-team-value">-</span>
+            </div>
+            <div class="m-quick-stat">
+              <span class="m-stat-label">In Bank</span>
+              <span class="m-stat-value" id="m-bank-value">-</span>
+            </div>
           </div>
+
+          <!-- Captain Row -->
+          <div class="captain-row" id="captain-row">
+            <div class="captain-label"><i class="fa-solid fa-shield-halved"></i> Captain</div>
+            <div class="captain-name" id="m-captain-name">—</div>
+          </div>
+
+          <!-- Chip + Transfer count row -->
           <div class="manager-chips-row">
             <div class="chip-badge active hidden" id="m-chip-badge">
               <i class="fa-solid fa-bolt"></i> <span id="m-chip-name">Wildcard</span>
             </div>
             <div class="transfers-badge" id="m-transfers-badge">
               <i class="fa-solid fa-right-left"></i> <span id="m-transfers-count">0</span> Transfers
+            </div>
+          </div>
+
+          <!-- Transfers In / Out -->
+          <div class="transfers-detail" id="transfers-detail">
+            <div class="transfer-col transfers-in-col">
+              <div class="transfer-col-title"><i class="fa-solid fa-circle-arrow-up"></i> In</div>
+              <ul class="transfer-list" id="m-transfers-in"></ul>
+            </div>
+            <div class="transfer-col transfers-out-col">
+              <div class="transfer-col-title"><i class="fa-solid fa-circle-arrow-down"></i> Out</div>
+              <ul class="transfer-list" id="m-transfers-out"></ul>
+            </div>
+          </div>
+
+          <!-- Season MVPs -->
+          <div class="season-mvps-section" id="season-mvps-section">
+            <div class="section-title"><i class="fa-solid fa-star"></i> Season MVPs</div>
+            <div class="mvps-list" id="m-season-mvps">
+              <!-- Top players will be loaded here -->
             </div>
           </div>
         </div>

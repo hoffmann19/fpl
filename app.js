@@ -6,6 +6,7 @@ let playbackInterval = null;
 let playbackSpeed = 800; // ms per gameweek
 let selectedManager = null;
 let activeTab = 'bar-race'; // 'bar-race' or 'bump-chart'
+let managerSeasonPlayers = {};
 
 // Constants for SVG Bump Chart
 const SVG_WIDTH = 1000;
@@ -30,8 +31,10 @@ const elBtnReset = document.getElementById('btn-reset');
 // Tab Panels
 const elTabBarRace = document.getElementById('tab-bar-race');
 const elTabBumpChart = document.getElementById('tab-bump-chart');
+const elTabGlobalRank = document.getElementById('tab-global-rank');
 const elPanelBarRace = document.getElementById('panel-bar-race');
 const elPanelBumpChart = document.getElementById('panel-bump-chart');
+const elPanelGlobalRank = document.getElementById('panel-global-rank');
 
 // Bar Race Container
 const elBarRaceContainer = document.getElementById('bar-race-container');
@@ -42,6 +45,12 @@ const elBumpLegend = document.getElementById('bump-legend');
 const elBumpTracker = document.getElementById('bump-tracker');
 const elBumpTooltip = document.getElementById('bump-tooltip');
 
+// Global Rank Chart Elements
+const elGlobalSvg = document.getElementById('global-rank-svg');
+const elGlobalLegend = document.getElementById('global-rank-legend');
+const elGlobalTracker = document.getElementById('global-rank-tracker');
+const elGlobalTooltip = document.getElementById('global-rank-tooltip');
+
 // Manager Details Card
 const elManagerName = document.getElementById('m-name');
 const elManagerTeam = document.getElementById('m-team');
@@ -50,9 +59,15 @@ const elManagerGwPts = document.getElementById('m-gw-pts');
 const elManagerGwNetPts = document.getElementById('m-gw-net-pts');
 const elManagerOverallPts = document.getElementById('m-overall-pts');
 const elManagerOverallRank = document.getElementById('m-overall-rank');
+const elManagerTeamValue = document.getElementById('m-team-value');
+const elManagerBankValue = document.getElementById('m-bank-value');
+const elManagerCaptainName = document.getElementById('m-captain-name');
 const elManagerChipBadge = document.getElementById('m-chip-badge');
 const elManagerChipName = document.getElementById('m-chip-name');
 const elManagerTransfersCount = document.getElementById('m-transfers-count');
+const elManagerTransfersIn = document.getElementById('m-transfers-in');
+const elManagerTransfersOut = document.getElementById('m-transfers-out');
+const elManagerSeasonMvps = document.getElementById('m-season-mvps');
 const elManagerAvatar = document.getElementById('m-avatar');
 
 // Pitch Lineups
@@ -120,6 +135,7 @@ function setupEventListeners() {
   // Tabs
   elTabBarRace.addEventListener('click', () => switchTab('bar-race'));
   elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
+  elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
 }
 
 function initDashboard() {
@@ -128,11 +144,17 @@ function initDashboard() {
   elSlider.max = TOTAL_GWS;
   elSlider.value = currentGW;
   
+  // Calculate historical MVP stats
+  calculateSeasonStats();
+  
   // Create Bars in HTML for Bar Chart Race
   createBarRaceElements();
   
   // Render Bump Chart (which remains static in background, only tracker moves)
   renderBumpChart();
+  
+  // Render Global Rank Chart
+  renderGlobalRankChart();
   
   // Update view
   updateDashboard();
@@ -140,16 +162,24 @@ function initDashboard() {
 
 function switchTab(tab) {
   activeTab = tab;
+  
+  elTabBarRace.classList.remove('active');
+  elTabBumpChart.classList.remove('active');
+  elTabGlobalRank.classList.remove('active');
+  
+  elPanelBarRace.classList.remove('active');
+  elPanelBumpChart.classList.remove('active');
+  elPanelGlobalRank.classList.remove('active');
+  
   if (tab === 'bar-race') {
     elTabBarRace.classList.add('active');
-    elTabBumpChart.classList.remove('active');
     elPanelBarRace.classList.add('active');
-    elPanelBumpChart.classList.remove('active');
-  } else {
-    elTabBarRace.classList.remove('active');
+  } else if (tab === 'bump-chart') {
     elTabBumpChart.classList.add('active');
-    elPanelBarRace.classList.remove('active');
     elPanelBumpChart.classList.add('active');
+  } else if (tab === 'global-rank') {
+    elTabGlobalRank.classList.add('active');
+    elPanelGlobalRank.classList.add('active');
   }
 }
 
@@ -534,6 +564,11 @@ function updateBumpTracker() {
   const xPct = (x / SVG_WIDTH) * 100;
   elBumpTracker.style.left = `${xPct}%`;
   elBumpTracker.style.display = 'block';
+  
+  if (elGlobalTracker) {
+    elGlobalTracker.style.left = `${xPct}%`;
+    elGlobalTracker.style.display = 'block';
+  }
 }
 
 function updateBumpChartHighlight() {
@@ -550,6 +585,8 @@ function updateBumpChartHighlight() {
       n.setAttribute("r", "3.5");
       n.style.fillOpacity = "1";
     });
+    
+    updateGlobalRankChartHighlight();
     return;
   }
   
@@ -581,6 +618,9 @@ function updateBumpChartHighlight() {
   // Bring selected nodes to front too
   const nodesToFront = elBumpSvg.querySelectorAll(`.${selectedNodeClass}`);
   nodesToFront.forEach(n => elBumpSvg.appendChild(n));
+  
+  // Highlight selected path in Global Rank Chart
+  updateGlobalRankChartHighlight();
 }
 
 // ----------------------------------------------------
@@ -639,6 +679,14 @@ function updateManagerCard() {
   elManagerOverallPts.innerText = `${mgrRecord.overall_points} pts`;
   elManagerOverallRank.innerText = mgrRecord.overall_rank.toLocaleString();
   
+  // Team Value & Bank
+  elManagerTeamValue.innerText = mgrRecord.team_value ? `£${mgrRecord.team_value.toFixed(1)}M` : '—';
+  elManagerBankValue.innerText = mgrRecord.bank !== undefined ? `£${mgrRecord.bank.toFixed(1)}M` : '—';
+  
+  // Captain Row
+  const capPointsStr = mgrRecord.captain_points !== undefined ? ` (${mgrRecord.captain_points} pts)` : '';
+  elManagerCaptainName.innerText = mgrRecord.captain ? `${mgrRecord.captain}${capPointsStr}` : '—';
+  
   // Chip Played
   if (mgrRecord.chip && mgrRecord.chip !== 'None') {
     elManagerChipBadge.classList.remove('hidden');
@@ -649,6 +697,63 @@ function updateManagerCard() {
   
   // Transfers Made
   elManagerTransfersCount.innerText = mgrRecord.transfers;
+  
+  // Transfers In / Out lists
+  elManagerTransfersIn.innerHTML = '';
+  if (mgrRecord.transfers_in && mgrRecord.transfers_in.length > 0) {
+    mgrRecord.transfers_in.forEach(p => {
+      const li = document.createElement('li');
+      li.textContent = p;
+      elManagerTransfersIn.appendChild(li);
+    });
+  } else {
+    const li = document.createElement('li');
+    li.className = 'transfer-none';
+    li.textContent = 'None';
+    elManagerTransfersIn.appendChild(li);
+  }
+
+  elManagerTransfersOut.innerHTML = '';
+  if (mgrRecord.transfers_out && mgrRecord.transfers_out.length > 0) {
+    mgrRecord.transfers_out.forEach(p => {
+      const li = document.createElement('li');
+      li.textContent = p;
+      elManagerTransfersOut.appendChild(li);
+    });
+  } else {
+    const li = document.createElement('li');
+    li.className = 'transfer-none';
+    li.textContent = 'None';
+    elManagerTransfersOut.appendChild(li);
+  }
+  
+  // Season MVPs list
+  elManagerSeasonMvps.innerHTML = '';
+  const mPlayers = managerSeasonPlayers[selectedManager] || {};
+  const sortedPlayers = Object.values(mPlayers).sort((a, b) => b.points - a.points).slice(0, 5);
+  
+  if (sortedPlayers.length === 0) {
+    elManagerSeasonMvps.innerHTML = '<div class="transfer-none">No MVP data computed.</div>';
+  } else {
+    sortedPlayers.forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'mvp-player-row';
+      row.innerHTML = `
+        <div class="mvp-player-info">
+          <div class="mvp-player-badge ${p.position}">${p.position}</div>
+          <div class="mvp-player-name-group">
+            <span class="mvp-player-name">${p.name}</span>
+            <span class="mvp-player-meta">${p.club}</span>
+          </div>
+        </div>
+        <div class="mvp-player-stats">
+          <span class="mvp-player-points">+${p.points} pts</span>
+          <span class="mvp-player-apps">${p.appearances} starts</span>
+        </div>
+      `;
+      elManagerSeasonMvps.appendChild(row);
+    });
+  }
 }
 
 function updateLineupPitch() {
@@ -782,4 +887,352 @@ function updateDashboard() {
   // 5. Update selected manager card & lineup
   updateManagerCard();
   updateLineupPitch();
+}
+
+// ----------------------------------------------------
+// GLOBAL RANK CHART IMPLEMENTATION & SEASON STATS
+// ----------------------------------------------------
+let globalRankMin = Infinity;
+let globalRankMax = -Infinity;
+let globalRankYMinLimit = 0;
+let globalRankYMaxLimit = 0;
+
+function getGlobalRankY(r) {
+  if (globalRankYMaxLimit === globalRankYMinLimit) return BUMP_MARGIN.top;
+  const pct = (r - globalRankYMinLimit) / (globalRankYMaxLimit - globalRankYMinLimit);
+  return BUMP_MARGIN.top + pct * BUMP_INNER_HEIGHT;
+}
+
+function formatGlobalRank(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M';
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(0) + 'k';
+  }
+  return num.toString();
+}
+
+function calculateSeasonStats() {
+  managerSeasonPlayers = {};
+  
+  // Initialize
+  Object.keys(appData.managers).forEach(mgr => {
+    managerSeasonPlayers[mgr] = {};
+  });
+  
+  // Go through all gameweeks
+  Object.keys(appData.gameweeks).forEach(gw => {
+    const lineups = appData.gameweeks[gw].lineups;
+    if (!lineups) return;
+    
+    Object.keys(lineups).forEach(mgr => {
+      const lineup = lineups[mgr];
+      if (!lineup) return;
+      
+      lineup.forEach(p => {
+        if (p.starting) {
+          if (!managerSeasonPlayers[mgr][p.name]) {
+            managerSeasonPlayers[mgr][p.name] = {
+              name: p.name,
+              points: 0,
+              appearances: 0,
+              position: p.position,
+              club: p.club
+            };
+          }
+          managerSeasonPlayers[mgr][p.name].points += p.points;
+          managerSeasonPlayers[mgr][p.name].appearances += 1;
+        }
+      });
+    });
+  });
+}
+
+function renderGlobalRankChart() {
+  if (!appData) return;
+
+  // Clear existing SVG paths/circles and legend
+  elGlobalSvg.innerHTML = '';
+  elGlobalLegend.innerHTML = '';
+
+  const managers = Object.keys(appData.managers);
+
+  // Find min and max global rank to scale Y-axis
+  globalRankMin = Infinity;
+  globalRankMax = -Infinity;
+  for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+    const standings = appData.gameweeks[gw.toString()].standings;
+    standings.forEach(s => {
+      const r = s.overall_rank;
+      if (r < globalRankMin) globalRankMin = r;
+      if (r > globalRankMax) globalRankMax = r;
+    });
+  }
+
+  // Add a 5% margin to min and max so values don't clip at top/bottom
+  const diff = globalRankMax - globalRankMin;
+  const pad = diff * 0.05 || 1000;
+  globalRankYMinLimit = Math.max(1, globalRankMin - pad);
+  globalRankYMaxLimit = globalRankMax + pad;
+
+  // 1. Draw SVG Background Grid Lines
+  // Draw gameweek vertical lines
+  for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+    const x = getBumpX(gw);
+    const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    gridLine.setAttribute("x1", x);
+    gridLine.setAttribute("y1", BUMP_MARGIN.top);
+    gridLine.setAttribute("x2", x);
+    gridLine.setAttribute("y2", SVG_HEIGHT - BUMP_MARGIN.bottom);
+    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke-width", "1");
+    elGlobalSvg.appendChild(gridLine);
+    
+    if (gw === 1 || gw % 5 === 0 || gw === TOTAL_GWS) {
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", x);
+      text.setAttribute("y", BUMP_MARGIN.top - 12);
+      text.setAttribute("fill", "#64748b");
+      text.setAttribute("font-size", "10px");
+      text.setAttribute("font-family", "Space Grotesk");
+      text.setAttribute("text-anchor", "middle");
+      text.textContent = `GW${gw}`;
+      elGlobalSvg.appendChild(text);
+    }
+  }
+
+  // Draw rank horizontal lines (ticks)
+  const ticksCount = 5;
+  for (let i = 0; i < ticksCount; i++) {
+    const pct = i / (ticksCount - 1);
+    const rankVal = Math.round(globalRankYMinLimit + pct * (globalRankYMaxLimit - globalRankYMinLimit));
+    const y = BUMP_MARGIN.top + pct * BUMP_INNER_HEIGHT;
+
+    const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    gridLine.setAttribute("x1", BUMP_MARGIN.left);
+    gridLine.setAttribute("y1", y);
+    gridLine.setAttribute("x2", SVG_WIDTH - BUMP_MARGIN.right);
+    gridLine.setAttribute("y2", y);
+    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke-width", "1");
+    elGlobalSvg.appendChild(gridLine);
+
+    const textLeft = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    textLeft.setAttribute("x", BUMP_MARGIN.left - 15);
+    textLeft.setAttribute("y", y + 4);
+    textLeft.setAttribute("fill", "#94a3b8");
+    textLeft.setAttribute("font-size", "10px");
+    textLeft.setAttribute("font-weight", "bold");
+    textLeft.setAttribute("font-family", "Space Grotesk");
+    textLeft.setAttribute("text-anchor", "end");
+    textLeft.textContent = formatGlobalRank(rankVal);
+    elGlobalSvg.appendChild(textLeft);
+  }
+
+  // 2. Draw Paths for each manager
+  managers.forEach(managerName => {
+    const mgrColor = appData.managers[managerName].color;
+
+    let points = [];
+    for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+      const standings = appData.gameweeks[gw.toString()].standings;
+      const record = standings.find(s => s.manager === managerName);
+      if (record) {
+        points.push({
+          gw: gw,
+          overall_rank: record.overall_rank,
+          points: record.overall_points,
+          chip: record.chip
+        });
+      }
+    }
+
+    if (points.length === 0) return;
+
+    // Create Bezier curve string
+    let d = `M ${getBumpX(points[0].gw)} ${getGlobalRankY(points[0].overall_rank)}`;
+    for (let i = 1; i < points.length; i++) {
+      const pPrev = points[i - 1];
+      const pCurr = points[i];
+      const xPrev = getBumpX(pPrev.gw);
+      const yPrev = getGlobalRankY(pPrev.overall_rank);
+      const xCurr = getBumpX(pCurr.gw);
+      const yCurr = getGlobalRankY(pCurr.overall_rank);
+
+      const cpX1 = xPrev + STEP_X / 2;
+      const cpY1 = yPrev;
+      const cpX2 = xCurr - STEP_X / 2;
+      const cpY2 = yCurr;
+
+      d += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${xCurr} ${yCurr}`;
+    }
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    path.setAttribute("stroke", mgrColor);
+    path.setAttribute("stroke-width", "3.5");
+    path.setAttribute("class", "bump-path global-path");
+    path.id = `global-path-${managerName.replace(/\s+/g, '_')}`;
+
+    path.addEventListener('click', () => selectManager(managerName));
+    path.addEventListener('mouseover', () => hoverGlobalPath(managerName, true));
+    path.addEventListener('mouseout', () => hoverGlobalPath(managerName, false));
+
+    elGlobalSvg.appendChild(path);
+
+    // Draw circles at nodes
+    points.forEach(p => {
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", getBumpX(p.gw));
+      circle.setAttribute("cy", getGlobalRankY(p.overall_rank));
+      circle.setAttribute("r", "3.5");
+      circle.setAttribute("fill", mgrColor);
+      circle.setAttribute("stroke", "#0a0c14");
+      circle.setAttribute("stroke-width", "1");
+      circle.setAttribute("class", `bump-node global-node node-global-${managerName.replace(/\s+/g, '_')}`);
+
+      circle.addEventListener('click', () => {
+        selectManager(managerName);
+        currentGW = p.gw;
+        updateDashboard();
+      });
+
+      circle.addEventListener('mouseover', (e) => {
+        hoverGlobalPath(managerName, true);
+        showGlobalTooltip(e, managerName, p);
+      });
+
+      circle.addEventListener('mouseout', () => {
+        hoverGlobalPath(managerName, false);
+        hideGlobalTooltip();
+      });
+
+      elGlobalSvg.appendChild(circle);
+    });
+
+    // Add legend item
+    const legendItem = document.createElement('div');
+    legendItem.className = 'legend-item';
+    legendItem.id = `legend-global-${managerName.replace(/\s+/g, '_')}`;
+    legendItem.innerHTML = `
+      <span class="legend-color" style="background: ${mgrColor}"></span>
+      <span>${managerName}</span>
+    `;
+    legendItem.addEventListener('click', () => selectManager(managerName));
+    legendItem.addEventListener('mouseover', () => hoverGlobalPath(managerName, true));
+    legendItem.addEventListener('mouseout', () => hoverGlobalPath(managerName, false));
+    elGlobalLegend.appendChild(legendItem);
+  });
+}
+
+function hoverGlobalPath(managerName, active) {
+  const allPaths = elGlobalSvg.querySelectorAll('.global-path');
+  const allNodes = elGlobalSvg.querySelectorAll('.global-node');
+  const targetPathId = `global-path-${managerName.replace(/\s+/g, '_')}`;
+  const targetNodeClass = `node-global-${managerName.replace(/\s+/g, '_')}`;
+  
+  if (active) {
+    allPaths.forEach(p => {
+      if (p.id === targetPathId) {
+        p.setAttribute("stroke-width", "6");
+        p.style.opacity = "1";
+        elGlobalSvg.appendChild(p);
+      } else {
+        p.style.opacity = "0.1";
+      }
+    });
+    allNodes.forEach(n => {
+      if (n.classList.contains(targetNodeClass)) {
+        n.setAttribute("r", "6.5");
+        n.style.fillOpacity = "1";
+        elGlobalSvg.appendChild(n);
+      } else {
+        n.style.fillOpacity = "0.1";
+      }
+    });
+  } else {
+    allPaths.forEach(p => {
+      const isSelected = p.id === `global-path-${(selectedManager || '').replace(/\s+/g, '_')}`;
+      p.setAttribute("stroke-width", isSelected ? "6" : "3.5");
+      p.style.opacity = selectedManager ? (isSelected ? "1" : "0.15") : "0.85";
+    });
+    allNodes.forEach(n => {
+      const isSelected = n.classList.contains(`node-global-${(selectedManager || '').replace(/\s+/g, '_')}`);
+      n.setAttribute("r", isSelected ? "5.5" : "3.5");
+      n.style.fillOpacity = selectedManager ? (isSelected ? "1" : "0.15") : "1";
+    });
+  }
+}
+
+function showGlobalTooltip(event, managerName, dataPoint) {
+  const x = getBumpX(dataPoint.gw);
+  const y = getGlobalRankY(dataPoint.overall_rank);
+  
+  elGlobalTooltip.innerHTML = `
+    <span class="tooltip-title">${managerName}</span>
+    <span><strong>Gameweek ${dataPoint.gw}</strong></span>
+    <span>Global Rank: <strong>#${dataPoint.overall_rank.toLocaleString()}</strong></span>
+    <span>Total Points: <strong>${dataPoint.points} pts</strong></span>
+    ${dataPoint.chip && dataPoint.chip !== 'None' ? `<span>Chip Played: <strong style="color:var(--warning)">${dataPoint.chip}</strong></span>` : ''}
+  `;
+  
+  elGlobalTooltip.classList.remove('hidden');
+  
+  const tooltipWidth = elGlobalTooltip.offsetWidth;
+  const tooltipHeight = elGlobalTooltip.offsetHeight;
+  
+  const xPct = (x / SVG_WIDTH) * 100;
+  const yPct = (y / SVG_HEIGHT) * 100;
+  
+  elGlobalTooltip.style.left = `calc(${xPct}% - ${tooltipWidth / 2}px)`;
+  elGlobalTooltip.style.top = `calc(${yPct}% - ${tooltipHeight + 15}px)`;
+}
+
+function hideGlobalTooltip() {
+  elGlobalTooltip.classList.add('hidden');
+}
+
+function updateGlobalRankChartHighlight() {
+  const allPaths = elGlobalSvg.querySelectorAll('.global-path');
+  const allNodes = elGlobalSvg.querySelectorAll('.global-node');
+  
+  if (!selectedManager) {
+    allPaths.forEach(p => {
+      p.setAttribute("stroke-width", "3.5");
+      p.style.opacity = "0.85";
+    });
+    allNodes.forEach(n => {
+      n.setAttribute("r", "3.5");
+      n.style.fillOpacity = "1";
+    });
+    return;
+  }
+  
+  const selectedPathId = `global-path-${selectedManager.replace(/\s+/g, '_')}`;
+  const selectedNodeClass = `node-global-${selectedManager.replace(/\s+/g, '_')}`;
+  
+  allPaths.forEach(p => {
+    if (p.id === selectedPathId) {
+      p.setAttribute("stroke-width", "6");
+      p.style.opacity = "1";
+      elGlobalSvg.appendChild(p);
+    } else {
+      p.setAttribute("stroke-width", "3.5");
+      p.style.opacity = "0.15";
+    }
+  });
+  
+  allNodes.forEach(n => {
+    if (n.classList.contains(selectedNodeClass)) {
+      n.setAttribute("r", "5.5");
+      n.style.fillOpacity = "1";
+    } else {
+      n.setAttribute("r", "3.5");
+      n.style.fillOpacity = "0.15";
+    }
+  });
+  
+  const nodesToFront = elGlobalSvg.querySelectorAll(`.${selectedNodeClass}`);
+  nodesToFront.forEach(n => elGlobalSvg.appendChild(n));
 }

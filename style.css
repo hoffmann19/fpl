@@ -645,39 +645,77 @@ body {
   border: 1px solid rgba(0, 210, 211, 0.2);
 }
 
-.manager-stats-grid {
+/* ─── Compact Quick Stats ─────────────────────────────────────────────────── */
+.manager-quick-stats {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
-.m-stat {
-  background: rgba(255, 255, 255, 0.02);
+.m-quick-stat {
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--card-border);
   border-radius: 8px;
-  padding: 10px;
+  padding: 8px 6px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .m-stat-label {
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
   color: var(--text-secondary);
   font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .m-stat-value {
   font-family: var(--font-mono);
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
+  margin-top: 2px;
 }
 
+/* ─── Captain Row ─────────────────────────────────────────────────────────── */
+.captain-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 71, 87, 0.07);
+  border: 1px solid rgba(255, 71, 87, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.captain-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ff4757;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.captain-name {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ─── Chip + Transfer count row ──────────────────────────────────────────── */
 .manager-chips-row {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
 .chip-badge {
@@ -698,10 +736,84 @@ body {
 .transfers-badge {
   font-size: 0.8rem;
   color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ─── Transfer In / Out Lists ────────────────────────────────────────────── */
+.transfers-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.transfer-col {
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-height: 40px;
+}
+
+.transfers-in-col {
+  background: rgba(46, 213, 115, 0.06);
+  border: 1px solid rgba(46, 213, 115, 0.2);
+}
+
+.transfers-out-col {
+  background: rgba(255, 71, 87, 0.06);
+  border: 1px solid rgba(255, 71, 87, 0.2);
+}
+
+.transfer-col-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.transfers-in-col .transfer-col-title { color: #2ed573; }
+.transfers-out-col .transfer-col-title { color: #ff4757; }
+
+.transfer-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.transfer-list li {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.transfer-list li:last-child {
+  border-bottom: none;
+}
+
+.transfer-none {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 .hidden {
   display: none !important;
+}
+
+/* ─── Global Rank Chart Axis Labels ─────────────────────────────────────── */
+.global-rank-axis-label {
+  font-size: 0.7rem;
+  fill: #64748b;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 /* Pitch Lineup Drawer */
@@ -958,4 +1070,111 @@ body {
   font-size: 0.8rem;
   border-top: 1px solid var(--card-border);
   margin-top: 24px;
+}
+
+/* ─── Season MVPs ────────────────────────────────────────────────────────── */
+.season-mvps-section {
+  margin-top: 18px;
+  border-top: 1px solid var(--card-border);
+  padding-top: 16px;
+}
+
+.season-mvps-section .section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mvps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mvp-player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  transition: all 0.2s ease;
+}
+
+.mvp-player-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.mvp-player-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mvp-player-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.mvp-player-badge.GKP {
+  background: linear-gradient(135deg, #ffa502, #ff7f50);
+}
+.mvp-player-badge.DEF {
+  background: linear-gradient(135deg, #1e90ff, #3742fa);
+}
+.mvp-player-badge.MID {
+  background: linear-gradient(135deg, #2ed573, #20bf6b);
+}
+.mvp-player-badge.FWD {
+  background: linear-gradient(135deg, #ff4757, #ff6b81);
+}
+
+.mvp-player-name-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.mvp-player-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mvp-player-meta {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.mvp-player-stats {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+}
+
+.mvp-player-points {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.mvp-player-apps {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
 }

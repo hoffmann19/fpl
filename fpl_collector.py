@@ -97,7 +97,8 @@ def save_standings_csv(team_datas, gw, output_dir):
 
     headers = [
         "Rank", "Team Name", "Manager Name", "GW Points", "GW Hits", 
-        "GW Net Points", "Overall Points", "Overall Rank", "Chip Played", "Transfers Made"
+        "GW Net Points", "Overall Points", "Overall Rank", "Chip Played", "Transfers Made",
+        "Team Value", "Bank"
     ]
 
     with open(csv_file, mode='w', newline='', encoding='utf-8') as f:
@@ -119,7 +120,9 @@ def save_standings_csv(team_datas, gw, output_dir):
                 ld.get("SeasonTotalPoints"),
                 ld.get("OverallRank"),
                 ld.get("ActiveChip") or "None",
-                ld.get("Transfers", 0)
+                ld.get("Transfers", 0),
+                team.get("TeamValue", 0.0),
+                team.get("BankValue", 0.0)
             ])
             
     print(f"[+] Saved Standings to: {csv_file}")
