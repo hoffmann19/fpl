@@ -59,8 +59,6 @@ const elManagerGwPts = document.getElementById('m-gw-pts');
 const elManagerGwNetPts = document.getElementById('m-gw-net-pts');
 const elManagerOverallPts = document.getElementById('m-overall-pts');
 const elManagerOverallRank = document.getElementById('m-overall-rank');
-const elManagerTeamValue = document.getElementById('m-team-value');
-const elManagerBankValue = document.getElementById('m-bank-value');
 const elManagerBestRank = document.getElementById('m-best-rank');
 const elManagerFinalRank = document.getElementById('m-final-rank');
 const elManagerCaptainName = document.getElementById('m-captain-name');
@@ -681,10 +679,6 @@ function updateManagerCard() {
   elManagerGwNetPts.innerText = `${mgrRecord.gw_net_points} pts ${hitsStr}`;
   elManagerOverallPts.innerText = `${mgrRecord.overall_points} pts`;
   elManagerOverallRank.innerText = mgrRecord.overall_rank.toLocaleString();
-  
-  // Team Value & Bank
-  elManagerTeamValue.innerText = mgrRecord.team_value ? `£${mgrRecord.team_value.toFixed(1)}M` : '—';
-  elManagerBankValue.innerText = mgrRecord.bank !== undefined ? `£${mgrRecord.bank.toFixed(1)}M` : '—';
   
   // Calculate Best Rank and Final Rank
   let bestRank = Infinity;
