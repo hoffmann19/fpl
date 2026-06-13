@@ -7,6 +7,16 @@ let playbackSpeed = 800; // ms per gameweek
 let selectedManager = null;
 let activeTab = 'bar-race'; // 'bar-race' or 'bump-chart'
 let managerFormations = {};
+let managerCumulativeCapPoints = {};
+let finalGW = 38;
+let scatterRanges = {
+  xMin: Infinity,
+  xMax: -Infinity,
+  yMin: Infinity,
+  yMax: -Infinity,
+  sizeMin: Infinity,
+  sizeMax: -Infinity
+};
 
 // Constants for SVG Bump Chart
 const SVG_WIDTH = 1000;
@@ -18,6 +28,12 @@ const TOTAL_GWS = 38;
 const TOTAL_RANKS = 13;
 const STEP_X = BUMP_INNER_WIDTH / (TOTAL_GWS - 1);
 const STEP_Y = BUMP_INNER_HEIGHT / (TOTAL_RANKS - 1);
+
+// Constants for SVG Scatter Plot
+const SCATTER_MARGIN = { top: 50, right: 60, bottom: 60, left: 70 };
+const SCATTER_INNER_WIDTH = SVG_WIDTH - SCATTER_MARGIN.left - SCATTER_MARGIN.right;
+const SCATTER_INNER_HEIGHT = SVG_HEIGHT - SCATTER_MARGIN.top - SCATTER_MARGIN.bottom;
+
 
 // DOM Elements
 const elBtnPlayPause = document.getElementById('btn-play-pause');
@@ -32,9 +48,11 @@ const elBtnReset = document.getElementById('btn-reset');
 const elTabBarRace = document.getElementById('tab-bar-race');
 const elTabBumpChart = document.getElementById('tab-bump-chart');
 const elTabGlobalRank = document.getElementById('tab-global-rank');
+const elTabScatterPlot = document.getElementById('tab-scatter-plot');
 const elPanelBarRace = document.getElementById('panel-bar-race');
 const elPanelBumpChart = document.getElementById('panel-bump-chart');
 const elPanelGlobalRank = document.getElementById('panel-global-rank');
+const elPanelScatterPlot = document.getElementById('panel-scatter-plot');
 
 // Bar Race Container
 const elBarRaceContainer = document.getElementById('bar-race-container');
@@ -44,6 +62,12 @@ const elBumpSvg = document.getElementById('bump-chart-svg');
 const elBumpLegend = document.getElementById('bump-legend');
 const elBumpTracker = document.getElementById('bump-tracker');
 const elBumpTooltip = document.getElementById('bump-tooltip');
+
+// Scatter Chart Elements
+const elScatterSvg = document.getElementById('scatter-plot-svg');
+const elScatterLegend = document.getElementById('scatter-legend');
+const elScatterTooltip = document.getElementById('scatter-tooltip');
+
 
 // Global Rank Chart Elements
 const elGlobalSvg = document.getElementById('global-rank-svg');
@@ -137,6 +161,7 @@ function setupEventListeners() {
   elTabBarRace.addEventListener('click', () => switchTab('bar-race'));
   elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
   elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
+  elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
 }
 
 function initDashboard() {
@@ -148,6 +173,9 @@ function initDashboard() {
   // Calculate historical MVP stats
   calculateSeasonStats();
   
+  const availableGWs = Object.keys(appData.gameweeks).map(Number);
+  finalGW = Math.max(...availableGWs);
+  
   // Create Bars in HTML for Bar Chart Race
   createBarRaceElements();
   
@@ -156,6 +184,12 @@ function initDashboard() {
   
   // Render Global Rank Chart
   renderGlobalRankChart();
+  
+  // Pre-calculate ranges and cumulative captain points
+  calculateScatterRanges();
+  
+  // Render Scatter Plot Base (grid, axes, titles)
+  renderScatterPlotBase();
   
   // Update view
   updateDashboard();
@@ -167,10 +201,12 @@ function switchTab(tab) {
   elTabBarRace.classList.remove('active');
   elTabBumpChart.classList.remove('active');
   elTabGlobalRank.classList.remove('active');
+  elTabScatterPlot.classList.remove('active');
   
   elPanelBarRace.classList.remove('active');
   elPanelBumpChart.classList.remove('active');
   elPanelGlobalRank.classList.remove('active');
+  elPanelScatterPlot.classList.remove('active');
   
   if (tab === 'bar-race') {
     elTabBarRace.classList.add('active');
@@ -181,6 +217,9 @@ function switchTab(tab) {
   } else if (tab === 'global-rank') {
     elTabGlobalRank.classList.add('active');
     elPanelGlobalRank.classList.add('active');
+  } else if (tab === 'scatter-plot') {
+    elTabScatterPlot.classList.add('active');
+    elPanelScatterPlot.classList.add('active');
   }
 }
 
@@ -646,6 +685,9 @@ function selectManager(managerName) {
   
   // Highlight selected path in Bump Chart
   updateBumpChartHighlight();
+  
+  // Highlight selected bubble in Scatter Plot
+  updateScatterPlotHighlight();
 }
 
 function updateManagerCard() {
@@ -925,6 +967,9 @@ function updateDashboard() {
   // 5. Update selected manager card & lineup
   updateManagerCard();
   updateLineupPitch();
+  
+  // 6. Update Scatter Plot
+  updateScatterPlot();
 }
 
 // ----------------------------------------------------
@@ -1278,3 +1323,402 @@ function updateGlobalRankChartHighlight() {
   const nodesToFront = elGlobalSvg.querySelectorAll(`.${selectedNodeClass}`);
   nodesToFront.forEach(n => elGlobalSvg.appendChild(n));
 }
+
+// ----------------------------------------------------
+// SCATTER PLOT IMPLEMENTATION
+// ----------------------------------------------------
+function getScatterX(avgGwPts) {
+  const diff = scatterRanges.xMax - scatterRanges.xMin;
+  const pct = diff > 0 ? (avgGwPts - scatterRanges.xMin) / diff : 0.5;
+  return SCATTER_MARGIN.left + pct * SCATTER_INNER_WIDTH;
+}
+
+function getScatterY(avgCapPts) {
+  const diff = scatterRanges.yMax - scatterRanges.yMin;
+  const pct = diff > 0 ? (avgCapPts - scatterRanges.yMin) / diff : 0.5;
+  return SCATTER_MARGIN.top + (1 - pct) * SCATTER_INNER_HEIGHT;
+}
+
+function getScatterRadius(overallPoints, currentStandings) {
+  const pointsList = currentStandings.map(s => s.overall_points);
+  const minPts = Math.min(...pointsList);
+  const maxPts = Math.max(...pointsList);
+  
+  if (maxPts === minPts) return 10;
+  const pct = (overallPoints - minPts) / (maxPts - minPts);
+  return 6 + pct * 10; // radius between 6px and 16px
+}
+
+function calculateScatterRanges() {
+  if (!appData) return;
+  const managers = Object.keys(appData.managers);
+  
+  managerCumulativeCapPoints = {};
+  scatterRanges = {
+    xMin: Infinity,
+    xMax: -Infinity,
+    yMin: Infinity,
+    yMax: -Infinity,
+    sizeMin: Infinity,
+    sizeMax: -Infinity
+  };
+  
+  // Calculate cumulative captain points for all weeks first (for detail cards and lookup)
+  managers.forEach(mgr => {
+    managerCumulativeCapPoints[mgr] = {};
+    let runningCapPts = 0;
+    
+    for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+      const standings = appData.gameweeks[gw.toString()]?.standings;
+      if (!standings) continue;
+      
+      const record = standings.find(s => s.manager === mgr);
+      if (record) {
+        runningCapPts += record.captain_points || 0;
+        managerCumulativeCapPoints[mgr][gw] = runningCapPts;
+      }
+    }
+  });
+  
+  // Define axis ranges based ONLY on finalGW's stats to zoom in on the final distribution!
+  const finalStandings = appData.gameweeks[finalGW.toString()]?.standings;
+  if (finalStandings) {
+    managers.forEach(mgr => {
+      const record = finalStandings.find(s => s.manager === mgr);
+      if (record) {
+        const avgGwPts = record.overall_points / finalGW;
+        const cumCapPts = managerCumulativeCapPoints[mgr][finalGW] || 0;
+        const avgCapPts = cumCapPts / finalGW;
+        
+        if (avgGwPts < scatterRanges.xMin) scatterRanges.xMin = avgGwPts;
+        if (avgGwPts > scatterRanges.xMax) scatterRanges.xMax = avgGwPts;
+        
+        if (avgCapPts < scatterRanges.yMin) scatterRanges.yMin = avgCapPts;
+        if (avgCapPts > scatterRanges.yMax) scatterRanges.yMax = avgCapPts;
+        
+        if (record.overall_points < scatterRanges.sizeMin) scatterRanges.sizeMin = record.overall_points;
+        if (record.overall_points > scatterRanges.sizeMax) scatterRanges.sizeMax = record.overall_points;
+      }
+    });
+  }
+  
+  // Pad the ranges by 15% so bubbles don't sit on the margins
+  const xDiff = scatterRanges.xMax - scatterRanges.xMin || 10;
+  scatterRanges.xMin = Math.max(0, scatterRanges.xMin - xDiff * 0.15);
+  scatterRanges.xMax = scatterRanges.xMax + xDiff * 0.15;
+  
+  const yDiff = scatterRanges.yMax - scatterRanges.yMin || 5;
+  scatterRanges.yMin = Math.max(0, scatterRanges.yMin - yDiff * 0.15);
+  scatterRanges.yMax = scatterRanges.yMax + yDiff * 0.15;
+}
+
+function renderScatterPlotBase() {
+  if (!appData) return;
+  elScatterSvg.innerHTML = '';
+  
+  // 1. Draw SVG Background Grid Lines & Ticks
+  const xTicksCount = 6;
+  for (let i = 0; i < xTicksCount; i++) {
+    const pct = i / (xTicksCount - 1);
+    const val = scatterRanges.xMin + pct * (scatterRanges.xMax - scatterRanges.xMin);
+    const x = SCATTER_MARGIN.left + pct * SCATTER_INNER_WIDTH;
+    
+    // Grid line
+    const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    gridLine.setAttribute("x1", x);
+    gridLine.setAttribute("y1", SCATTER_MARGIN.top);
+    gridLine.setAttribute("x2", x);
+    gridLine.setAttribute("y2", SVG_HEIGHT - SCATTER_MARGIN.bottom);
+    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke-width", "1");
+    elScatterSvg.appendChild(gridLine);
+    
+    // Tick text
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", x);
+    text.setAttribute("y", SVG_HEIGHT - SCATTER_MARGIN.bottom + 18);
+    text.setAttribute("fill", "#94a3b8");
+    text.setAttribute("font-size", "10px");
+    text.setAttribute("font-family", "Space Grotesk");
+    text.setAttribute("text-anchor", "middle");
+    text.textContent = val.toFixed(1);
+    elScatterSvg.appendChild(text);
+  }
+  
+  const yTicksCount = 6;
+  for (let i = 0; i < yTicksCount; i++) {
+    const pct = i / (yTicksCount - 1);
+    const val = scatterRanges.yMin + pct * (scatterRanges.yMax - scatterRanges.yMin);
+    const y = SCATTER_MARGIN.top + (1 - pct) * SCATTER_INNER_HEIGHT;
+    
+    // Grid line
+    const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    gridLine.setAttribute("x1", SCATTER_MARGIN.left);
+    gridLine.setAttribute("y1", y);
+    gridLine.setAttribute("x2", SVG_WIDTH - SCATTER_MARGIN.right);
+    gridLine.setAttribute("y2", y);
+    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke-width", "1");
+    elScatterSvg.appendChild(gridLine);
+    
+    // Tick text
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", SCATTER_MARGIN.left - 12);
+    text.setAttribute("y", y + 4);
+    text.setAttribute("fill", "#94a3b8");
+    text.setAttribute("font-size", "10px");
+    text.setAttribute("font-family", "Space Grotesk");
+    text.setAttribute("text-anchor", "end");
+    text.textContent = val.toFixed(1);
+    elScatterSvg.appendChild(text);
+  }
+  
+  // Draw Axes
+  const xAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  xAxis.setAttribute("x1", SCATTER_MARGIN.left);
+  xAxis.setAttribute("y1", SVG_HEIGHT - SCATTER_MARGIN.bottom);
+  xAxis.setAttribute("x2", SVG_WIDTH - SCATTER_MARGIN.right);
+  xAxis.setAttribute("y2", SVG_HEIGHT - SCATTER_MARGIN.bottom);
+  xAxis.setAttribute("stroke", "rgba(255,255,255,0.1)");
+  xAxis.setAttribute("stroke-width", "1");
+  elScatterSvg.appendChild(xAxis);
+
+  const yAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  yAxis.setAttribute("x1", SCATTER_MARGIN.left);
+  yAxis.setAttribute("y1", SCATTER_MARGIN.top);
+  yAxis.setAttribute("x2", SCATTER_MARGIN.left);
+  yAxis.setAttribute("y2", SVG_HEIGHT - SCATTER_MARGIN.bottom);
+  yAxis.setAttribute("stroke", "rgba(255,255,255,0.1)");
+  yAxis.setAttribute("stroke-width", "1");
+  elScatterSvg.appendChild(yAxis);
+  
+  // Axis Titles
+  const xAxisTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  xAxisTitle.setAttribute("x", SCATTER_MARGIN.left + SCATTER_INNER_WIDTH / 2);
+  xAxisTitle.setAttribute("y", SVG_HEIGHT - 12);
+  xAxisTitle.setAttribute("text-anchor", "middle");
+  xAxisTitle.setAttribute("fill", "#cbd5e1");
+  xAxisTitle.setAttribute("font-size", "12px");
+  xAxisTitle.setAttribute("font-weight", "600");
+  xAxisTitle.setAttribute("font-family", "Space Grotesk");
+  xAxisTitle.textContent = "Average Gameweek Points (Net)";
+  elScatterSvg.appendChild(xAxisTitle);
+
+  const yAxisTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  yAxisTitle.setAttribute("transform", `translate(20, ${SCATTER_MARGIN.top + SCATTER_INNER_HEIGHT / 2}) rotate(-90)`);
+  yAxisTitle.setAttribute("text-anchor", "middle");
+  yAxisTitle.setAttribute("fill", "#cbd5e1");
+  yAxisTitle.setAttribute("font-size", "12px");
+  yAxisTitle.setAttribute("font-weight", "600");
+  yAxisTitle.setAttribute("font-family", "Space Grotesk");
+  yAxisTitle.textContent = "Average Captain Points";
+  elScatterSvg.appendChild(yAxisTitle);
+  
+  // Bubbles Group
+  const bubblesGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  bubblesGroup.id = "scatter-bubbles-group";
+  elScatterSvg.appendChild(bubblesGroup);
+}
+
+function updateScatterPlot() {
+  if (!appData) return;
+  
+  const bubblesGroup = document.getElementById('scatter-bubbles-group');
+  if (!bubblesGroup) return;
+  bubblesGroup.innerHTML = '';
+  
+  const standings = appData.gameweeks[finalGW.toString()]?.standings;
+  if (!standings) return;
+  
+  const managers = Object.keys(appData.managers);
+  
+  managers.forEach(managerName => {
+    const record = standings.find(s => s.manager === managerName);
+    if (!record) return;
+    
+    const mgrMeta = appData.managers[managerName];
+    const mgrColor = mgrMeta.color;
+    
+    const avgGwPts = record.overall_points / finalGW;
+    const cumCapPts = managerCumulativeCapPoints[managerName]?.[finalGW] || 0;
+    const avgCapPts = cumCapPts / finalGW;
+    
+    const x = getScatterX(avgGwPts);
+    const y = getScatterY(avgCapPts);
+    const r = getScatterRadius(record.overall_points, standings);
+    
+    const bubbleG = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    bubbleG.setAttribute("class", "scatter-bubble-group");
+    bubbleG.setAttribute("data-manager", managerName);
+    bubbleG.id = `scatter-bubble-${managerName.replace(/\s+/g, '_')}`;
+    
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", x);
+    circle.setAttribute("cy", y);
+    circle.setAttribute("r", r);
+    circle.setAttribute("fill", mgrColor);
+    circle.setAttribute("fill-opacity", "0.7");
+    circle.setAttribute("stroke", mgrColor);
+    circle.setAttribute("stroke-width", "1.5");
+    
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", x + r + 5);
+    label.setAttribute("y", y + 3.5);
+    label.setAttribute("text-anchor", "start");
+    label.textContent = managerName;
+    
+    bubbleG.appendChild(circle);
+    bubbleG.appendChild(label);
+    
+    // Interactions
+    bubbleG.addEventListener('click', () => selectManager(managerName));
+    bubbleG.addEventListener('mouseover', (e) => {
+      hoverScatterBubble(managerName, true);
+      showScatterTooltip(e, managerName, record, avgCapPts);
+    });
+    bubbleG.addEventListener('mouseout', () => {
+      hoverScatterBubble(managerName, false);
+      hideScatterTooltip();
+    });
+    
+    bubblesGroup.appendChild(bubbleG);
+  });
+  
+  renderScatterLegend();
+  updateScatterPlotHighlight();
+}
+
+function renderScatterLegend() {
+  if (!elScatterLegend) return;
+  elScatterLegend.innerHTML = '';
+  
+  const managers = Object.keys(appData.managers);
+  managers.forEach(managerName => {
+    const mgrColor = appData.managers[managerName].color;
+    
+    const legendItem = document.createElement('div');
+    legendItem.className = 'legend-item';
+    legendItem.id = `legend-scatter-${managerName.replace(/\s+/g, '_')}`;
+    legendItem.innerHTML = `
+      <span class="legend-color" style="background: ${mgrColor}"></span>
+      <span>${managerName}</span>
+    `;
+    legendItem.addEventListener('click', () => selectManager(managerName));
+    legendItem.addEventListener('mouseover', () => hoverScatterBubble(managerName, true));
+    legendItem.addEventListener('mouseout', () => hoverScatterBubble(managerName, false));
+    elScatterLegend.appendChild(legendItem);
+  });
+}
+
+function hoverScatterBubble(managerName, active) {
+  const allGroups = document.querySelectorAll('.scatter-bubble-group');
+  const targetGroupId = `scatter-bubble-${managerName.replace(/\s+/g, '_')}`;
+  
+  if (active) {
+    allGroups.forEach(g => {
+      const circle = g.querySelector('circle');
+      if (g.id === targetGroupId) {
+        g.style.opacity = "1";
+        if (circle) {
+          circle.setAttribute("stroke-width", "4");
+          circle.setAttribute("fill-opacity", "0.95");
+          circle.setAttribute("stroke", "#ffffff");
+        }
+        // Bring to front
+        g.parentNode.appendChild(g);
+      } else {
+        g.style.opacity = "0.75";
+        if (circle) {
+          circle.setAttribute("fill-opacity", "0.55");
+        }
+      }
+    });
+  } else {
+    allGroups.forEach(g => {
+      const isSelected = g.getAttribute('data-manager') === selectedManager;
+      const mgrColor = appData.managers[g.getAttribute('data-manager')].color;
+      g.style.opacity = "1";
+      const circle = g.querySelector('circle');
+      if (circle) {
+        circle.setAttribute("stroke-width", isSelected ? "4" : "1.5");
+        circle.setAttribute("fill-opacity", isSelected ? "0.9" : "0.7");
+        circle.setAttribute("stroke", isSelected ? "#ffffff" : mgrColor);
+      }
+    });
+  }
+}
+
+function updateScatterPlotHighlight() {
+  const allGroups = document.querySelectorAll('.scatter-bubble-group');
+  if (!allGroups.length) return;
+  
+  if (!selectedManager) {
+    allGroups.forEach(g => {
+      g.style.opacity = "1";
+      const mgrColor = appData.managers[g.getAttribute('data-manager')].color;
+      const circle = g.querySelector('circle');
+      if (circle) {
+        circle.setAttribute("stroke-width", "1.5");
+        circle.setAttribute("fill-opacity", "0.7");
+        circle.setAttribute("stroke", mgrColor);
+      }
+    });
+    return;
+  }
+  
+  const targetGroupId = `scatter-bubble-${selectedManager.replace(/\s+/g, '_')}`;
+  allGroups.forEach(g => {
+    const isSelected = g.id === targetGroupId;
+    const mgrColor = appData.managers[g.getAttribute('data-manager')].color;
+    g.style.opacity = "1";
+    const circle = g.querySelector('circle');
+    if (circle) {
+      circle.setAttribute("stroke-width", isSelected ? "4" : "1.5");
+      circle.setAttribute("fill-opacity", isSelected ? "0.9" : "0.7");
+      circle.setAttribute("stroke", isSelected ? "#ffffff" : mgrColor);
+    }
+    if (isSelected) {
+      // Bring to front
+      g.parentNode.appendChild(g);
+    }
+  });
+}
+
+function showScatterTooltip(event, managerName, record, avgCapPts) {
+  if (!elScatterTooltip) return;
+  
+  const mgrMeta = appData.managers[managerName];
+  const avgGwPts = record.overall_points / finalGW;
+  const r = getScatterRadius(record.overall_points, appData.gameweeks[finalGW.toString()].standings);
+  
+  elScatterTooltip.innerHTML = `
+    <span class="tooltip-title" style="color: ${mgrMeta.color}">${managerName}</span>
+    <span style="font-size: 0.75rem; color: var(--text-secondary)">${mgrMeta.team}</span>
+    <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 6px 0;">
+    <span>Total Points: <strong>${record.overall_points} pts</strong></span>
+    <span>Average GW Points: <strong>${avgGwPts.toFixed(2)}</strong></span>
+    <span>Average Captain Points: <strong>${avgCapPts.toFixed(2)}</strong></span>
+    <span>GW Rank in League: <strong>#${record.rank}</strong></span>
+  `;
+  
+  elScatterTooltip.classList.remove('hidden');
+  
+  const x = getScatterX(avgGwPts);
+  const y = getScatterY(avgCapPts);
+  
+  const tooltipWidth = elScatterTooltip.offsetWidth;
+  const tooltipHeight = elScatterTooltip.offsetHeight;
+  
+  const xPct = (x / SVG_WIDTH) * 100;
+  const yPct = (y / SVG_HEIGHT) * 100;
+  
+  elScatterTooltip.style.left = `calc(${xPct}% - ${tooltipWidth / 2}px)`;
+  elScatterTooltip.style.top = `calc(${yPct}% - ${tooltipHeight + r + 15}px)`;
+}
+
+function hideScatterTooltip() {
+  if (elScatterTooltip) {
+    elScatterTooltip.classList.add('hidden');
+  }
+}
+

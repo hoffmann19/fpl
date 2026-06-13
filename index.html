@@ -81,6 +81,9 @@
             <button id="tab-global-rank" class="tab-btn">
               <i class="fa-solid fa-globe"></i> Global Rank
             </button>
+            <button id="tab-scatter-plot" class="tab-btn">
+              <i class="fa-solid fa-circle-nodes"></i> Manager Comparison
+            </button>
           </div>
           <div class="viz-actions">
             <button id="btn-reset" class="btn-secondary" title="Reset to GW 1">
@@ -123,6 +126,19 @@
               </svg>
               <div id="global-rank-tracker" class="bump-tracker-line"></div>
               <div id="global-rank-tooltip" class="chart-tooltip hidden"></div>
+            </div>
+          </div>
+
+          <!-- Scatter Plot Panel -->
+          <div id="panel-scatter-plot" class="panel">
+            <div class="scatter-plot-legend" id="scatter-legend">
+              <!-- Legend items added dynamically -->
+            </div>
+            <div class="scatter-plot-svg-wrapper">
+              <svg id="scatter-plot-svg" width="100%" height="100%" viewBox="0 0 1000 500">
+                <!-- Scatter SVG elements injected here -->
+              </svg>
+              <div id="scatter-tooltip" class="chart-tooltip hidden"></div>
             </div>
           </div>
         </div>
