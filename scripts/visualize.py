@@ -11,41 +11,25 @@ import time
 PORT = 8000
 
 def get_color_palette():
-    # Vibrant colors for our 13 managers
-    colors = [
-        "#ff4757", # coral red
-        "#2ed573", # mint green
-        "#1e90ff", # bright blue
-        "#ffa502", # bright orange
-        "#ff47ff", # hot pink/magenta
-        "#3742fa", # deep royal blue
-        "#20bf6b", # emerald green
-        "#00d2d3", # cyan/teal
-        "#a55eea", # violet/purple
-        "#ff7f50", # coral
-        "#eccc68", # gold/yellow
-        "#ff9f1a", # amber
-        "#10ac84", # mountain meadow green
+    return [
+        "#ff4757", "#2ed573", "#1e90ff", "#ffa502", "#ff47ff",
+        "#3742fa", "#20bf6b", "#00d2d3", "#a55eea", "#ff7f50",
+        "#eccc68", "#ff9f1a", "#10ac84"
     ]
-    return colors
 
 def compile_data():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    standings_csv = os.path.join(script_dir, "fpl_data/master_standings.csv")
-    lineups_csv = os.path.join(script_dir, "fpl_data/master_lineups.csv")
-    output_json = os.path.join(script_dir, "visualizer_data.json")
+    project_dir = os.path.dirname(script_dir) if os.path.basename(script_dir) == "scripts" else script_dir
+    fpl_data_dir = os.path.join(project_dir, "fpl_data")
+    
+    standings_csv = os.path.join(fpl_data_dir, "master_standings.csv")
+    lineups_csv = os.path.join(fpl_data_dir, "master_lineups.csv")
+    output_json = os.path.join(project_dir, "visualizer_data.json")
 
     print("Processing FPL data CSVs...")
-
-    if not os.path.exists(standings_csv):
-        print(f"Error: {standings_csv} not found.")
+    if not os.path.exists(standings_csv) or not os.path.exists(lineups_csv):
         return False
 
-    if not os.path.exists(lineups_csv):
-        print(f"Error: {lineups_csv} not found.")
-        return False
-
-    # ── 1. Parse Standings ──────────────────────────────────────────────────────
     gameweeks = {}
     managers_meta = {}
     manager_list = set()
@@ -77,23 +61,18 @@ def compile_data():
                 "transfers": int(row['Transfers Made']),
                 "team_value": float(row.get('Team Value')) if row.get('Team Value') else 0.0,
                 "bank": float(row.get('Bank')) if row.get('Bank') else 0.0,
-                # Filled in after lineup processing:
                 "captain": "",
                 "captain_points": 0,
                 "transfers_in": [],
                 "transfers_out": []
             })
 
-    # Assign colors
     sorted_managers = sorted(list(manager_list))
     palette = get_color_palette()
     for idx, mgr in enumerate(sorted_managers):
         managers_meta[mgr]["color"] = palette[idx % len(palette)]
 
-    # ── 2. Parse Lineups ────────────────────────────────────────────────────────
-    # squads[manager][gw] = set of ALL player names in the squad (all 15)
     squads = {}
-
     with open(lineups_csv, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -119,14 +98,12 @@ def compile_data():
                 "sub_out": row['Subbed Out'].strip().lower() == 'true'
             })
 
-            # Track squad for transfer diffing
             if manager not in squads:
                 squads[manager] = {}
             if gw not in squads[manager]:
                 squads[manager][gw] = set()
             squads[manager][gw].add(player_name)
 
-    # ── 3. Back-fill captain & transfer diffs into standings ───────────────────
     sorted_gws = sorted(gameweeks.keys())
 
     for gw in sorted_gws:
@@ -135,23 +112,19 @@ def compile_data():
             manager = standing["manager"]
             lineup = gameweeks[gw]["lineups"].get(manager, [])
 
-            # Captain name and points
             captain_rec = next((p for p in lineup if p["captain"]), None)
             standing["captain"] = captain_rec["name"] if captain_rec else ""
             standing["captain_points"] = captain_rec["points"] if captain_rec else 0
 
-            # Transfer diff vs previous GW
             if manager in squads and prev_gw in squads.get(manager, {}):
                 curr_squad = squads[manager].get(gw, set())
                 prev_squad = squads[manager].get(prev_gw, set())
                 standing["transfers_in"] = sorted(list(curr_squad - prev_squad))
                 standing["transfers_out"] = sorted(list(prev_squad - curr_squad))
             else:
-                # GW1 – no previous squad to diff
                 standing["transfers_in"] = []
                 standing["transfers_out"] = []
 
-    # ── 4. Write JSON ────────────────────────────────────────────────────────────
     json_data = {
         "managers": managers_meta,
         "gameweeks": {str(k): v for k, v in sorted(gameweeks.items())}
@@ -163,9 +136,7 @@ def compile_data():
     print(f"Data compilation successful! Saved to {output_json}")
     return True
 
-
 class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
-    # Set headers to avoid caching during development
     def end_headers(self):
         self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
         self.send_header('Pragma', 'no-cache')
@@ -173,31 +144,27 @@ class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         super().end_headers()
 
     def log_message(self, format, *args):
-        pass  # Suppress per-request log spam
-
+        pass
 
 def start_server():
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_dir = os.path.dirname(script_dir) if os.path.basename(script_dir) == "scripts" else script_dir
+    os.chdir(project_dir)
     handler = CustomHTTPRequestHandler
 
-    # Allow port reuse to prevent address-already-in-use errors
     socketserver.TCPServer.allow_reuse_address = True
-
     with socketserver.TCPServer(("", PORT), handler) as httpd:
         print(f"Server successfully started at http://localhost:{PORT}/")
 
         def open_browser():
             time.sleep(0.8)
-            print("Opening browser...")
             webbrowser.open(f"http://localhost:{PORT}/")
 
         threading.Thread(target=open_browser, daemon=True).start()
-
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
-            print("\nShutting down server. Goodbye!")
-
+            print("\nShutting down server.")
 
 if __name__ == "__main__":
     if compile_data():

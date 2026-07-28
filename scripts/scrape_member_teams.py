@@ -20,6 +20,12 @@ FPL_ENTRY_URL = "https://fantasy.premierleague.com/api/entry/{entry_id}/"
 FPL_ENTRY_HISTORY_URL = "https://fantasy.premierleague.com/api/entry/{entry_id}/history/"
 FPL_ENTRY_PICKS_URL = "https://fantasy.premierleague.com/api/entry/{entry_id}/event/{gw}/picks/"
 
+def get_project_root():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    if os.path.basename(script_dir) == "scripts":
+        return os.path.dirname(script_dir)
+    return script_dir
+
 def fetch_json(url):
     req = urllib.request.Request(
         url,
@@ -29,7 +35,6 @@ def fetch_json(url):
         with urllib.request.urlopen(req, timeout=15) as response:
             return json.loads(response.read().decode("utf-8"))
     except Exception as e:
-        # Ignore 404s silently for future/unplayed gameweeks
         if hasattr(e, "code") and e.code == 404:
             return None
         print(f"[!] Error fetching {url}: {e}", file=sys.stderr)
@@ -78,7 +83,6 @@ def get_league_member_ids(league_id):
 def scrape_member_team_data(entry_id, player_lookup):
     print(f"[*] Scraping entry {entry_id} profile, history, and squad picks...")
     
-    # 1. Main Entry Details
     entry_info = fetch_json(FPL_ENTRY_URL.format(entry_id=entry_id))
     profile = {}
     if entry_info:
@@ -100,7 +104,6 @@ def scrape_member_team_data(entry_id, player_lookup):
             "last_deadline_total_transfers": entry_info.get("last_deadline_total_transfers", 0),
         }
 
-    # 2. Historical Seasons Data
     history_info = fetch_json(FPL_ENTRY_HISTORY_URL.format(entry_id=entry_id))
     past_seasons = []
     gw_summaries = []
@@ -139,23 +142,19 @@ def scrape_member_team_data(entry_id, player_lookup):
                 "points_on_bench": g.get("points_on_bench", 0)
             })
 
-    # 3. Squad Picks (Lineup / Captains per Gameweek)
     squad_picks = []
     consecutive_missing = 0
-    # Check gameweeks 1 to 38
     for gw in range(1, 39):
         picks_info = fetch_json(FPL_ENTRY_PICKS_URL.format(entry_id=entry_id, gw=gw))
         if not picks_info:
             consecutive_missing += 1
             if consecutive_missing >= 2:
-                # Stop checking future gameweeks
                 break
             continue
         
         consecutive_missing = 0
         active_chip = picks_info.get("active_chip")
         picks = picks_info.get("picks", [])
-
         
         for p in picks:
             element_id = p.get("element")
@@ -164,7 +163,7 @@ def scrape_member_team_data(entry_id, player_lookup):
             squad_picks.append({
                 "entry_id": entry_id,
                 "event": gw,
-                "position_number": p.get("position"), # 1-11 starting, 12-15 bench
+                "position_number": p.get("position"),
                 "is_starting": 1 if p.get("position", 15) <= 11 else 0,
                 "element_id": element_id,
                 "player_web_name": player_data.get("web_name", f"Player #{element_id}"),
@@ -184,7 +183,6 @@ def save_sqlite_member_data(profiles, past_seasons, gw_summaries, chips_played, 
     conn = sqlite3.connect(db_filepath)
     cursor = conn.cursor()
 
-    # 1. Profiles Table
     if profiles:
         sample = profiles[0]
         col_defs = []
@@ -199,7 +197,6 @@ def save_sqlite_member_data(profiles, past_seasons, gw_summaries, chips_played, 
         placeholders = ", ".join(["?"] * len(sample))
         cursor.executemany(f"INSERT INTO member_profiles ({cols}) VALUES ({placeholders})", [tuple(p.values()) for p in profiles])
 
-    # 2. Past Seasons History Table
     if past_seasons:
         sample = past_seasons[0]
         col_defs = []
@@ -213,7 +210,6 @@ def save_sqlite_member_data(profiles, past_seasons, gw_summaries, chips_played, 
         placeholders = ", ".join(["?"] * len(sample))
         cursor.executemany(f"INSERT INTO member_past_history ({cols}) VALUES ({placeholders})", [tuple(p.values()) for p in past_seasons])
 
-    # 3. Squad Picks Table
     if squad_picks:
         sample = squad_picks[0]
         col_defs = []
@@ -246,7 +242,6 @@ def main():
     parser.add_argument("--league-id", type=int, default=352792, help="FPL Mini-League ID (default: 352792)")
     args = parser.parse_args()
 
-    # Load bootstrap player data to resolve player web names & teams
     bootstrap_data = fetch_json(FPL_BOOTSTRAP_URL)
     player_lookup = {}
     if bootstrap_data:
@@ -268,8 +263,6 @@ def main():
         print(f"[!] No members found for league ID {args.league_id}", file=sys.stderr)
         sys.exit(1)
 
-    print(f"\n[+] Found {len(members)} member(s) in league '{league_name}'")
-
     all_profiles = []
     all_past_seasons = []
     all_gw_summaries = []
@@ -285,35 +278,17 @@ def main():
         if chips: all_chips_played.extend(chips)
         if picks: all_squad_picks.extend(picks)
 
-    # Save to SQLite
-    save_sqlite_member_data(all_profiles, all_past_seasons, all_gw_summaries, all_chips_played, all_squad_picks, "fpl_2026_27.db")
-    save_sqlite_member_data(all_profiles, all_past_seasons, all_gw_summaries, all_chips_played, all_squad_picks, "fpl_data/fpl_2026_27.db")
+    root_dir = get_project_root()
+    data_dir = os.path.join(root_dir, "fpl_data")
+    os.makedirs(data_dir, exist_ok=True)
 
-    # Save to CSV
-    os.makedirs("fpl_data", exist_ok=True)
-    save_csv(all_profiles, f"fpl_data/minileague_{args.league_id}_member_profiles.csv")
-    save_csv(all_profiles, f"minileague_{args.league_id}_member_profiles.csv")
+    db_file = os.path.join(data_dir, "fpl_2026_27.db")
+    save_sqlite_member_data(all_profiles, all_past_seasons, all_gw_summaries, all_chips_played, all_squad_picks, db_file)
 
-    save_csv(all_past_seasons, f"fpl_data/minileague_{args.league_id}_member_past_history.csv")
-    save_csv(all_past_seasons, f"minileague_{args.league_id}_member_past_history.csv")
-
+    save_csv(all_profiles, os.path.join(data_dir, f"minileague_{args.league_id}_member_profiles.csv"))
+    save_csv(all_past_seasons, os.path.join(data_dir, f"minileague_{args.league_id}_member_past_history.csv"))
     if all_squad_picks:
-        save_csv(all_squad_picks, f"fpl_data/minileague_{args.league_id}_squad_picks.csv")
-
-    print("\n" + "="*50)
-    print(f" MEMBER TEAM SCRAPE COMPLETED | League: {league_name}")
-    print("="*50)
-    for p in all_profiles:
-        print(f"\n👤 Manager: {p['manager_name']} | Team: {p['team_name']}")
-        print(f"   - Region: {p['fpl_region']} | Joined: {p['joined_time']}")
-
-    if all_past_seasons:
-        print(f"\n📜 Past History Highlights:")
-        for past in all_past_seasons[-5:]: # show recent 5 seasons
-            print(f"   - Season {past['season_name']}: Total Points: {past['total_points']} | Rank: {past['rank']:,} (Top {past['rank_percentage']}%)")
-
-    if not all_squad_picks:
-        print("\nℹ️  Note on Squad Lineups: Pre-season squad picks are kept locked by the official FPL API until the Gameweek 1 deadline. Once Gameweek 1 starts, squad picks and weekly captain choices will be automatically populated here.")
+        save_csv(all_squad_picks, os.path.join(data_dir, f"minileague_{args.league_id}_squad_picks.csv"))
 
 if __name__ == "__main__":
     main()

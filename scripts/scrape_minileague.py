@@ -17,6 +17,12 @@ from datetime import datetime, timezone
 FPL_LEAGUE_URL = "https://fantasy.premierleague.com/api/leagues-classic/{league_id}/standings/"
 FPL_ENTRY_URL = "https://fantasy.premierleague.com/api/entry/{entry_id}/"
 
+def get_project_root():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    if os.path.basename(script_dir) == "scripts":
+        return os.path.dirname(script_dir)
+    return script_dir
+
 def fetch_json(url):
     req = urllib.request.Request(
         url,
@@ -47,12 +53,9 @@ def fetch_mini_league(league_id):
         new_entries = data.get("new_entries", {}).get("results", [])
         standings_entries = data.get("standings", {}).get("results", [])
 
-        # In pre-season, members appear under new_entries
-        # In-season, members appear under standings
         current_page_entries = standings_entries if standings_entries else new_entries
 
         for item in current_page_entries:
-            # Normalize fields between new_entries and standings
             first_name = item.get("player_first_name", "") or item.get("player_name", "").split(" ")[0]
             last_name = item.get("player_last_name", "") or " ".join(item.get("player_name", "").split(" ")[1:])
             manager_name = f"{first_name} {last_name}".strip()
@@ -121,7 +124,6 @@ def save_sqlite(league_info, members, db_filepath):
     conn = sqlite3.connect(db_filepath)
     cursor = conn.cursor()
 
-    # 1. League Overview Table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS mini_leagues (
             league_id INTEGER PRIMARY KEY,
@@ -143,25 +145,19 @@ def save_sqlite(league_info, members, db_filepath):
         now_iso
     ))
 
-    # 2. Members Table
     sample = members[0]
     col_defs = []
     for k, v in sample.items():
-        if isinstance(v, int):
-            col_defs.append(f"`{k}` INTEGER")
-        elif isinstance(v, float):
-            col_defs.append(f"`{k}` REAL")
-        else:
-            col_defs.append(f"`{k}` TEXT")
+        if isinstance(v, int): col_defs.append(f"`{k}` INTEGER")
+        elif isinstance(v, float): col_defs.append(f"`{k}` REAL")
+        else: col_defs.append(f"`{k}` TEXT")
             
     cursor.execute(f"DROP TABLE IF EXISTS minileague_members")
     cursor.execute(f"CREATE TABLE minileague_members ({', '.join(col_defs)}, PRIMARY KEY (`league_id`, `entry_id`))")
 
     cols = ", ".join([f"`{k}`" for k in sample.keys()])
     placeholders = ", ".join(["?"] * len(sample))
-    insert_sql = f"INSERT INTO minileague_members ({cols}) VALUES ({placeholders})"
-    rows = [tuple(m.values()) for m in members]
-    cursor.executemany(insert_sql, rows)
+    cursor.executemany(f"INSERT INTO minileague_members ({cols}) VALUES ({placeholders})", [tuple(m.values()) for m in members])
 
     conn.commit()
     conn.close()
@@ -180,25 +176,19 @@ def main():
         sys.exit(1)
 
     print(f"\n[+] League Found: '{league_info.get('name')}' (ID: {league_id})")
-    print(f"[+] Admin Entry ID: {league_info.get('admin_entry')}")
-
     enriched_members = enrich_member_details(members)
 
-    os.makedirs("fpl_data", exist_ok=True)
-    csv_file = f"fpl_data/minileague_{league_id}.csv"
-    root_csv_file = f"minileague_{league_id}.csv"
-
+    root_dir = get_project_root()
+    data_dir = os.path.join(root_dir, "fpl_data")
+    os.makedirs(data_dir, exist_ok=True)
+    
+    csv_file = os.path.join(data_dir, f"minileague_{league_id}.csv")
     save_csv(enriched_members, csv_file)
-    save_csv(enriched_members, root_csv_file)
-
-    save_sqlite(league_info, enriched_members, "fpl_2026_27.db")
-    save_sqlite(league_info, enriched_members, "fpl_data/fpl_2026_27.db")
+    save_sqlite(league_info, enriched_members, os.path.join(data_dir, "fpl_2026_27.db"))
 
     print("\n--- Mini-League Summary ---")
     print(f"League Name: {league_info.get('name')}")
     print(f"Total Members: {len(enriched_members)}")
-    for idx, m in enumerate(enriched_members, 1):
-        print(f"  {idx}. Team: {m['team_name']} | Manager: {m['manager_name']} (Entry ID: {m['entry_id']})")
 
 if __name__ == "__main__":
     main()
