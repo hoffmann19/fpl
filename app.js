@@ -286,8 +286,7 @@ function createBarRaceElements() {
     barRow.innerHTML = `
       <div class="bar-rank">#</div>
       <div class="bar-label">
-        <span class="bar-manager-name">${managerName}</span>
-        <span class="bar-team-name">${mgrInfo.team}</span>
+        <span class="bar-manager-name">${mgrInfo.team}</span>
       </div>
       <div class="bar-track">
         <div class="bar-fill" style="background: ${mgrInfo.color}; width: 0%;"></div>
@@ -513,9 +512,10 @@ function renderBumpChart() {
     const legendItem = document.createElement('div');
     legendItem.className = 'legend-item';
     legendItem.id = `legend-${managerName.replace(/\s+/g, '_')}`;
+    const mgrTeamName = appData.managers[managerName] ? appData.managers[managerName].team : managerName;
     legendItem.innerHTML = `
       <span class="legend-color" style="background: ${mgrColor}"></span>
-      <span>${managerName}</span>
+      <span>${mgrTeamName}</span>
     `;
     legendItem.addEventListener('click', () => selectManager(managerName));
     legendItem.addEventListener('mouseover', () => hoverPath(managerName, true));
@@ -572,8 +572,9 @@ function showBumpTooltip(event, managerName, dataPoint) {
   const x = getBumpX(dataPoint.gw);
   const y = getBumpY(dataPoint.rank);
   
+  const mgrTeamName = (appData && appData.managers && appData.managers[managerName]) ? appData.managers[managerName].team : managerName;
   elBumpTooltip.innerHTML = `
-    <span class="tooltip-title">${managerName}</span>
+    <span class="tooltip-title">${mgrTeamName}</span>
     <span><strong>Gameweek ${dataPoint.gw}</strong></span>
     <span>Rank in League: <strong>#${dataPoint.rank}</strong></span>
     <span>Total Points: <strong>${dataPoint.points} pts</strong></span>
@@ -707,8 +708,8 @@ function updateManagerCard() {
   document.getElementById('manager-info-card').style.setProperty('--accent', mgrMeta.color);
   
   // Text details
-  elManagerName.innerText = selectedManager;
-  elManagerTeam.innerText = mgrMeta.team;
+  elManagerName.innerText = mgrMeta.team;
+  elManagerTeam.innerText = `Leaderboard Rank #${mgrRecord.rank}`;
   elManagerRank.innerText = `#${mgrRecord.rank}`;
   elManagerRank.style.color = mgrMeta.color;
   elManagerRank.style.backgroundColor = `${mgrMeta.color}15`;
@@ -947,7 +948,7 @@ function updateDashboard() {
   const leaderRecord = standings.find(s => s.rank === 1);
   
   if (leaderRecord) {
-    elHeaderLeader.innerText = leaderRecord.manager;
+    elHeaderLeader.innerText = leaderRecord.team || leaderRecord.manager;
     elHeaderLeaderPts.innerText = `${leaderRecord.overall_points} pts`;
     
     // Dynamically color leader box
@@ -1202,9 +1203,10 @@ function renderGlobalRankChart() {
     const legendItem = document.createElement('div');
     legendItem.className = 'legend-item';
     legendItem.id = `legend-global-${managerName.replace(/\s+/g, '_')}`;
+    const mgrTeamName = appData.managers[managerName] ? appData.managers[managerName].team : managerName;
     legendItem.innerHTML = `
       <span class="legend-color" style="background: ${mgrColor}"></span>
-      <span>${managerName}</span>
+      <span>${mgrTeamName}</span>
     `;
     legendItem.addEventListener('click', () => selectManager(managerName));
     legendItem.addEventListener('mouseover', () => hoverGlobalPath(managerName, true));
@@ -1256,8 +1258,9 @@ function showGlobalTooltip(event, managerName, dataPoint) {
   const x = getBumpX(dataPoint.gw);
   const y = getGlobalRankY(dataPoint.overall_rank);
   
+  const mgrTeamName = (appData && appData.managers && appData.managers[managerName]) ? appData.managers[managerName].team : managerName;
   elGlobalTooltip.innerHTML = `
-    <span class="tooltip-title">${managerName}</span>
+    <span class="tooltip-title">${mgrTeamName}</span>
     <span><strong>Gameweek ${dataPoint.gw}</strong></span>
     <span>Global Rank: <strong>#${dataPoint.overall_rank.toLocaleString()}</strong></span>
     <span>Total Points: <strong>${dataPoint.points} pts</strong></span>
@@ -1599,9 +1602,10 @@ function renderScatterLegend() {
     const legendItem = document.createElement('div');
     legendItem.className = 'legend-item';
     legendItem.id = `legend-scatter-${managerName.replace(/\s+/g, '_')}`;
+    const mgrTeamName = appData.managers[managerName] ? appData.managers[managerName].team : managerName;
     legendItem.innerHTML = `
       <span class="legend-color" style="background: ${mgrColor}"></span>
-      <span>${managerName}</span>
+      <span>${mgrTeamName}</span>
     `;
     legendItem.addEventListener('click', () => selectManager(managerName));
     legendItem.addEventListener('mouseover', () => hoverScatterBubble(managerName, true));
@@ -1692,8 +1696,7 @@ function showScatterTooltip(event, managerName, record, avgCapPts) {
   const r = getScatterRadius(record.overall_points, appData.gameweeks[finalGW.toString()].standings);
   
   elScatterTooltip.innerHTML = `
-    <span class="tooltip-title" style="color: ${mgrMeta.color}">${managerName}</span>
-    <span style="font-size: 0.75rem; color: var(--text-secondary)">${mgrMeta.team}</span>
+    <span class="tooltip-title" style="color: ${mgrMeta.color}">${mgrMeta.team}</span>
     <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 6px 0;">
     <span>Total Points: <strong>${record.overall_points} pts</strong></span>
     <span>Average GW Points: <strong>${avgGwPts.toFixed(2)}</strong></span>
