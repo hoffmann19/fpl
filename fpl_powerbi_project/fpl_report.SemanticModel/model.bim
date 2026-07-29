@@ -1,0 +1,704 @@
+{
+  "compatibilityLevel": 1606,
+  "model": {
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"master_standings\",\"master_lineups\",\"fpl_players\",\"fpl_fixtures\",\"fpl_teams_ratings\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "1"
+      },
+      {
+        "name": "PBI_ProTooling",
+        "value": "[\"DevMode\",\"MCP-PBIModeling\"]"
+      }
+    ],
+    "culture": "en-US",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "relationships": [
+      {
+        "name": "Relationship_Standings_Lineups",
+        "fromColumn": "Manager_GW_Key",
+        "fromTable": "master_lineups",
+        "toColumn": "Manager_GW_Key",
+        "toTable": "master_standings"
+      },
+      {
+        "name": "Relationship_Lineups_Players",
+        "crossFilteringBehavior": "bothDirections",
+        "fromColumn": "Player_Team_Key",
+        "fromTable": "master_lineups",
+        "toColumn": "Player_Team_Key",
+        "toTable": "fpl_players"
+      },
+      {
+        "name": "Relationship_Fixtures_Home_Teams",
+        "fromColumn": "home_team",
+        "fromTable": "fpl_fixtures",
+        "toColumn": "name",
+        "toTable": "fpl_teams_ratings"
+      }
+    ],
+    "sourceQueryCulture": "en-US",
+    "tables": [
+      {
+        "name": "master_standings",
+        "columns": [
+          {
+            "name": "Gameweek",
+            "dataType": "int64",
+            "lineageTag": "8dd01954-2212-41ae-97d5-8ef4c7de4a97",
+            "sourceColumn": "Gameweek"
+          },
+          {
+            "name": "Rank",
+            "dataType": "int64",
+            "lineageTag": "967caaec-f026-4c01-bbe4-9cdac37fd77a",
+            "sourceColumn": "Rank"
+          },
+          {
+            "name": "Team Name",
+            "dataType": "string",
+            "lineageTag": "7df88b73-d9a2-4175-8619-a758f071c422",
+            "sourceColumn": "Team Name"
+          },
+          {
+            "name": "Manager Name",
+            "dataType": "string",
+            "lineageTag": "0623142f-5c64-44c6-87d3-d11e2377c110",
+            "sourceColumn": "Manager Name"
+          },
+          {
+            "name": "GW Points",
+            "dataType": "int64",
+            "lineageTag": "bb6629ac-5335-4755-81af-d5a09f91cbcc",
+            "sourceColumn": "GW Points"
+          },
+          {
+            "name": "GW Hits",
+            "dataType": "int64",
+            "lineageTag": "9058b188-6bd4-4f72-92bc-f2fc2072b144",
+            "sourceColumn": "GW Hits"
+          },
+          {
+            "name": "GW Net Points",
+            "dataType": "int64",
+            "lineageTag": "5ce5e729-95f0-4755-a258-d03477035a1e",
+            "sourceColumn": "GW Net Points"
+          },
+          {
+            "name": "Overall Points",
+            "dataType": "int64",
+            "lineageTag": "18b57607-3b51-4159-82b3-c566a75d8b34",
+            "sourceColumn": "Overall Points"
+          },
+          {
+            "name": "Overall Rank",
+            "dataType": "int64",
+            "lineageTag": "a49ff3b3-fe2b-4f19-8be3-c732a0b65a57",
+            "sourceColumn": "Overall Rank"
+          },
+          {
+            "name": "Chip Played",
+            "dataType": "string",
+            "lineageTag": "7d4ec3e7-1a19-4f60-bd98-f8fcf083c6f7",
+            "sourceColumn": "Chip Played"
+          },
+          {
+            "name": "Transfers Made",
+            "dataType": "int64",
+            "lineageTag": "4fda8848-a4a8-4631-9282-7fee6fe138af",
+            "sourceColumn": "Transfers Made"
+          },
+          {
+            "name": "Team Value",
+            "dataType": "double",
+            "lineageTag": "814a9570-ec7d-4dad-b987-afd1d72e39f3",
+            "sourceColumn": "Team Value"
+          },
+          {
+            "name": "Bank",
+            "dataType": "double",
+            "lineageTag": "cf9cbddf-b90a-4808-9c57-13df506c33c8",
+            "sourceColumn": "Bank"
+          },
+          {
+            "name": "Manager_GW_Key",
+            "dataType": "string",
+            "lineageTag": "e418f519-364b-4f65-bea1-d09cce4063ab",
+            "sourceColumn": "Manager_GW_Key"
+          }
+        ],
+        "lineageTag": "d645d3c1-8e11-4ec7-b170-efc30a9856c0",
+        "measures": [
+          {
+            "name": "Total Transfers Made",
+            "expression": "SUM(master_standings[Transfers Made])",
+            "formatString": "#,0",
+            "lineageTag": "ba1dd2e8-0966-49bb-acb5-3f46d32c6644"
+          },
+          {
+            "name": "Total Transfer Hits Cost",
+            "expression": "SUM(master_standings[GW Hits])",
+            "formatString": "#,0",
+            "lineageTag": "40598941-dfb4-499f-97a6-fa5801a6daf3"
+          },
+          {
+            "name": "Avg Overall Rank",
+            "expression": "AVERAGE(master_standings[Overall Rank])",
+            "formatString": "#,0",
+            "lineageTag": "acef26c0-a744-4e90-9614-37394893c8b1"
+          },
+          {
+            "name": "Avg Team Value",
+            "expression": "AVERAGE(master_standings[Team Value])",
+            "formatString": "$#,0.00",
+            "lineageTag": "c994047f-7c1f-4e13-a8f6-75876bd0ab8a"
+          },
+          {
+            "name": "Avg Overall Points",
+            "description": "Calculates the average overall points across gameweeks.",
+            "displayFolder": "Key Metrics",
+            "expression": "AVERAGE(master_standings[Overall Points])",
+            "formatString": "0.0",
+            "lineageTag": "c94775a1-995f-4f6a-9503-8f8f94aa6eab"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"C:/Users/Dan/projects/fpl/fpl_data/master_standings.csv\"),[Delimiter=\",\", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalarTypes=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\",{",
+                "        {\"Gameweek\", Int64.Type}, {\"Rank\", Int64.Type}, {\"Team Name\", type text}, {\"Manager Name\", type text},",
+                "        {\"GW Points\", Int64.Type}, {\"GW Hits\", Int64.Type}, {\"GW Net Points\", Int64.Type},",
+                "        {\"Overall Points\", Int64.Type}, {\"Overall Rank\", Int64.Type}, {\"Chip Played\", type text},",
+                "        {\"Transfers Made\", Int64.Type}, {\"Team Value\", type number}, {\"Bank\", type number}",
+                "    }),",
+                "    #\"Added Key\" = Table.AddColumn(#\"Changed Type\", \"Manager_GW_Key\", each [Manager Name] & \"-\" & Text.From([Gameweek]), type text)",
+                "in",
+                "    #\"Added Key\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "master_lineups",
+        "columns": [
+          {
+            "name": "Gameweek",
+            "dataType": "int64",
+            "lineageTag": "a5fdea4b-4e99-4e3a-af09-61b36a817d99",
+            "sourceColumn": "Gameweek"
+          },
+          {
+            "name": "Manager Name",
+            "dataType": "string",
+            "lineageTag": "a8c7d0b8-d994-4daa-ae0e-4a525b6a3211",
+            "sourceColumn": "Manager Name"
+          },
+          {
+            "name": "Team Name",
+            "dataType": "string",
+            "lineageTag": "97aec052-c83a-4caf-852b-6cab85bf3bcc",
+            "sourceColumn": "Team Name"
+          },
+          {
+            "name": "Player Name",
+            "dataType": "string",
+            "lineageTag": "26aff9f9-2446-455a-bb05-010cb246e89c",
+            "sourceColumn": "Player Name"
+          },
+          {
+            "name": "Club",
+            "dataType": "string",
+            "lineageTag": "962f6fac-f77d-4531-b594-c8dcbcb974f8",
+            "sourceColumn": "Club"
+          },
+          {
+            "name": "Position",
+            "dataType": "string",
+            "lineageTag": "608a4b43-01c7-4626-950a-b913905b4301",
+            "sourceColumn": "Position"
+          },
+          {
+            "name": "Points",
+            "dataType": "int64",
+            "lineageTag": "b79cb6b1-8736-4c7d-8133-0dc7c5b49b4f",
+            "sourceColumn": "Points"
+          },
+          {
+            "name": "Captain",
+            "dataType": "boolean",
+            "lineageTag": "dc48fd13-dca8-475f-bf3d-a079483b2d54",
+            "sourceColumn": "Captain"
+          },
+          {
+            "name": "Vice Captain",
+            "dataType": "boolean",
+            "lineageTag": "a4b8642a-d8a0-4eef-bf29-cd240bdff096",
+            "sourceColumn": "Vice Captain"
+          },
+          {
+            "name": "Is Starting",
+            "dataType": "boolean",
+            "lineageTag": "4572703d-57f0-4682-a653-0b50f0d736ea",
+            "sourceColumn": "Is Starting"
+          },
+          {
+            "name": "Subbed In",
+            "dataType": "boolean",
+            "lineageTag": "3f0c2ca0-6920-4505-9a08-44cbb9eccfda",
+            "sourceColumn": "Subbed In"
+          },
+          {
+            "name": "Subbed Out",
+            "dataType": "boolean",
+            "lineageTag": "f2c79b3a-086d-4a88-8d98-ce9cb419d7d0",
+            "sourceColumn": "Subbed Out"
+          },
+          {
+            "name": "Manager_GW_Key",
+            "dataType": "string",
+            "lineageTag": "cd383a8d-2547-4ce1-83b6-c22df8806694",
+            "sourceColumn": "Manager_GW_Key"
+          },
+          {
+            "name": "Player_Team_Key",
+            "dataType": "string",
+            "lineageTag": "7930b695-1bf2-44df-9f03-6ade25d79148",
+            "sourceColumn": "Player_Team_Key"
+          },
+          {
+            "name": "Full_Team_Name",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "c82a7270-32ca-4dd9-a8a1-6f946e70c1e1",
+            "sourceColumn": "Full_Team_Name",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "7e42644d-c054-420b-98ad-1799f24c7e97",
+        "measures": [
+          {
+            "name": "Starting Points Contributed",
+            "expression": "CALCULATE(SUM(master_lineups[Points]), master_lineups[Is Starting] = TRUE())",
+            "formatString": "#,0",
+            "lineageTag": "ffa3d7bf-750c-4e04-9911-c4c4e8d5a6eb"
+          },
+          {
+            "name": "Captain Points (Doubled)",
+            "expression": "CALCULATE(SUM(master_lineups[Points]) * 2, master_lineups[Captain] = TRUE())",
+            "formatString": "#,0",
+            "lineageTag": "71e3cf75-2df4-4b86-bf12-bc4bef923f52"
+          },
+          {
+            "name": "Captain Points Contribution",
+            "expression": "CALCULATE(SUM(master_lineups[Points]), master_lineups[Captain] = TRUE())",
+            "formatString": "#,0",
+            "lineageTag": "1def5d5f-607d-4035-b313-c04f7935c211"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"C:/Users/Dan/projects/fpl/fpl_data/master_lineups.csv\"),[Delimiter=\",\", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalarTypes=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\",{",
+                "        {\"Gameweek\", Int64.Type}, {\"Manager Name\", type text}, {\"Team Name\", type text}, {\"Player Name\", type text},",
+                "        {\"Club\", type text}, {\"Position\", type text}, {\"Points\", Int64.Type},",
+                "        {\"Captain\", type logical}, {\"Vice Captain\", type logical}, {\"Is Starting\", type logical},",
+                "        {\"Subbed In\", type logical}, {\"Subbed Out\", type logical}",
+                "    }),",
+                "    #\"Added Key\" = Table.AddColumn(#\"Changed Type\", \"Manager_GW_Key\", each [Manager Name] & \"-\" & Text.From([Gameweek]), type text),",
+                "    #\"Added Team Name\" = Table.AddColumn(#\"Added Key\", \"Full_Team_Name\", each",
+                "        if [Club] = \"ARS\" then \"Arsenal\"",
+                "        else if [Club] = \"AVL\" then \"Aston Villa\"",
+                "        else if [Club] = \"BOU\" then \"Bournemouth\"",
+                "        else if [Club] = \"BRE\" then \"Brentford\"",
+                "        else if [Club] = \"BHA\" then \"Brighton\"",
+                "        else if [Club] = \"CHE\" then \"Chelsea\"",
+                "        else if [Club] = \"COV\" then \"Coventry City\"",
+                "        else if [Club] = \"CRY\" then \"Crystal Palace\"",
+                "        else if [Club] = \"EVE\" then \"Everton\"",
+                "        else if [Club] = \"FUL\" then \"Fulham\"",
+                "        else if [Club] = \"HUL\" then \"Hull City\"",
+                "        else if [Club] = \"IPS\" then \"Ipswich Town\"",
+                "        else if [Club] = \"LEE\" then \"Leeds\"",
+                "        else if [Club] = \"LIV\" then \"Liverpool\"",
+                "        else if [Club] = \"MCI\" then \"Man City\"",
+                "        else if [Club] = \"MUN\" then \"Man Utd\"",
+                "        else if [Club] = \"NEW\" then \"Newcastle\"",
+                "        else if [Club] = \"NFO\" then \"Nott'm Forest\"",
+                "        else if [Club] = \"TOT\" then \"Spurs\"",
+                "        else if [Club] = \"SUN\" then \"Sunderland\"",
+                "        else if [Club] = \"BUR\" then \"Burnley\"",
+                "        else if [Club] = \"WHU\" then \"West Ham\"",
+                "        else if [Club] = \"WOL\" then \"Wolves\"",
+                "        else [Club], type text),",
+                "    #\"Added Player Key\" = Table.AddColumn(#\"Added Team Name\", \"Player_Team_Key\", each [Player Name] & \"-\" & [Full_Team_Name], type text)",
+                "in",
+                "    #\"Added Player Key\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "fpl_players",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "lineageTag": "696350ab-3330-4cb3-af02-dced7ae886c8",
+            "sourceColumn": "id"
+          },
+          {
+            "name": "web_name",
+            "dataType": "string",
+            "lineageTag": "79a93662-384d-48f7-b455-ac6b262e0734",
+            "sourceColumn": "web_name"
+          },
+          {
+            "name": "full_name",
+            "dataType": "string",
+            "lineageTag": "329ebbb4-bf9d-4f36-8fd4-affc195371e4",
+            "sourceColumn": "full_name"
+          },
+          {
+            "name": "team",
+            "dataType": "string",
+            "lineageTag": "889cc376-a4e6-4a72-a138-f2bd1b420b9c",
+            "sourceColumn": "team"
+          },
+          {
+            "name": "position",
+            "dataType": "string",
+            "lineageTag": "83e423f7-9139-48c0-9644-8d4f64754dca",
+            "sourceColumn": "position"
+          },
+          {
+            "name": "cost_26_27_m",
+            "dataType": "double",
+            "lineageTag": "5f3d3018-9b28-4c7d-939a-06a1850e6e25",
+            "sourceColumn": "cost_26_27_m"
+          },
+          {
+            "name": "cost_25_26_start_m",
+            "dataType": "double",
+            "lineageTag": "d50e20fb-d151-4ac3-9a00-fa527ce47821",
+            "sourceColumn": "cost_25_26_start_m"
+          },
+          {
+            "name": "cost_25_26_end_m",
+            "dataType": "double",
+            "lineageTag": "972b66fa-8312-471d-b76b-d7c61302bd13",
+            "sourceColumn": "cost_25_26_end_m"
+          },
+          {
+            "name": "cost_25_26_season_change_m",
+            "dataType": "double",
+            "lineageTag": "6a2f30d6-d0dd-46f8-94ae-e86977a114ea",
+            "sourceColumn": "cost_25_26_season_change_m"
+          },
+          {
+            "name": "price_change_yoy_m",
+            "dataType": "double",
+            "lineageTag": "9a6b1ac4-806a-4b1a-8ade-e9096bd70c64",
+            "sourceColumn": "price_change_yoy_m"
+          },
+          {
+            "name": "selected_by_percent",
+            "dataType": "double",
+            "lineageTag": "2bba8c4d-e2d7-49d2-8847-74e01b3d5678",
+            "sourceColumn": "selected_by_percent"
+          },
+          {
+            "name": "points_25_26",
+            "dataType": "int64",
+            "lineageTag": "09d1fc3d-496a-40b0-bd32-34037b7b1b15",
+            "sourceColumn": "points_25_26"
+          },
+          {
+            "name": "minutes_25_26",
+            "dataType": "int64",
+            "lineageTag": "058a38fe-e6f4-43c4-9bbb-4a55da86b38d",
+            "sourceColumn": "minutes_25_26"
+          },
+          {
+            "name": "goals_25_26",
+            "dataType": "int64",
+            "lineageTag": "90fe7681-4d87-409c-a97b-bf80a26d6c73",
+            "sourceColumn": "goals_25_26"
+          },
+          {
+            "name": "assists_25_26",
+            "dataType": "int64",
+            "lineageTag": "4d8438a8-9a93-473d-ac2e-00d13a3c6f1e",
+            "sourceColumn": "assists_25_26"
+          },
+          {
+            "name": "Player_Team_Key",
+            "dataType": "string",
+            "lineageTag": "ad3356a3-02dc-463f-b6c9-3d1a8b9358f7",
+            "sourceColumn": "Player_Team_Key"
+          }
+        ],
+        "lineageTag": "59dcec94-a573-4d37-8491-2574153aa5dc",
+        "measures": [
+          {
+            "name": "YoY Cost Difference",
+            "description": "Calculates the difference between 26/27 starting cost and 25/26 ending cost.",
+            "displayFolder": "Key Metrics",
+            "expression": "SUM(fpl_players[cost_26_27_m]) - SUM(fpl_players[cost_25_26_end_m])",
+            "formatString": "0.00",
+            "lineageTag": "dc6bfbb5-526b-49d1-b124-4d872af92660"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Partition",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"C:/Users/Dan/projects/fpl/fpl_data/fpl_players_2025_26_vs_2026_27.csv\"),[Delimiter=\",\", Columns=15, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalarTypes=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\",{",
+                "        {\"id\", Int64.Type}, {\"web_name\", type text}, {\"full_name\", type text}, {\"team\", type text},",
+                "        {\"position\", type text}, {\"cost_26_27_m\", type number}, {\"cost_25_26_start_m\", type number},",
+                "        {\"cost_25_26_end_m\", type number}, {\"cost_25_26_season_change_m\", type number},",
+                "        {\"price_change_yoy_m\", type number}, {\"selected_by_percent\", type number},",
+                "        {\"points_25_26\", Int64.Type}, {\"minutes_25_26\", Int64.Type},",
+                "        {\"goals_25_26\", Int64.Type}, {\"assists_25_26\", Int64.Type}",
+                "    }),",
+                "    #\"Added Player Key\" = Table.AddColumn(#\"Changed Type\", \"Player_Team_Key\", each [web_name] & \"-\" & [team], type text)",
+                "in",
+                "    #\"Added Player Key\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "fpl_fixtures",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "lineageTag": "58043c83-076c-43c0-b437-2eea76799ad4",
+            "sourceColumn": "id"
+          },
+          {
+            "name": "event",
+            "dataType": "int64",
+            "lineageTag": "337b79b0-3580-4787-bea6-5a6563d5f083",
+            "sourceColumn": "event"
+          },
+          {
+            "name": "kickoff_time",
+            "dataType": "string",
+            "lineageTag": "54aa091a-e864-42be-ba27-150c7e99c0b5",
+            "sourceColumn": "kickoff_time"
+          },
+          {
+            "name": "finished",
+            "dataType": "int64",
+            "lineageTag": "83a6f56f-2832-4fda-b239-de6600891c2a",
+            "sourceColumn": "finished"
+          },
+          {
+            "name": "home_team_id",
+            "dataType": "int64",
+            "lineageTag": "24430df0-c5ef-4726-b59b-fc409fbbdb98",
+            "sourceColumn": "home_team_id"
+          },
+          {
+            "name": "home_team",
+            "dataType": "string",
+            "lineageTag": "2e9e9217-be32-4d8a-93db-b316c0f4990c",
+            "sourceColumn": "home_team"
+          },
+          {
+            "name": "home_team_short",
+            "dataType": "string",
+            "lineageTag": "40f5e707-c7cc-468d-9e4e-b09a618d529a",
+            "sourceColumn": "home_team_short"
+          },
+          {
+            "name": "away_team_id",
+            "dataType": "int64",
+            "lineageTag": "5779ea4b-95fb-49f8-8967-621856e05872",
+            "sourceColumn": "away_team_id"
+          },
+          {
+            "name": "away_team",
+            "dataType": "string",
+            "lineageTag": "cce56428-2b1d-425b-8518-96ae6768d6bb",
+            "sourceColumn": "away_team"
+          },
+          {
+            "name": "away_team_short",
+            "dataType": "string",
+            "lineageTag": "a5603f25-56cc-4aa9-9591-fb52b6d447f1",
+            "sourceColumn": "away_team_short"
+          },
+          {
+            "name": "home_difficulty",
+            "dataType": "int64",
+            "lineageTag": "4d8d531b-86f0-4c8d-8540-dcf517aabea6",
+            "sourceColumn": "home_difficulty"
+          },
+          {
+            "name": "away_difficulty",
+            "dataType": "int64",
+            "lineageTag": "fd21a282-60f7-4bc8-a2f2-f43c08bec8a0",
+            "sourceColumn": "away_difficulty"
+          },
+          {
+            "name": "home_score",
+            "dataType": "int64",
+            "lineageTag": "34c3401d-c210-4808-be22-2f2c9edce019",
+            "sourceColumn": "home_score"
+          },
+          {
+            "name": "away_score",
+            "dataType": "int64",
+            "lineageTag": "a9ecc44c-685d-4a56-8df1-7ffadafdf7c6",
+            "sourceColumn": "away_score"
+          }
+        ],
+        "lineageTag": "05300b0d-ceff-4202-bdd8-2aea81db44f5",
+        "partitions": [
+          {
+            "name": "Partition",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"C:/Users/Dan/projects/fpl/fpl_data/fpl_fixtures_2026_27.csv\"),[Delimiter=\",\", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalarTypes=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\",{",
+                "        {\"id\", Int64.Type}, {\"event\", Int64.Type}, {\"kickoff_time\", type text}, {\"finished\", Int64.Type},",
+                "        {\"home_team_id\", Int64.Type}, {\"home_team\", type text}, {\"home_team_short\", type text},",
+                "        {\"away_team_id\", Int64.Type}, {\"away_team\", type text}, {\"away_team_short\", type text},",
+                "        {\"home_difficulty\", Int64.Type}, {\"away_difficulty\", Int64.Type},",
+                "        {\"home_score\", Int64.Type}, {\"away_score\", Int64.Type}",
+                "    })",
+                "in",
+                "    #\"Changed Type\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "fpl_teams_ratings",
+        "columns": [
+          {
+            "name": "id",
+            "dataType": "int64",
+            "lineageTag": "f211951b-81db-4a71-8ffe-125b0283764d",
+            "sourceColumn": "id"
+          },
+          {
+            "name": "name",
+            "dataType": "string",
+            "lineageTag": "db778ee7-86cf-49d7-8ab0-3984be539433",
+            "sourceColumn": "name"
+          },
+          {
+            "name": "short_name",
+            "dataType": "string",
+            "lineageTag": "985e970b-60a0-4e84-b7ec-007220ed3c8b",
+            "sourceColumn": "short_name"
+          },
+          {
+            "name": "strength",
+            "dataType": "int64",
+            "lineageTag": "3116058e-32ce-4734-967a-63a9c60a0d98",
+            "sourceColumn": "strength"
+          },
+          {
+            "name": "strength_overall_home",
+            "dataType": "int64",
+            "lineageTag": "70f568e7-fc27-4024-b686-af2274b7c60c",
+            "sourceColumn": "strength_overall_home"
+          },
+          {
+            "name": "strength_overall_away",
+            "dataType": "int64",
+            "lineageTag": "8ecce460-9f19-46ec-8549-fb555c7d153b",
+            "sourceColumn": "strength_overall_away"
+          },
+          {
+            "name": "strength_attack_home",
+            "dataType": "int64",
+            "lineageTag": "c07140c7-7030-4252-97a3-706fa87a7fe7",
+            "sourceColumn": "strength_attack_home"
+          },
+          {
+            "name": "strength_attack_away",
+            "dataType": "int64",
+            "lineageTag": "b6b58ce2-645b-47aa-8f1a-d207a0debbb3",
+            "sourceColumn": "strength_attack_away"
+          },
+          {
+            "name": "strength_defence_home",
+            "dataType": "int64",
+            "lineageTag": "177ffa59-4d18-45c9-bf72-9bbc4b0975bf",
+            "sourceColumn": "strength_defence_home"
+          },
+          {
+            "name": "strength_defence_away",
+            "dataType": "int64",
+            "lineageTag": "c90b644d-32d1-40d1-90f9-879a6e5be782",
+            "sourceColumn": "strength_defence_away"
+          }
+        ],
+        "lineageTag": "04d477d7-58b8-4771-a260-00f97fd13db7",
+        "partitions": [
+          {
+            "name": "Partition",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"C:/Users/Dan/projects/fpl/fpl_data/fpl_teams_ratings.csv\"),[Delimiter=\",\", Columns=10, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalarTypes=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\",{",
+                "        {\"id\", Int64.Type}, {\"name\", type text}, {\"short_name\", type text}, {\"strength\", Int64.Type},",
+                "        {\"strength_overall_home\", Int64.Type}, {\"strength_overall_away\", Int64.Type},",
+                "        {\"strength_attack_home\", Int64.Type}, {\"strength_attack_away\", Int64.Type},",
+                "        {\"strength_defence_home\", Int64.Type}, {\"strength_defence_away\", Int64.Type}",
+                "    })",
+                "in",
+                "    #\"Changed Type\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

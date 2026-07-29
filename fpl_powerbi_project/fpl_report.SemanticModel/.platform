@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "fpl_report"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9f967a54-7ba6-4357-8e05-ba71c614978a"
+  }
+}

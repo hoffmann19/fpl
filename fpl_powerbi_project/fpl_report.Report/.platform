@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "fpl_report"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "6552018c-54f1-4144-bbd6-053056e6747c"
+  }
+}

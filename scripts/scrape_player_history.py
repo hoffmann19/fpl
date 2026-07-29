@@ -125,6 +125,8 @@ def main():
             "selected_by_percent": float(el.get("selected_by_percent", 0.0) or 0.0),
             "points_25_26": p2526.get("points_2025_26", el.get("total_points", 0)),
             "minutes_25_26": p2526.get("minutes_2025_26", el.get("minutes", 0)),
+            "minutes_26_27": el.get("minutes", 0),
+            "minutes_diff": el.get("minutes", 0) - p2526.get("minutes_2025_26", 0) if p2526.get("minutes_2025_26") is not None else 0,
             "goals_25_26": p2526.get("goals_2025_26", el.get("goals_scored", 0)),
             "assists_25_26": p2526.get("assists_2025_26", el.get("assists", 0)),
         }
@@ -156,6 +158,7 @@ def main():
             cost_26_27_m REAL, cost_25_26_start_m REAL, cost_25_26_end_m REAL,
             cost_25_26_season_change_m REAL, price_change_yoy_m REAL,
             selected_by_percent REAL, points_25_26 INTEGER, minutes_25_26 INTEGER,
+            minutes_26_27 INTEGER, minutes_diff INTEGER,
             goals_25_26 INTEGER, assists_25_26 INTEGER
         )
     """)
