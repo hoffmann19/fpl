@@ -127,10 +127,16 @@ const elPitchRowGKP = document.getElementById('pitch-row-GKP');
 const elPitchRowBench = document.getElementById('pitch-row-bench');
 
 // Initialization
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
   setupEventListeners();
   loadSeasonData(currentSeason);
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // Fetch season data dynamically
 function loadSeasonData(seasonKey) {
