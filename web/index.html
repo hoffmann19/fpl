@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <!-- Center: Team Filter & Timeline Controls -->
+      <!-- Center: Team & Gameweek Filters -->
       <div class="top-bar-section controls-section">
         <div class="select-compact-wrapper team-select-wrapper">
           <i class="fa-solid fa-shirt select-icon"></i>
@@ -42,20 +42,12 @@
           </select>
         </div>
 
-        <button id="btn-play-pause" class="btn-primary-sm" title="Play Animation">
-          <i class="fa-solid fa-play"></i>
-        </button>
-
-        <div class="timeline-compact">
-          <span class="gw-tag" id="header-gw">GW 1</span>
-          <input type="range" id="timeline-slider" min="1" max="38" value="1" step="1">
+        <div class="select-compact-wrapper gw-select-wrapper">
+          <i class="fa-solid fa-calendar-days select-icon"></i>
+          <select id="select-gw" class="select-sm">
+            <!-- GW Options 1..38 generated dynamically in JS -->
+          </select>
         </div>
-
-        <select id="select-speed" class="select-sm speed-select-compact">
-          <option value="1500">1.5s</option>
-          <option value="800" selected>0.8s</option>
-          <option value="400">0.4s</option>
-        </select>
       </div>
 
       <!-- Right: Tabs & Leader Badge -->

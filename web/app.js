@@ -49,6 +49,7 @@ const elBtnReset = document.getElementById('btn-reset');
 // Filter Selectors
 const elSelectSeason = document.getElementById('select-season');
 const elSelectTeam = document.getElementById('select-team');
+const elSelectGw = document.getElementById('select-gw');
 
 // Tab Panels
 const elTabFieldRoster = document.getElementById('tab-field-roster');
@@ -206,6 +207,18 @@ function populateTeamDropdown() {
   });
 }
 
+function populateGwDropdown() {
+  if (!elSelectGw) return;
+  elSelectGw.innerHTML = '';
+  for (let i = 1; i <= TOTAL_GWS; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.innerText = `Gameweek ${i}`;
+    if (i === currentGW) opt.selected = true;
+    elSelectGw.appendChild(opt);
+  }
+}
+
 function setupEventListeners() {
   // Season Selector
   if (elSelectSeason) {
@@ -224,28 +237,42 @@ function setupEventListeners() {
     });
   }
 
-  // Playback Control
-  elBtnPlayPause.addEventListener('click', togglePlayback);
-  elSelectSpeed.addEventListener('change', (e) => {
-    playbackSpeed = parseInt(e.target.value);
-    if (playing) {
-      pauseTimeline();
-      playTimeline();
-    }
-  });
+  // Gameweek Selector Dropdown
+  if (elSelectGw) {
+    elSelectGw.addEventListener('change', (e) => {
+      currentGW = parseInt(e.target.value);
+      updateDashboard();
+    });
+  }
+
+  // Playback Controls (if present)
+  if (elBtnPlayPause) elBtnPlayPause.addEventListener('click', togglePlayback);
+  if (elSelectSpeed) {
+    elSelectSpeed.addEventListener('change', (e) => {
+      playbackSpeed = parseInt(e.target.value);
+      if (playing) {
+        pauseTimeline();
+        playTimeline();
+      }
+    });
+  }
   
-  // Slider / Timeline
-  elSlider.addEventListener('input', (e) => {
-    currentGW = parseInt(e.target.value);
-    updateDashboard();
-  });
+  // Slider / Timeline (if present)
+  if (elSlider) {
+    elSlider.addEventListener('input', (e) => {
+      currentGW = parseInt(e.target.value);
+      updateDashboard();
+    });
+  }
   
   // Reset
-  elBtnReset.addEventListener('click', () => {
-    pauseTimeline();
-    currentGW = 1;
-    updateDashboard();
-  });
+  if (elBtnReset) {
+    elBtnReset.addEventListener('click', () => {
+      pauseTimeline();
+      currentGW = 1;
+      updateDashboard();
+    });
+  }
   
   // Tabs
   if (elTabFieldRoster) elTabFieldRoster.addEventListener('click', () => switchTab('field-roster'));
@@ -259,10 +286,13 @@ function setupEventListeners() {
 }
 
 function initDashboard() {
-  // Initialize slider limits
-  elSlider.min = 1;
-  elSlider.max = TOTAL_GWS;
-  elSlider.value = currentGW;
+  // Populate Gameweek dropdown and slider limits
+  populateGwDropdown();
+  if (elSlider) {
+    elSlider.min = 1;
+    elSlider.max = TOTAL_GWS;
+    elSlider.value = currentGW;
+  }
   
   // Calculate historical MVP stats
   calculateSeasonStats();
@@ -1175,9 +1205,10 @@ function createPlayerCardDOM(player, maxSquadPts) {
 function updateDashboard() {
   if (!appData) return;
   
-  // Sync slider and input value
-  elSlider.value = currentGW;
-  elHeaderGw.innerText = currentGW;
+  // Sync Gameweek selector, slider and header tags
+  if (elSelectGw) elSelectGw.value = currentGW;
+  if (elSlider) elSlider.value = currentGW;
+  if (elHeaderGw) elHeaderGw.innerText = currentGW;
   
   // 1. Find Leader for current GW
   const standings = appData.gameweeks[currentGW.toString()].standings;
