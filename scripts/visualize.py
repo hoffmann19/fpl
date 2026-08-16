@@ -48,17 +48,23 @@ def compile_data():
             if gw not in gameweeks:
                 gameweeks[gw] = {"standings": [], "lineups": {}}
 
+            def safe_int(val, default=0):
+                try:
+                    return int(val)
+                except (ValueError, TypeError):
+                    return default
+
             gameweeks[gw]["standings"].append({
                 "manager": manager,
                 "team": team,
-                "rank": int(row['Rank']),
-                "gw_points": int(row['GW Points']),
-                "gw_hits": int(row['GW Hits']),
-                "gw_net_points": int(row['GW Net Points']),
-                "overall_points": int(row['Overall Points']),
-                "overall_rank": int(row['Overall Rank']),
+                "rank": safe_int(row['Rank']),
+                "gw_points": safe_int(row['GW Points']),
+                "gw_hits": safe_int(row['GW Hits']),
+                "gw_net_points": safe_int(row['GW Net Points']),
+                "overall_points": safe_int(row['Overall Points']),
+                "overall_rank": safe_int(row['Overall Rank']),
                 "chip": row['Chip Played'].strip(),
-                "transfers": int(row['Transfers Made']),
+                "transfers": safe_int(row['Transfers Made']),
                 "team_value": float(row.get('Team Value')) if row.get('Team Value') else 0.0,
                 "bank": float(row.get('Bank')) if row.get('Bank') else 0.0,
                 "captain": "",
@@ -167,5 +173,12 @@ def start_server():
             print("\nShutting down server.")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Compile visualizer data and optionally start visualizer server")
+    parser.add_argument("--compile-only", action="store_true", help="Only compile visualizer_data.json and exit")
+    args = parser.parse_args()
+
     if compile_data():
-        start_server()
+        if not args.compile_only:
+            start_server()
+

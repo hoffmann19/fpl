@@ -61,7 +61,9 @@ def main():
                 "BankValue": team.get("BankValue", 0.0)
             }
 
-        gw_dir = os.path.join(fpl_data_dir, f"gw{gw}")
+        gw_dir = os.path.join(fpl_data_dir, "gameweeks", f"gw{gw}")
+        if not os.path.exists(gw_dir):
+            gw_dir = os.path.join(fpl_data_dir, f"gw{gw}")
         csv_file = os.path.join(gw_dir, "standings.csv")
         if not os.path.exists(csv_file):
             continue

@@ -82,7 +82,7 @@ def main():
             if not team_datas:
                 continue
 
-            gw_dir = os.path.join(args.output_dir, f"gw{gw}")
+            gw_dir = os.path.join(args.output_dir, "gameweeks", f"gw{gw}")
             os.makedirs(gw_dir, exist_ok=True)
 
             for team in team_datas:
