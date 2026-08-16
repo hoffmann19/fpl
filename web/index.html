@@ -158,8 +158,22 @@
         </div>
       </section>
 
-      <!-- Right Column: Details & Lineup Pitch -->
+      <!-- Right Column: Leaderboard & Manager Details -->
       <section class="details-column">
+        <!-- Gameweek Leaderboard Card -->
+        <div class="leaderboard-card glass">
+          <div class="leaderboard-header">
+            <div class="leaderboard-title">
+              <i class="fa-solid fa-list-ol"></i>
+              <span>GW <span id="lb-gw-num">1</span> Leaderboard</span>
+            </div>
+            <span class="leaderboard-sub">Click team to view roster</span>
+          </div>
+          <div class="leaderboard-list" id="gw-leaderboard-list">
+            <!-- Leaderboard rows injected dynamically via JS -->
+          </div>
+        </div>
+
         <!-- Manager Detail Card -->
         <div class="manager-card glass" id="manager-info-card">
           <div class="manager-card-header">

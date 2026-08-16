@@ -1074,6 +1074,148 @@ body {
   font-weight: 600;
 }
 
+/* Leaderboard Card */
+.leaderboard-card {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.leaderboard-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.leaderboard-title i {
+  color: var(--accent);
+}
+
+.leaderboard-sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-row:hover {
+  background: rgba(30, 41, 59, 0.7);
+  transform: translateX(2px);
+}
+
+.leaderboard-row.active {
+  background: rgba(0, 210, 211, 0.12);
+  border-color: rgba(0, 210, 211, 0.4);
+  box-shadow: 0 0 12px rgba(0, 210, 211, 0.15);
+}
+
+.lb-rank-badge {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  width: 28px;
+  text-align: center;
+}
+
+.lb-rank-badge.winner {
+  color: #ffd700;
+  font-size: 0.9rem;
+}
+
+.lb-team-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin: 0 12px;
+}
+
+.lb-team-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.lb-mgr-sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.lb-points-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lb-gw-pts {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #00ff87;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+
+.lb-gw-pts small {
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.lb-total-pts {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+  min-width: 50px;
+}
+
+.lb-total-pts small {
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
 /* Bench Styles */
 .pitch-bench {
   background: rgba(0,0,0,0.25);

@@ -788,6 +788,9 @@ function selectManager(managerName) {
   
   // Highlight selected bubble in Scatter Plot
   if (elScatterSvg) updateScatterPlotHighlight();
+  
+  // Highlight selected leaderboard row
+  renderLeaderboard();
 }
 
 function updateManagerCard() {
@@ -1194,8 +1197,55 @@ function updateDashboard() {
   updateManagerCard();
   updateLineupPitch();
   
-  // 6. Update Scatter Plot
+  // 6. Update Leaderboard
+  renderLeaderboard();
+  
+  // 7. Update Scatter Plot
   if (elScatterSvg) updateScatterPlot();
+}
+
+function renderLeaderboard() {
+  const elLeaderboardList = document.getElementById('gw-leaderboard-list');
+  const elLbGwNum = document.getElementById('lb-gw-num');
+  if (!elLeaderboardList || !appData) return;
+  
+  if (elLbGwNum) elLbGwNum.innerText = currentGW;
+  elLeaderboardList.innerHTML = '';
+  
+  const gwData = appData.gameweeks[currentGW.toString()];
+  if (!gwData || !gwData.standings) return;
+  
+  const standings = [...gwData.standings].sort((a, b) => a.rank - b.rank);
+  
+  standings.forEach((mgrRecord) => {
+    const mgrMeta = appData.managers[mgrRecord.manager] || { team: mgrRecord.manager, color: '#00d2d3' };
+    const isSelected = mgrRecord.manager === selectedManager;
+    const isWinner = mgrRecord.rank === 1;
+    
+    const row = document.createElement('div');
+    row.className = `leaderboard-row ${isSelected ? 'active' : ''}`;
+    row.style.borderLeft = `4px solid ${mgrMeta.color}`;
+    
+    row.innerHTML = `
+      <div class="lb-rank-badge ${isWinner ? 'winner' : ''}">
+        ${isWinner ? '<i class="fa-solid fa-crown"></i>' : `#${mgrRecord.rank}`}
+      </div>
+      <div class="lb-team-info">
+        <span class="lb-team-title" style="color: ${mgrMeta.color}">${mgrMeta.team}</span>
+        <span class="lb-mgr-sub">${mgrRecord.manager}</span>
+      </div>
+      <div class="lb-points-cell">
+        <span class="lb-gw-pts">+${mgrRecord.gw_points} <small>GW${currentGW}</small></span>
+        <span class="lb-total-pts">${mgrRecord.overall_points.toLocaleString()} <small>Total</small></span>
+      </div>
+    `;
+    
+    row.addEventListener('click', () => {
+      selectManager(mgrRecord.manager);
+    });
+    
+    elLeaderboardList.appendChild(row);
+  });
 }
 
 // ----------------------------------------------------
