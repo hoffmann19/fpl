@@ -19,115 +19,82 @@
 </head>
 <body>
   <div class="app-container">
-    <!-- Header -->
-    <header class="app-header">
-      <div class="logo-area">
-        <div class="logo-icon"><i class="fa-solid fa-trophy"></i></div>
-        <div>
-          <h1>FPL Title Race Visualizer</h1>
-          <p class="subtitle">Season Walkthrough & Standings Animation</p>
-        </div>
-      </div>
-      <div class="global-stats">
-        <div class="global-stat-card">
-          <span class="stat-label">Gameweek</span>
-          <span class="stat-value" id="header-gw">1</span>
-          <span class="stat-sub">of 38</span>
-        </div>
-        <div class="global-stat-card highlight">
-          <span class="stat-label">Current Leader</span>
-          <span class="stat-value" id="header-leader">Loading...</span>
-          <span class="stat-sub" id="header-leader-pts">0 pts</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- Controls Bar -->
-    <section class="controls-bar glass">
-      <div class="filter-controls">
-        <div class="filter-selector">
-          <label for="select-season"><i class="fa-solid fa-calendar-days"></i> Season</label>
-          <select id="select-season">
+    <!-- Ultra-Compact Unified Top Bar -->
+    <header class="app-header glass compact-top-bar">
+      <!-- Left: Title & Season -->
+      <div class="top-bar-section brand-section">
+        <div class="logo-icon-sm"><i class="fa-solid fa-trophy"></i></div>
+        <h1 class="brand-title">FPL Visualizer</h1>
+        <div class="select-compact-wrapper">
+          <select id="select-season" class="select-sm">
             <option value="2026_27" selected>2026/27 (Starts Friday)</option>
             <option value="2025_26">2025/26 (Last Season)</option>
           </select>
         </div>
+      </div>
 
-        <div class="filter-selector">
-          <label for="select-team"><i class="fa-solid fa-shirt"></i> Team Filter</label>
-          <select id="select-team">
+      <!-- Center: Team Filter & Timeline Controls -->
+      <div class="top-bar-section controls-section">
+        <div class="select-compact-wrapper team-select-wrapper">
+          <i class="fa-solid fa-shirt select-icon"></i>
+          <select id="select-team" class="select-sm">
             <option value="">-- All Teams --</option>
           </select>
         </div>
+
+        <button id="btn-play-pause" class="btn-primary-sm" title="Play Animation">
+          <i class="fa-solid fa-play"></i>
+        </button>
+
+        <div class="timeline-compact">
+          <span class="gw-tag" id="header-gw">GW 1</span>
+          <input type="range" id="timeline-slider" min="1" max="38" value="1" step="1">
+        </div>
+
+        <select id="select-speed" class="select-sm speed-select-compact">
+          <option value="1500">1.5s</option>
+          <option value="800" selected>0.8s</option>
+          <option value="400">0.4s</option>
+        </select>
       </div>
 
-      <div class="playback-controls">
-        <button id="btn-play-pause" class="btn-primary" title="Play Animation">
-          <i class="fa-solid fa-play"></i> <span>Play</span>
-        </button>
-        
-        <div class="speed-selector">
-          <label for="select-speed"><i class="fa-solid fa-gauge-high"></i> Speed</label>
-          <select id="select-speed">
-            <option value="1500">Slow (1.5s)</option>
-            <option value="800" selected>Normal (0.8s)</option>
-            <option value="400">Fast (0.4s)</option>
-          </select>
+      <!-- Right: Tabs & Leader Badge -->
+      <div class="top-bar-section nav-section">
+        <div class="tab-pills-row">
+          <button id="tab-field-roster" class="tab-pill active" title="Field &amp; Roster"><i class="fa-solid fa-futbol"></i> Pitch</button>
+          <button id="tab-bar-race" class="tab-pill" title="Bar Chart Race"><i class="fa-solid fa-chart-bar"></i> Bars</button>
+          <button id="tab-bump-chart" class="tab-pill" title="Rank Trajectory"><i class="fa-solid fa-chart-line"></i> Rank</button>
+          <button id="tab-global-rank" class="tab-pill" title="Global Rank"><i class="fa-solid fa-globe"></i> Global</button>
+          <button id="tab-scatter-plot" class="tab-pill" title="Team Comparison"><i class="fa-solid fa-circle-nodes"></i> Stats</button>
+          <button id="btn-reset" class="btn-icon-sm" title="Reset to GW 1"><i class="fa-solid fa-rotate-left"></i></button>
+        </div>
+
+        <div class="leader-chip" id="header-leader-chip">
+          <span class="leader-chip-title" id="header-leader">Leader</span>
+          <span class="leader-chip-pts" id="header-leader-pts">0 pts</span>
         </div>
       </div>
-
-      <div class="timeline-container">
-        <span class="gw-indicator-label">GW 1</span>
-        <input type="range" id="timeline-slider" min="1" max="38" value="1" step="1">
-        <span class="gw-indicator-label">GW 38</span>
-      </div>
-    </section>
+    </header>
 
     <!-- Main Grid Content -->
     <main class="main-grid">
       <!-- Left Column: Visualizations -->
       <section class="viz-column glass">
-        <div class="viz-header">
-          <div class="tab-controls">
-            <button id="tab-field-roster" class="tab-btn active">
-              <i class="fa-solid fa-futbol"></i> Field &amp; Roster
-            </button>
-            <button id="tab-bar-race" class="tab-btn">
-              <i class="fa-solid fa-chart-bar"></i> Bar Chart Race
-            </button>
-            <button id="tab-bump-chart" class="tab-btn">
-              <i class="fa-solid fa-chart-line"></i> Rank Trajectory
-            </button>
-            <button id="tab-global-rank" class="tab-btn">
-              <i class="fa-solid fa-globe"></i> Global Rank
-            </button>
-            <button id="tab-scatter-plot" class="tab-btn">
-              <i class="fa-solid fa-circle-nodes"></i> Team Comparison
-            </button>
-          </div>
-          <div class="viz-actions">
-            <button id="btn-reset" class="btn-secondary" title="Reset to GW 1">
-              <i class="fa-solid fa-rotate-left"></i>
-            </button>
-          </div>
-        </div>
-
         <div class="viz-content">
           <!-- Field & Roster Pitch Panel -->
           <div id="panel-field-roster" class="panel active">
             <div class="main-pitch-wrapper">
-              <div class="main-pitch-header">
-                <div class="main-pitch-team-info">
-                  <div class="main-pitch-avatar" id="main-pitch-avatar"><i class="fa-solid fa-crown"></i></div>
-                  <div>
-                    <h3 id="main-pitch-team-name">Winning Team</h3>
-                    <p id="main-pitch-manager-name">Manager Name</p>
-                  </div>
+              <!-- Slim Banner -->
+              <div class="main-pitch-banner">
+                <div class="main-pitch-banner-left">
+                  <div class="main-pitch-avatar-sm" id="main-pitch-avatar"><i class="fa-solid fa-crown"></i></div>
+                  <span class="main-pitch-team-title" id="main-pitch-team-name">Winning Team</span>
+                  <span class="main-pitch-mgr-sub" id="main-pitch-manager-name">Manager Name</span>
                 </div>
-                <div class="main-pitch-stats-row">
-                  <span class="main-pitch-stat-badge" id="main-pitch-gw-pts"><i class="fa-solid fa-bolt"></i> 0 GW Pts</span>
-                  <span class="main-pitch-stat-badge highlight" id="main-pitch-total-pts"><i class="fa-solid fa-trophy"></i> 0 Total Pts</span>
-                  <span class="main-pitch-stat-badge" id="main-pitch-rank"><i class="fa-solid fa-ranking-star"></i> Rank #1</span>
+                <div class="main-pitch-banner-right">
+                  <span class="pitch-stat-badge" id="main-pitch-gw-pts"><i class="fa-solid fa-bolt"></i> 0 GW Pts</span>
+                  <span class="pitch-stat-badge highlight" id="main-pitch-total-pts"><i class="fa-solid fa-trophy"></i> 0 Total Pts</span>
+                  <span class="pitch-stat-badge" id="main-pitch-rank">#1</span>
                 </div>
               </div>
 
