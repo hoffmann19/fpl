@@ -168,10 +168,8 @@ function getLatestGWWithData(data) {
   for (const gw of gws) {
     const gwStr = gw.toString();
     const standings = data.gameweeks[gwStr] ? data.gameweeks[gwStr].standings : [];
-    const lineups = data.gameweeks[gwStr] ? data.gameweeks[gwStr].lineups : {};
     const hasPoints = standings.some(s => (s.gw_points && s.gw_points > 0) || (s.overall_points && s.overall_points > 0));
-    const hasLineups = Object.values(lineups).some(l => Array.isArray(l) && l.length > 0);
-    if (hasPoints || hasLineups) return gw;
+    if (hasPoints) return gw;
   }
   return 1;
 }
