@@ -44,6 +44,23 @@
 
     <!-- Controls Bar -->
     <section class="controls-bar glass">
+      <div class="filter-controls">
+        <div class="filter-selector">
+          <label for="select-season"><i class="fa-solid fa-calendar-days"></i> Season</label>
+          <select id="select-season">
+            <option value="2026_27" selected>2026/27 (Starts Friday)</option>
+            <option value="2025_26">2025/26 (Last Season)</option>
+          </select>
+        </div>
+
+        <div class="filter-selector">
+          <label for="select-team"><i class="fa-solid fa-shirt"></i> Team Filter</label>
+          <select id="select-team">
+            <option value="">-- All Teams --</option>
+          </select>
+        </div>
+      </div>
+
       <div class="playback-controls">
         <button id="btn-play-pause" class="btn-primary" title="Play Animation">
           <i class="fa-solid fa-play"></i> <span>Play</span>
@@ -72,7 +89,10 @@
       <section class="viz-column glass">
         <div class="viz-header">
           <div class="tab-controls">
-            <button id="tab-bar-race" class="tab-btn active">
+            <button id="tab-field-roster" class="tab-btn active">
+              <i class="fa-solid fa-futbol"></i> Field &amp; Roster
+            </button>
+            <button id="tab-bar-race" class="tab-btn">
               <i class="fa-solid fa-chart-bar"></i> Bar Chart Race
             </button>
             <button id="tab-bump-chart" class="tab-btn">
@@ -93,8 +113,47 @@
         </div>
 
         <div class="viz-content">
+          <!-- Field & Roster Pitch Panel -->
+          <div id="panel-field-roster" class="panel active">
+            <div class="main-pitch-wrapper">
+              <div class="main-pitch-header">
+                <div class="main-pitch-team-info">
+                  <div class="main-pitch-avatar" id="main-pitch-avatar"><i class="fa-solid fa-crown"></i></div>
+                  <div>
+                    <h3 id="main-pitch-team-name">Winning Team</h3>
+                    <p id="main-pitch-manager-name">Manager Name</p>
+                  </div>
+                </div>
+                <div class="main-pitch-stats-row">
+                  <span class="main-pitch-stat-badge" id="main-pitch-gw-pts"><i class="fa-solid fa-bolt"></i> 0 GW Pts</span>
+                  <span class="main-pitch-stat-badge highlight" id="main-pitch-total-pts"><i class="fa-solid fa-trophy"></i> 0 Total Pts</span>
+                  <span class="main-pitch-stat-badge" id="main-pitch-rank"><i class="fa-solid fa-ranking-star"></i> Rank #1</span>
+                </div>
+              </div>
+
+              <div class="pitch-field-wrapper">
+                <div class="pitch-field" id="main-pitch-field">
+                  <div class="pitch-line center-circle"></div>
+                  <div class="pitch-line center-line"></div>
+                  <div class="pitch-line penalty-box top"></div>
+                  <div class="pitch-line penalty-box bottom"></div>
+
+                  <div class="pitch-row row-fwd" id="main-pitch-row-FWD"></div>
+                  <div class="pitch-row row-mid" id="main-pitch-row-MID"></div>
+                  <div class="pitch-row row-def" id="main-pitch-row-DEF"></div>
+                  <div class="pitch-row row-gkp" id="main-pitch-row-GKP"></div>
+                </div>
+              </div>
+
+              <div class="pitch-bench">
+                <div class="bench-title"><i class="fa-solid fa-couch"></i> Substitute Bench</div>
+                <div class="bench-players" id="main-pitch-row-bench"></div>
+              </div>
+            </div>
+          </div>
+
           <!-- Bar Chart Race Panel -->
-          <div id="panel-bar-race" class="panel active">
+          <div id="panel-bar-race" class="panel">
             <div class="bar-chart-race-container" id="bar-race-container">
               <!-- Animated Bars will be injected here via JavaScript -->
             </div>

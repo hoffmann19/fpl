@@ -1205,3 +1205,132 @@ body {
   transition: x 0.2s ease, y 0.2s ease;
 }
 
+/* Multi-Season & Team Filter Styles */
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.filter-selector select {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--font-main);
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 210, 211, 0.15);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.filter-selector select:focus, .filter-selector select:hover {
+  border-color: #00d2d3;
+  box-shadow: 0 0 15px rgba(0, 210, 211, 0.35);
+}
+
+/* Main Pitch Roster Panel */
+.main-pitch-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.main-pitch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+}
+
+.main-pitch-team-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.main-pitch-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffa502, #ff4757);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(255, 165, 2, 0.4);
+}
+
+.main-pitch-team-info h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.main-pitch-team-info p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 2px 0 0 0;
+}
+
+.main-pitch-stats-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.main-pitch-stat-badge {
+  background: var(--bg-primary);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.main-pitch-stat-badge.highlight {
+  border-color: #2ed573;
+  color: #2ed573;
+  background: rgba(46, 213, 115, 0.1);
+}
+
+/* Winner Crown & Champion Badge */
+.winner-badge-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #ffd700, #ffa502);
+  color: #000;
+  font-weight: 800;
+  font-size: 0.75rem;
+  margin-left: 8px;
+}
+
+

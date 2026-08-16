@@ -17,7 +17,10 @@ def organize_web_files():
     os.makedirs(web_dir, exist_ok=True)
     os.makedirs(docs_dir, exist_ok=True)
 
-    web_files = ["index.html", "app.js", "style.css", "visualizer_data.json"]
+    web_files = [
+        "index.html", "app.js", "style.css",
+        "visualizer_data.json", "visualizer_data_2025_26.json", "visualizer_data_2026_27.json"
+    ]
 
     for filename in web_files:
         src = os.path.join(root_dir, filename)

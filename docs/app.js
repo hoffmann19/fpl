@@ -1,11 +1,13 @@
 // State Variables
 let appData = null;
 let currentGW = 1;
+let currentSeason = '2026_27'; // Default to upcoming 2026/27 season
+let loadedSeasons = {};
 let playing = false;
 let playbackInterval = null;
 let playbackSpeed = 800; // ms per gameweek
 let selectedManager = null;
-let activeTab = 'bar-race'; // 'bar-race' or 'bump-chart'
+let activeTab = 'field-roster'; // 'field-roster' by default for winning team / pitch view
 let managerFormations = {};
 let managerCumulativeCapPoints = {};
 let finalGW = 38;
@@ -44,15 +46,36 @@ const elHeaderLeader = document.getElementById('header-leader');
 const elHeaderLeaderPts = document.getElementById('header-leader-pts');
 const elBtnReset = document.getElementById('btn-reset');
 
+// Filter Selectors
+const elSelectSeason = document.getElementById('select-season');
+const elSelectTeam = document.getElementById('select-team');
+
 // Tab Panels
+const elTabFieldRoster = document.getElementById('tab-field-roster');
 const elTabBarRace = document.getElementById('tab-bar-race');
 const elTabBumpChart = document.getElementById('tab-bump-chart');
 const elTabGlobalRank = document.getElementById('tab-global-rank');
 const elTabScatterPlot = document.getElementById('tab-scatter-plot');
+
+const elPanelFieldRoster = document.getElementById('panel-field-roster');
 const elPanelBarRace = document.getElementById('panel-bar-race');
 const elPanelBumpChart = document.getElementById('panel-bump-chart');
 const elPanelGlobalRank = document.getElementById('panel-global-rank');
 const elPanelScatterPlot = document.getElementById('panel-scatter-plot');
+
+// Main Pitch Elements
+const elMainPitchTeamName = document.getElementById('main-pitch-team-name');
+const elMainPitchManagerName = document.getElementById('main-pitch-manager-name');
+const elMainPitchGwPts = document.getElementById('main-pitch-gw-pts');
+const elMainPitchTotalPts = document.getElementById('main-pitch-total-pts');
+const elMainPitchRank = document.getElementById('main-pitch-rank');
+const elMainPitchAvatar = document.getElementById('main-pitch-avatar');
+
+const elMainPitchRowFWD = document.getElementById('main-pitch-row-FWD');
+const elMainPitchRowMID = document.getElementById('main-pitch-row-MID');
+const elMainPitchRowDEF = document.getElementById('main-pitch-row-DEF');
+const elMainPitchRowGKP = document.getElementById('main-pitch-row-GKP');
+const elMainPitchRowBench = document.getElementById('main-pitch-row-bench');
 
 // Bar Race Container
 const elBarRaceContainer = document.getElementById('bar-race-container');
@@ -67,7 +90,6 @@ const elBumpTooltip = document.getElementById('bump-tooltip');
 const elScatterSvg = document.getElementById('scatter-plot-svg');
 const elScatterLegend = document.getElementById('scatter-legend');
 const elScatterTooltip = document.getElementById('scatter-tooltip');
-
 
 // Global Rank Chart Elements
 const elGlobalSvg = document.getElementById('global-rank-svg');
@@ -95,7 +117,7 @@ const elFormationPie = document.getElementById('m-formation-pie');
 const elFormationLegend = document.getElementById('m-formation-legend');
 const elManagerAvatar = document.getElementById('m-avatar');
 
-// Pitch Lineups
+// Pitch Lineups (Right Column)
 const elPitchManagerTeam = document.getElementById('pitch-manager-team');
 const elPitchRowFWD = document.getElementById('pitch-row-FWD');
 const elPitchRowMID = document.getElementById('pitch-row-MID');
@@ -105,35 +127,96 @@ const elPitchRowBench = document.getElementById('pitch-row-bench');
 
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
-  fetchData();
   setupEventListeners();
+  loadSeasonData(currentSeason);
 });
 
-// Fetch data from server
-function fetchData() {
-  fetch('./visualizer_data.json')
+// Fetch season data dynamically
+function loadSeasonData(seasonKey) {
+  currentSeason = seasonKey;
+  
+  if (loadedSeasons[seasonKey]) {
+    appData = loadedSeasons[seasonKey];
+    onSeasonDataLoaded();
+    return;
+  }
+  
+  const jsonUrl = seasonKey === '2025_26' ? './visualizer_data_2025_26.json' : './visualizer_data_2026_27.json';
+  
+  fetch(jsonUrl)
     .then(response => {
       if (!response.ok) {
-        throw new Error('Failed to load visualizer data');
+        return fetch('./visualizer_data.json').then(r => r.json());
       }
       return response.json();
     })
     .then(data => {
+      loadedSeasons[seasonKey] = data;
       appData = data;
-      // Initialize with leader of GW1
-      const gw1Standings = appData.gameweeks["1"].standings;
-      const leaderRecord = gw1Standings.find(s => s.rank === 1);
-      selectedManager = leaderRecord ? leaderRecord.manager : Object.keys(appData.managers)[0];
-      
-      initDashboard();
+      onSeasonDataLoaded();
     })
     .catch(error => {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching season data:', error);
       elHeaderLeader.innerText = "Error loading data";
     });
 }
 
+function onSeasonDataLoaded() {
+  if (currentSeason === '2025_26') {
+    currentGW = 38;
+    // Model GW38 Winner: Find rank 1 in GW38
+    const gw38Standings = appData.gameweeks["38"] ? appData.gameweeks["38"].standings : [];
+    const winner = gw38Standings.find(s => s.rank === 1);
+    selectedManager = winner ? winner.manager : Object.keys(appData.managers)[0];
+  } else {
+    currentGW = 1;
+    const gw1Standings = appData.gameweeks["1"] ? appData.gameweeks["1"].standings : [];
+    const leader = gw1Standings.find(s => s.rank === 1);
+    selectedManager = leader ? leader.manager : Object.keys(appData.managers)[0];
+  }
+  
+  populateTeamDropdown();
+  initDashboard();
+}
+
+function populateTeamDropdown() {
+  if (!elSelectTeam || !appData || !appData.managers) return;
+  elSelectTeam.innerHTML = '<option value="">-- All Teams / Leader --</option>';
+  
+  const sortedManagers = Object.keys(appData.managers).sort((a, b) => {
+    return appData.managers[a].team.localeCompare(appData.managers[b].team);
+  });
+  
+  sortedManagers.forEach(mgr => {
+    const meta = appData.managers[mgr];
+    const opt = document.createElement('option');
+    opt.value = mgr;
+    opt.innerText = `${meta.team} (${mgr})`;
+    if (mgr === selectedManager) {
+      opt.selected = true;
+    }
+    elSelectTeam.appendChild(opt);
+  });
+}
+
 function setupEventListeners() {
+  // Season Selector
+  if (elSelectSeason) {
+    elSelectSeason.addEventListener('change', (e) => {
+      pauseTimeline();
+      loadSeasonData(e.target.value);
+    });
+  }
+
+  // Team Selector Filter
+  if (elSelectTeam) {
+    elSelectTeam.addEventListener('change', (e) => {
+      if (e.target.value) {
+        selectManager(e.target.value);
+      }
+    });
+  }
+
   // Playback Control
   elBtnPlayPause.addEventListener('click', togglePlayback);
   elSelectSpeed.addEventListener('change', (e) => {
@@ -158,6 +241,7 @@ function setupEventListeners() {
   });
   
   // Tabs
+  if (elTabFieldRoster) elTabFieldRoster.addEventListener('click', () => switchTab('field-roster'));
   elTabBarRace.addEventListener('click', () => switchTab('bar-race'));
   elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
   elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
@@ -198,17 +282,22 @@ function initDashboard() {
 function switchTab(tab) {
   activeTab = tab;
   
+  if (elTabFieldRoster) elTabFieldRoster.classList.remove('active');
   elTabBarRace.classList.remove('active');
   elTabBumpChart.classList.remove('active');
   elTabGlobalRank.classList.remove('active');
   elTabScatterPlot.classList.remove('active');
   
+  if (elPanelFieldRoster) elPanelFieldRoster.classList.remove('active');
   elPanelBarRace.classList.remove('active');
   elPanelBumpChart.classList.remove('active');
   elPanelGlobalRank.classList.remove('active');
   elPanelScatterPlot.classList.remove('active');
   
-  if (tab === 'bar-race') {
+  if (tab === 'field-roster') {
+    if (elTabFieldRoster) elTabFieldRoster.classList.add('active');
+    if (elPanelFieldRoster) elPanelFieldRoster.classList.add('active');
+  } else if (tab === 'bar-race') {
     elTabBarRace.classList.add('active');
     elPanelBarRace.classList.add('active');
   } else if (tab === 'bump-chart') {
@@ -669,6 +758,9 @@ function updateBumpChartHighlight() {
 // ----------------------------------------------------
 function selectManager(managerName) {
   selectedManager = managerName;
+  if (elSelectTeam) {
+    elSelectTeam.value = managerName;
+  }
   
   // Update UI components
   updateManagerCard();
@@ -840,12 +932,36 @@ function updateManagerCard() {
 function updateLineupPitch() {
   if (!selectedManager || !appData) return;
   
-  const lineups = appData.gameweeks[currentGW.toString()].lineups;
-  const mgrLineup = lineups[selectedManager];
-  const mgrMeta = appData.managers[selectedManager];
+  const gwData = appData.gameweeks[currentGW.toString()];
+  if (!gwData) return;
   
-  elPitchManagerTeam.innerText = `${mgrMeta.team} (GW ${currentGW})`;
-  elPitchManagerTeam.style.color = mgrMeta.color;
+  const standings = gwData.standings || [];
+  const mgrRecord = standings.find(s => s.manager === selectedManager);
+  const lineups = gwData.lineups || {};
+  const mgrLineup = lineups[selectedManager] || [];
+  const mgrMeta = appData.managers[selectedManager] || { team: selectedManager, color: '#00d2d3' };
+  
+  // 1. Update Main Pitch Header Stats
+  if (elMainPitchTeamName) {
+    const isWinner = mgrRecord && mgrRecord.rank === 1 && currentGW === 38;
+    elMainPitchTeamName.innerHTML = `${mgrMeta.team} ${isWinner ? '<span class="winner-badge-inline"><i class="fa-solid fa-crown"></i> WINNER</span>' : ''}`;
+  }
+  if (elMainPitchManagerName) elMainPitchManagerName.innerText = `${selectedManager} (GW ${currentGW})`;
+  if (elMainPitchAvatar) {
+    elMainPitchAvatar.style.backgroundColor = mgrMeta.color;
+    elMainPitchAvatar.style.boxShadow = `0 0 15px ${mgrMeta.color}60`;
+  }
+  if (mgrRecord) {
+    if (elMainPitchGwPts) elMainPitchGwPts.innerHTML = `<i class="fa-solid fa-bolt"></i> ${mgrRecord.gw_points} GW Pts`;
+    if (elMainPitchTotalPts) elMainPitchTotalPts.innerHTML = `<i class="fa-solid fa-trophy"></i> ${mgrRecord.overall_points} Total Pts`;
+    if (elMainPitchRank) elMainPitchRank.innerHTML = `<i class="fa-solid fa-ranking-star"></i> Rank #${mgrRecord.rank}`;
+  }
+
+  // 2. Update Right Column pitch header
+  if (elPitchManagerTeam) {
+    elPitchManagerTeam.innerText = `${mgrMeta.team} (GW ${currentGW})`;
+    elPitchManagerTeam.style.color = mgrMeta.color;
+  }
   
   // Reset Rows
   elPitchRowFWD.innerHTML = '';
@@ -853,10 +969,17 @@ function updateLineupPitch() {
   elPitchRowDEF.innerHTML = '';
   elPitchRowGKP.innerHTML = '';
   elPitchRowBench.innerHTML = '';
+
+  if (elMainPitchRowFWD) elMainPitchRowFWD.innerHTML = '';
+  if (elMainPitchRowMID) elMainPitchRowMID.innerHTML = '';
+  if (elMainPitchRowDEF) elMainPitchRowDEF.innerHTML = '';
+  if (elMainPitchRowGKP) elMainPitchRowGKP.innerHTML = '';
+  if (elMainPitchRowBench) elMainPitchRowBench.innerHTML = '';
   
   if (!mgrLineup || mgrLineup.length === 0) {
     const errorMsg = `<div style="color:var(--text-secondary); width:100%; text-align:center; padding: 20px;">No lineup data collected for this week.</div>`;
     elPitchRowGKP.innerHTML = errorMsg;
+    if (elMainPitchRowGKP) elMainPitchRowGKP.innerHTML = errorMsg;
     return;
   }
   
@@ -869,15 +992,17 @@ function updateLineupPitch() {
   
   // Render Starters by row
   starters.forEach(player => {
-    const playerCard = createPlayerCardDOM(player, maxPts);
-    const targetRow = document.getElementById(`pitch-row-${player.position}`);
-    if (targetRow) {
-      targetRow.appendChild(playerCard);
-    }
+    const card1 = createPlayerCardDOM(player, maxPts);
+    const card2 = createPlayerCardDOM(player, maxPts);
+    
+    const targetRowRight = document.getElementById(`pitch-row-${player.position}`);
+    if (targetRowRight) targetRowRight.appendChild(card1);
+
+    const targetRowMain = document.getElementById(`main-pitch-row-${player.position}`);
+    if (targetRowMain) targetRowMain.appendChild(card2);
   });
   
   // Render Bench
-  // Bench has 4 players. Sort bench players: GKP first, then others
   const sortedBench = [...bench].sort((a, b) => {
     if (a.position === 'GKP' && b.position !== 'GKP') return -1;
     if (a.position !== 'GKP' && b.position === 'GKP') return 1;
@@ -885,8 +1010,10 @@ function updateLineupPitch() {
   });
   
   sortedBench.forEach(player => {
-    const playerCard = createPlayerCardDOM(player, maxPts);
-    elPitchRowBench.appendChild(playerCard);
+    const card1 = createPlayerCardDOM(player, maxPts);
+    const card2 = createPlayerCardDOM(player, maxPts);
+    elPitchRowBench.appendChild(card1);
+    if (elMainPitchRowBench) elMainPitchRowBench.appendChild(card2);
   });
 }
 

@@ -5,4 +5,11 @@ fpl_data
 *.xls
 *.db
 !visualizer_data.json
+!visualizer_data_2025_26.json
+!visualizer_data_2026_27.json
+!docs/*.json
+!web/*.json
 *.txt
+venv/
+*.pyc
+__pycache__/
