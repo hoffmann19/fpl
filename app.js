@@ -242,10 +242,10 @@ function setupEventListeners() {
   
   // Tabs
   if (elTabFieldRoster) elTabFieldRoster.addEventListener('click', () => switchTab('field-roster'));
-  elTabBarRace.addEventListener('click', () => switchTab('bar-race'));
-  elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
-  elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
-  elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
+  if (elTabBarRace) elTabBarRace.addEventListener('click', () => switchTab('bar-race'));
+  if (elTabBumpChart) elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
+  if (elTabGlobalRank) elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
+  if (elTabScatterPlot) elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
 }
 
 function initDashboard() {
@@ -269,11 +269,11 @@ function initDashboard() {
   // Render Global Rank Chart
   renderGlobalRankChart();
   
-  // Pre-calculate ranges and cumulative captain points
-  calculateScatterRanges();
-  
-  // Render Scatter Plot Base (grid, axes, titles)
-  renderScatterPlotBase();
+  // Pre-calculate ranges and cumulative captain points if scatter plot active
+  if (elScatterSvg) {
+    calculateScatterRanges();
+    renderScatterPlotBase();
+  }
   
   // Update view
   updateDashboard();
@@ -780,7 +780,7 @@ function selectManager(managerName) {
   updateBumpChartHighlight();
   
   // Highlight selected bubble in Scatter Plot
-  updateScatterPlotHighlight();
+  if (elScatterSvg) updateScatterPlotHighlight();
 }
 
 function updateManagerCard() {
@@ -1131,7 +1131,7 @@ function updateDashboard() {
   updateLineupPitch();
   
   // 6. Update Scatter Plot
-  updateScatterPlot();
+  if (elScatterSvg) updateScatterPlot();
 }
 
 // ----------------------------------------------------
