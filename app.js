@@ -999,8 +999,14 @@ function updateLineupPitch() {
   const maxPts = Math.max(...mgrLineup.map(p => p.points));
   
   // Separate starters and bench
-  const starters = mgrLineup.filter(p => p.starting);
-  const bench = mgrLineup.filter(p => !p.starting);
+  let starters = mgrLineup.filter(p => p.starting);
+  let bench = mgrLineup.filter(p => !p.starting);
+  
+  // Failsafe: Guarantee exactly 11 starters and 4 bench players if data has unexpected starting flags
+  if (starters.length !== 11 && mgrLineup.length === 15) {
+    starters = mgrLineup.slice(0, 11).map(p => ({ ...p, starting: true }));
+    bench = mgrLineup.slice(11).map(p => ({ ...p, starting: false }));
+  }
   
   // Render Starters by row
   starters.forEach(player => {
