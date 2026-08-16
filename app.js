@@ -1148,7 +1148,6 @@ function createPlayerCardDOM(player, maxSquadPts) {
   card.innerHTML = `
     <div class="player-jersey-wrapper">
       ${jerseySvg}
-      <img src="${badgeUrl}" alt="${player.club}" class="jersey-club-crest" onerror="this.style.opacity='0'">
       <span class="player-pts-pill-tag">${player.points >= 0 ? '+' : ''}${player.points} pts</span>
       ${badgeHtml}
       ${mvpHtml}

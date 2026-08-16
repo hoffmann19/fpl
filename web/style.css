@@ -952,19 +952,6 @@ body {
   overflow: visible;
 }
 
-/* Small Club Crest Badge on Jersey */
-.jersey-club-crest {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-  pointer-events: none;
-  z-index: 4;
-}
-
 /* Points Pill Tag on Jersey */
 .player-pts-pill-tag {
   position: absolute;
