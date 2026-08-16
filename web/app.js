@@ -458,7 +458,9 @@ function createBarRaceElements() {
 }
 
 function renderBarChartRace() {
-  const standings = appData.gameweeks[currentGW.toString()].standings;
+  const gwData = appData?.gameweeks?.[currentGW.toString()];
+  if (!gwData || !gwData.standings) return;
+  const standings = gwData.standings;
   
   // Find current maximum overall points to calculate scale
   const maxPts = Math.max(...standings.map(s => s.overall_points));
@@ -583,7 +585,9 @@ function renderBumpChart() {
     // Build path points
     let points = [];
     for (let gw = 1; gw <= TOTAL_GWS; gw++) {
-      const standings = appData.gameweeks[gw.toString()].standings;
+      const gwData = appData?.gameweeks?.[gw.toString()];
+      if (!gwData || !gwData.standings) continue;
+      const standings = gwData.standings;
       const record = standings.find(s => s.manager === managerName);
       if (record) {
         points.push({
@@ -854,53 +858,61 @@ function selectManager(managerName) {
 function updateManagerCard() {
   if (!selectedManager || !appData) return;
   
-  const standings = appData.gameweeks[currentGW.toString()].standings;
+  const gwData = appData?.gameweeks?.[currentGW.toString()];
+  if (!gwData || !gwData.standings) return;
+  const standings = gwData.standings;
   const mgrRecord = standings.find(s => s.manager === selectedManager);
   const mgrMeta = appData.managers[selectedManager];
   
-  if (!mgrRecord) return;
+  if (!mgrRecord || !mgrMeta) return;
   
   // Colors and avatars
-  elManagerAvatar.style.backgroundColor = mgrMeta.color;
-  elManagerAvatar.style.boxShadow = `0 4px 15px ${mgrMeta.color}40`;
+  if (elManagerAvatar) {
+    elManagerAvatar.style.backgroundColor = mgrMeta.color;
+    elManagerAvatar.style.boxShadow = `0 4px 15px ${mgrMeta.color}40`;
+  }
   
   // Card top indicator border
-  document.getElementById('manager-info-card').style.setProperty('--accent', mgrMeta.color);
+  const mgrInfoCard = document.getElementById('manager-info-card');
+  if (mgrInfoCard) mgrInfoCard.style.setProperty('--accent', mgrMeta.color);
   
   // Text details
-  elManagerName.innerText = mgrMeta.team;
-  elManagerTeam.innerText = `Leaderboard Rank #${mgrRecord.rank}`;
-  elManagerRank.innerText = `#${mgrRecord.rank}`;
-  elManagerRank.style.color = mgrMeta.color;
-  elManagerRank.style.backgroundColor = `${mgrMeta.color}15`;
-  elManagerRank.style.borderColor = `${mgrMeta.color}30`;
+  if (elManagerName) elManagerName.innerText = mgrMeta.team;
+  if (elManagerTeam) elManagerTeam.innerText = `Leaderboard Rank #${mgrRecord.rank}`;
+  if (elManagerRank) {
+    elManagerRank.innerText = `#${mgrRecord.rank}`;
+    elManagerRank.style.color = mgrMeta.color;
+    elManagerRank.style.backgroundColor = `${mgrMeta.color}15`;
+    elManagerRank.style.borderColor = `${mgrMeta.color}30`;
+  }
   
-  elManagerGwPts.innerText = `${mgrRecord.gw_points} pts`;
+  if (elManagerGwPts) elManagerGwPts.innerText = `${mgrRecord.gw_points} pts`;
   
   // Hits display
   const hitsStr = mgrRecord.gw_hits > 0 ? `(-${mgrRecord.gw_hits} hits)` : '';
-  elManagerGwNetPts.innerText = `${mgrRecord.gw_net_points} pts ${hitsStr}`;
-  elManagerOverallPts.innerText = `${mgrRecord.overall_points} pts`;
-  elManagerOverallRank.innerText = mgrRecord.overall_rank.toLocaleString();
+  if (elManagerGwNetPts) elManagerGwNetPts.innerText = `${mgrRecord.gw_net_points} pts ${hitsStr}`;
+  if (elManagerOverallPts) elManagerOverallPts.innerText = `${mgrRecord.overall_points} pts`;
+  if (elManagerOverallRank) elManagerOverallRank.innerText = mgrRecord.overall_rank ? mgrRecord.overall_rank.toLocaleString() : '—';
   
   // Calculate Best Rank and Final Rank
   let bestRank = Infinity;
-  Object.keys(appData.gameweeks).forEach(gw => {
-    const standings = appData.gameweeks[gw].standings;
-    const record = standings.find(s => s.manager === selectedManager);
-    if (record && record.overall_rank && record.overall_rank < bestRank) {
+  Object.keys(appData.gameweeks || {}).forEach(gw => {
+    const gwObj = appData.gameweeks[gw];
+    if (!gwObj || !gwObj.standings) return;
+    const record = gwObj.standings.find(s => s.manager === selectedManager);
+    if (record && record.overall_rank && record.overall_rank > 0 && record.overall_rank < bestRank) {
       bestRank = record.overall_rank;
     }
   });
   
-  const availableGWs = Object.keys(appData.gameweeks).map(Number);
-  const maxGW = Math.max(...availableGWs);
-  const finalStandings = appData.gameweeks[maxGW.toString()].standings;
+  const availableGWs = Object.keys(appData.gameweeks || {}).map(Number);
+  const maxGW = availableGWs.length > 0 ? Math.max(...availableGWs) : 1;
+  const finalStandings = appData?.gameweeks?.[maxGW.toString()]?.standings || [];
   const finalRecord = finalStandings.find(s => s.manager === selectedManager);
   const finalRank = finalRecord ? finalRecord.overall_rank : null;
   
-  elManagerBestRank.innerText = bestRank !== Infinity ? bestRank.toLocaleString() : '—';
-  elManagerFinalRank.innerText = finalRank ? finalRank.toLocaleString() : '—';
+  if (elManagerBestRank) elManagerBestRank.innerText = bestRank !== Infinity ? bestRank.toLocaleString() : '—';
+  if (elManagerFinalRank) elManagerFinalRank.innerText = finalRank ? finalRank.toLocaleString() : '—';
   
   // Captain Row
   const capPointsStr = mgrRecord.captain_points !== undefined ? ` (${mgrRecord.captain_points} pts)` : '';
@@ -1228,7 +1240,7 @@ function createPlayerCardDOM(player, maxSquadPts) {
 // GLOBAL DASHBOARD UPDATER
 // ----------------------------------------------------
 function updateDashboard() {
-  if (!appData) return;
+  if (!appData || !appData.gameweeks) return;
   
   // Sync Gameweek selector, slider and header tags
   if (elSelectGw) elSelectGw.value = currentGW;
@@ -1236,16 +1248,18 @@ function updateDashboard() {
   if (elHeaderGw) elHeaderGw.innerText = currentGW;
   
   // 1. Find Leader for current GW
-  const standings = appData.gameweeks[currentGW.toString()].standings;
+  const gwData = appData.gameweeks[currentGW.toString()];
+  if (!gwData || !gwData.standings) return;
+  const standings = gwData.standings;
   const leaderRecord = standings.find(s => s.rank === 1);
   
   if (leaderRecord) {
-    elHeaderLeader.innerText = leaderRecord.team || leaderRecord.manager;
-    elHeaderLeaderPts.innerText = `${leaderRecord.overall_points} pts`;
+    if (elHeaderLeader) elHeaderLeader.innerText = leaderRecord.team || leaderRecord.manager;
+    if (elHeaderLeaderPts) elHeaderLeaderPts.innerText = `${leaderRecord.overall_points} pts`;
     
     // Dynamically color leader box
     const leaderMeta = appData.managers[leaderRecord.manager];
-    elHeaderLeader.style.color = leaderMeta.color;
+    if (leaderMeta && elHeaderLeader) elHeaderLeader.style.color = leaderMeta.color;
   }
   
   // 2. Render Bar Chart Race
@@ -1440,13 +1454,20 @@ function renderGlobalRankChart() {
   globalRankMin = Infinity;
   globalRankMax = -Infinity;
   for (let gw = 1; gw <= TOTAL_GWS; gw++) {
-    const standings = appData.gameweeks[gw.toString()].standings;
-    standings.forEach(s => {
+    const gwObj = appData.gameweeks?.[gw.toString()];
+    if (!gwObj || !gwObj.standings) continue;
+    gwObj.standings.forEach(s => {
       const r = s.overall_rank;
-      if (r < globalRankMin) globalRankMin = r;
-      if (r > globalRankMax) globalRankMax = r;
+      if (r && r > 0) {
+        if (r < globalRankMin) globalRankMin = r;
+        if (r > globalRankMax) globalRankMax = r;
+      }
     });
   }
+
+  // If no global rank data found (e.g. pre-season), fallback to 1..100000
+  if (globalRankMin === Infinity) globalRankMin = 1;
+  if (globalRankMax === -Infinity) globalRankMax = 100000;
 
   // Add a 5% margin to min and max so values don't clip at top/bottom
   const diff = globalRankMax - globalRankMin;
@@ -1514,8 +1535,9 @@ function renderGlobalRankChart() {
 
     let points = [];
     for (let gw = 1; gw <= TOTAL_GWS; gw++) {
-      const standings = appData.gameweeks[gw.toString()].standings;
-      const record = standings.find(s => s.manager === managerName);
+      const gwObj = appData.gameweeks?.[gw.toString()];
+      if (!gwObj || !gwObj.standings) continue;
+      const record = gwObj.standings.find(s => s.manager === managerName);
       if (record) {
         points.push({
           gw: gw,
