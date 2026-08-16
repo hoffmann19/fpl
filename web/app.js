@@ -1054,12 +1054,47 @@ const CLUB_BADGES = {
   'LUT': 'https://resources.premierleague.com/premierleague/badges/70/t102.png'
 };
 
+const CLUB_KITS = {
+  'ARS': { bg: '#DB0007', sleeve: '#FFFFFF', text: '#FFFFFF', name: '#FFFFFF', collar: '#FFFFFF' },
+  'MCI': { bg: '#6CABDD', sleeve: '#6CABDD', text: '#1C2C5B', name: '#FFFFFF', collar: '#1C2C5B' },
+  'LIV': { bg: '#C8102E', sleeve: '#C8102E', text: '#F6EB61', name: '#FFFFFF', collar: '#00B2A9' },
+  'CHE': { bg: '#034694', sleeve: '#034694', text: '#FFFFFF', name: '#FFFFFF', collar: '#DB0007' },
+  'MUN': { bg: '#DA291C', sleeve: '#DA291C', text: '#FFE500', name: '#FFFFFF', collar: '#000000' },
+  'TOT': { bg: '#FFFFFF', sleeve: '#132257', text: '#132257', name: '#132257', collar: '#132257' },
+  'AVL': { bg: '#670E36', sleeve: '#95B255', text: '#FFE500', name: '#FFFFFF', collar: '#95B255' },
+  'AST': { bg: '#670E36', sleeve: '#95B255', text: '#FFE500', name: '#FFFFFF', collar: '#95B255' },
+  'BOU': { bg: '#DA291C', sleeve: '#000000', text: '#FFFFFF', name: '#FFFFFF', collar: '#000000' },
+  'BHA': { bg: '#0057B8', sleeve: '#FFFFFF', text: '#FFE500', name: '#FFFFFF', collar: '#FFE500' },
+  'BRE': { bg: '#E30613', sleeve: '#FFFFFF', text: '#FFFFFF', name: '#FFFFFF', collar: '#000000' },
+  'CRY': { bg: '#1B458F', sleeve: '#C41230', text: '#FFE500', name: '#FFFFFF', collar: '#C41230' },
+  'EVE': { bg: '#003399', sleeve: '#003399', text: '#FFFFFF', name: '#FFFFFF', collar: '#FFFFFF' },
+  'FUL': { bg: '#FFFFFF', sleeve: '#000000', text: '#000000', name: '#000000', collar: '#000000' },
+  'IPS': { bg: '#003399', sleeve: '#FFFFFF', text: '#FFFFFF', name: '#FFFFFF', collar: '#FFFFFF' },
+  'LEE': { bg: '#FFFFFF', sleeve: '#FFFFFF', text: '#1D428A', name: '#1D428A', collar: '#FFCD00' },
+  'LEI': { bg: '#0053A0', sleeve: '#0053A0', text: '#FDBE11', name: '#FFFFFF', collar: '#FDBE11' },
+  'NFO': { bg: '#DD0000', sleeve: '#DD0000', text: '#FFFFFF', name: '#FFFFFF', collar: '#FFFFFF' },
+  'SOU': { bg: '#D4001C', sleeve: '#FFFFFF', text: '#000000', name: '#FFFFFF', collar: '#000000' },
+  'WHU': { bg: '#7A263A', sleeve: '#1BB1E7', text: '#F3A813', name: '#FFFFFF', collar: '#1BB1E7' },
+  'WOL': { bg: '#FDB913', sleeve: '#231F20', text: '#231F20', name: '#FFFFFF', collar: '#231F20' }
+};
+
+const GKP_KIT = { bg: '#00FF87', sleeve: '#00FF87', text: '#38003C', name: '#38003C', collar: '#38003C' };
+
 function createPlayerCardDOM(player, maxSquadPts) {
   const card = document.createElement('div');
   card.className = `player-card ${player.position}`;
   
   const clubCode = (player.club || '').toUpperCase().trim();
   const badgeUrl = CLUB_BADGES[clubCode] || 'https://resources.premierleague.com/premierleague/badges/70/t3.png';
+  const kit = player.position === 'GKP' ? GKP_KIT : (CLUB_KITS[clubCode] || { bg: '#3742fa', sleeve: '#1e90ff', text: '#ffffff', name: '#ffffff', collar: '#ffffff' });
+  
+  // Extract surname for jersey back (e.g. B.Fernandes -> FERNANDES)
+  let rawName = player.name || '';
+  if (rawName.includes('.')) {
+    const parts = rawName.split('.');
+    rawName = parts[parts.length - 1].trim();
+  }
+  const nameOnJersey = rawName.toUpperCase().substring(0, 10);
   
   // Captaincy badge
   let badgeHtml = '';
@@ -1083,13 +1118,35 @@ function createPlayerCardDOM(player, maxSquadPts) {
     subHtml = `<i class="fa-solid fa-circle-chevron-down sub-out-icon" style="color:var(--danger); position:absolute; bottom:-2px; right:-2px; font-size: 0.9rem; background:#000; border-radius:50%;"></i>`;
   }
   
-  // Points display text
-  const ptsText = player.points >= 0 ? `+${player.points}` : `${player.points}`;
+  // Points text for back of shirt
+  const ptsText = player.points >= 0 ? `${player.points}` : `${player.points}`;
+  
+  // Generate SVG Football Jersey Back
+  const jerseySvg = `
+    <svg class="jersey-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer Glow Shadow -->
+      <filter id="jersey-shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity="0.5"/>
+      </filter>
+      <!-- Sleeves -->
+      <path d="M 24 22 L 38 14 L 30 46 L 16 52 Z" fill="${kit.sleeve}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+      <path d="M 76 22 L 62 14 L 70 46 L 84 52 Z" fill="${kit.sleeve}" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+      <!-- Shirt Body -->
+      <path d="M 32 16 L 40 12 L 60 12 L 68 16 L 70 44 L 70 90 L 30 90 L 30 44 Z" fill="${kit.bg}" stroke="rgba(0,0,0,0.4)" stroke-width="2" filter="url(#jersey-shadow)"/>
+      <!-- Collar Trim -->
+      <path d="M 40 12 C 46 17, 54 17, 60 12" fill="none" stroke="${kit.collar}" stroke-width="3"/>
+      <!-- Player Name on Back of Jersey -->
+      <text x="50" y="32" font-family="'Outfit', sans-serif" font-weight="800" font-size="9.5" fill="${kit.name}" text-anchor="middle" letter-spacing="0.5">${nameOnJersey}</text>
+      <!-- Gameweek Points Number on Back -->
+      <text x="50" y="68" font-family="'Space Grotesk', sans-serif" font-weight="900" font-size="28" fill="${kit.text}" text-anchor="middle" dominant-baseline="central">${ptsText}</text>
+    </svg>
+  `;
   
   card.innerHTML = `
-    <div class="player-badge-container">
-      <img src="${badgeUrl}" alt="${player.club}" class="club-badge-img" onerror="this.style.opacity='0.4'">
-      <span class="player-pts-tag">${ptsText}</span>
+    <div class="player-jersey-wrapper">
+      ${jerseySvg}
+      <img src="${badgeUrl}" alt="${player.club}" class="jersey-club-crest" onerror="this.style.opacity='0'">
+      <span class="player-pts-pill-tag">${player.points >= 0 ? '+' : ''}${player.points} pts</span>
       ${badgeHtml}
       ${mvpHtml}
       ${subHtml}
