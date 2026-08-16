@@ -161,19 +161,26 @@ function loadSeasonData(seasonKey) {
     });
 }
 
-function onSeasonDataLoaded() {
-  if (currentSeason === '2025_26') {
-    currentGW = 38;
-    // Model GW38 Winner: Find rank 1 in GW38
-    const gw38Standings = appData.gameweeks["38"] ? appData.gameweeks["38"].standings : [];
-    const winner = gw38Standings.find(s => s.rank === 1);
-    selectedManager = winner ? winner.manager : Object.keys(appData.managers)[0];
-  } else {
-    currentGW = 1;
-    const gw1Standings = appData.gameweeks["1"] ? appData.gameweeks["1"].standings : [];
-    const leader = gw1Standings.find(s => s.rank === 1);
-    selectedManager = leader ? leader.manager : Object.keys(appData.managers)[0];
+function getLatestGWWithData(data) {
+  if (!data || !data.gameweeks) return 1;
+  const gws = Object.keys(data.gameweeks).map(Number).sort((a, b) => b - a);
+  for (const gw of gws) {
+    const gwStr = gw.toString();
+    const standings = data.gameweeks[gwStr] ? data.gameweeks[gwStr].standings : [];
+    const lineups = data.gameweeks[gwStr] ? data.gameweeks[gwStr].lineups : {};
+    const hasPoints = standings.some(s => (s.gw_points && s.gw_points > 0) || (s.overall_points && s.overall_points > 0));
+    const hasLineups = Object.values(lineups).some(l => Array.isArray(l) && l.length > 0);
+    if (hasPoints || hasLineups) return gw;
   }
+  return 1;
+}
+
+function onSeasonDataLoaded() {
+  currentGW = getLatestGWWithData(appData);
+  
+  const activeGWStandings = appData.gameweeks[currentGW.toString()] ? appData.gameweeks[currentGW.toString()].standings : [];
+  const leader = activeGWStandings.find(s => s.rank === 1);
+  selectedManager = leader ? leader.manager : Object.keys(appData.managers)[0];
   
   populateTeamDropdown();
   initDashboard();
