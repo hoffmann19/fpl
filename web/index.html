@@ -165,7 +165,11 @@
               <i class="fa-solid fa-list-ol"></i>
               <span>GW <span id="lb-gw-num">1</span> Leaderboard</span>
             </div>
-            <span class="leaderboard-sub">Click team to view roster</span>
+            <div class="leaderboard-sort-pills">
+              <span class="sort-label">Sort:</span>
+              <button id="sort-total-pts" class="sort-pill active" title="Sort by Season Total Points">Total Pts</button>
+              <button id="sort-gw-pts" class="sort-pill" title="Sort by Gameweek Points">GW Pts</button>
+            </div>
           </div>
           <div class="leaderboard-list" id="gw-leaderboard-list">
             <!-- Leaderboard rows injected dynamically via JS -->

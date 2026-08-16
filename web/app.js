@@ -253,6 +253,9 @@ function setupEventListeners() {
   if (elTabBumpChart) elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
   if (elTabGlobalRank) elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
   if (elTabScatterPlot) elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
+
+  // Leaderboard Sort Listeners
+  setupLeaderboardListeners();
 }
 
 function initDashboard() {
@@ -1209,6 +1212,31 @@ function updateDashboard() {
   if (elScatterSvg) updateScatterPlot();
 }
 
+let leaderboardSortMode = 'total'; // 'total' | 'gw'
+
+function setupLeaderboardListeners() {
+  const btnSortTotal = document.getElementById('sort-total-pts');
+  const btnSortGw = document.getElementById('sort-gw-pts');
+  
+  if (btnSortTotal) {
+    btnSortTotal.addEventListener('click', () => {
+      leaderboardSortMode = 'total';
+      btnSortTotal.classList.add('active');
+      if (btnSortGw) btnSortGw.classList.remove('active');
+      renderLeaderboard();
+    });
+  }
+  
+  if (btnSortGw) {
+    btnSortGw.addEventListener('click', () => {
+      leaderboardSortMode = 'gw';
+      btnSortGw.classList.add('active');
+      if (btnSortTotal) btnSortTotal.classList.remove('active');
+      renderLeaderboard();
+    });
+  }
+}
+
 function renderLeaderboard() {
   const elLeaderboardList = document.getElementById('gw-leaderboard-list');
   const elLbGwNum = document.getElementById('lb-gw-num');
@@ -1220,12 +1248,34 @@ function renderLeaderboard() {
   const gwData = appData.gameweeks[currentGW.toString()];
   if (!gwData || !gwData.standings) return;
   
-  const standings = [...gwData.standings].sort((a, b) => a.rank - b.rank);
+  // Sort standings dynamically based on leaderboardSortMode
+  const standings = [...gwData.standings].sort((a, b) => {
+    if (leaderboardSortMode === 'gw') {
+      if (b.gw_points !== a.gw_points) return b.gw_points - a.gw_points;
+      return b.overall_points - a.overall_points;
+    }
+    // Default 'total': sort by overall_points
+    if (b.overall_points !== a.overall_points) return b.overall_points - a.overall_points;
+    return b.gw_points - a.gw_points;
+  });
   
-  standings.forEach((mgrRecord) => {
+  standings.forEach((mgrRecord, index) => {
     const mgrMeta = appData.managers[mgrRecord.manager] || { team: mgrRecord.manager, color: '#00d2d3' };
     const isSelected = mgrRecord.manager === selectedManager;
-    const isWinner = mgrRecord.rank === 1;
+    const rankNum = index + 1;
+    const isWinner = rankNum === 1;
+    
+    // Transfers & Hits
+    const transfersCount = mgrRecord.transfers !== undefined ? mgrRecord.transfers : 0;
+    const hitsCount = mgrRecord.gw_hits !== undefined ? mgrRecord.gw_hits : 0;
+    const hitsPenalty = Math.abs(hitsCount);
+    
+    let hitBadgeHtml = '';
+    if (hitsPenalty > 0) {
+      hitBadgeHtml = `<span class="lb-hit-badge danger" title="${hitsPenalty} pts hit penalty">-${hitsPenalty} hit</span>`;
+    } else {
+      hitBadgeHtml = `<span class="lb-hit-badge neutral" title="0 hit penalty">0 hit</span>`;
+    }
     
     const row = document.createElement('div');
     row.className = `leaderboard-row ${isSelected ? 'active' : ''}`;
@@ -1233,15 +1283,19 @@ function renderLeaderboard() {
     
     row.innerHTML = `
       <div class="lb-rank-badge ${isWinner ? 'winner' : ''}">
-        ${isWinner ? '<i class="fa-solid fa-crown"></i>' : `#${mgrRecord.rank}`}
+        ${isWinner ? '<i class="fa-solid fa-crown"></i>' : `#${rankNum}`}
       </div>
       <div class="lb-team-info">
         <span class="lb-team-title" style="color: ${mgrMeta.color}">${mgrMeta.team}</span>
         <span class="lb-mgr-sub">${mgrRecord.manager}</span>
       </div>
+      <div class="lb-transfers-cell">
+        <span class="lb-tx-badge"><i class="fa-solid fa-right-left"></i> ${transfersCount} tx</span>
+        ${hitBadgeHtml}
+      </div>
       <div class="lb-points-cell">
-        <span class="lb-gw-pts">+${mgrRecord.gw_points} <small>GW${currentGW}</small></span>
-        <span class="lb-total-pts">${mgrRecord.overall_points.toLocaleString()} <small>Total</small></span>
+        <span class="lb-gw-pts ${leaderboardSortMode === 'gw' ? 'highlight-sort' : ''}">+${mgrRecord.gw_points} <small>GW${currentGW}</small></span>
+        <span class="lb-total-pts ${leaderboardSortMode === 'total' ? 'highlight-sort' : ''}">${mgrRecord.overall_points.toLocaleString()} <small>Total</small></span>
       </div>
     `;
     
