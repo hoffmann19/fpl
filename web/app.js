@@ -879,53 +879,55 @@ function updateManagerCard() {
   }
   
   // Render Formation Pie Chart
-  elFormationPie.innerHTML = '';
-  elFormationLegend.innerHTML = '';
-  
-  const formations = managerFormations[selectedManager] || {};
-  const sortedFormations = Object.entries(formations).sort((a, b) => b[1] - a[1]);
-  const totalWeeks = Object.values(formations).reduce((a, b) => a + b, 0);
-  
-  if (sortedFormations.length === 0 || totalWeeks === 0) {
-    elFormationPie.style.background = 'conic-gradient(var(--card-border) 0% 100%)';
-    elFormationLegend.innerHTML = '<div class="transfer-none">No formation data available.</div>';
-  } else {
-    // Premium color palette for formations
-    const formationColors = [
-      '#00d2d3', // teal/accent
-      '#3742fa', // deep royal blue
-      '#ff4757', // coral red
-      '#ffa502', // orange
-      '#2ed573', // green
-      '#a55eea'  // purple
-    ];
+  if (elFormationPie && elFormationLegend) {
+    elFormationPie.innerHTML = '';
+    elFormationLegend.innerHTML = '';
     
-    let gradientParts = [];
-    let currentPct = 0;
+    const formations = managerFormations[selectedManager] || {};
+    const sortedFormations = Object.entries(formations).sort((a, b) => b[1] - a[1]);
+    const totalWeeks = Object.values(formations).reduce((a, b) => a + b, 0);
     
-    sortedFormations.forEach(([formCode, count], idx) => {
-      const color = formationColors[idx % formationColors.length];
-      const pct = (count / totalWeeks) * 100;
-      const nextPct = currentPct + pct;
+    if (sortedFormations.length === 0 || totalWeeks === 0) {
+      elFormationPie.style.background = 'conic-gradient(var(--card-border) 0% 100%)';
+      elFormationLegend.innerHTML = '<div class="transfer-none">No formation data available.</div>';
+    } else {
+      // Premium color palette for formations
+      const formationColors = [
+        '#00d2d3', // teal/accent
+        '#3742fa', // deep royal blue
+        '#ff4757', // coral red
+        '#ffa502', // orange
+        '#2ed573', // green
+        '#a55eea'  // purple
+      ];
       
-      gradientParts.push(`${color} ${currentPct.toFixed(1)}% ${nextPct.toFixed(1)}%`);
-      currentPct = nextPct;
+      let gradientParts = [];
+      let currentPct = 0;
       
-      // Add to legend
-      const legendItem = document.createElement('div');
-      legendItem.className = 'formation-legend-item';
-      legendItem.innerHTML = `
-        <div class="formation-legend-label">
-          <span class="formation-legend-color" style="background: ${color}"></span>
-          <span>${formCode}</span>
-        </div>
-        <span class="formation-legend-value">${count} weeks (${pct.toFixed(0)}%)</span>
-      `;
-      elFormationLegend.appendChild(legendItem);
-    });
-    
-    // Apply conic gradient background
-    elFormationPie.style.background = `conic-gradient(${gradientParts.join(', ')})`;
+      sortedFormations.forEach(([formCode, count], idx) => {
+        const color = formationColors[idx % formationColors.length];
+        const pct = (count / totalWeeks) * 100;
+        const nextPct = currentPct + pct;
+        
+        gradientParts.push(`${color} ${currentPct.toFixed(1)}% ${nextPct.toFixed(1)}%`);
+        currentPct = nextPct;
+        
+        // Add to legend
+        const legendItem = document.createElement('div');
+        legendItem.className = 'formation-legend-item';
+        legendItem.innerHTML = `
+          <div class="formation-legend-label">
+            <span class="formation-legend-color" style="background: ${color}"></span>
+            <span>${formCode}</span>
+          </div>
+          <span class="formation-legend-value">${count} weeks (${pct.toFixed(0)}%)</span>
+        `;
+        elFormationLegend.appendChild(legendItem);
+      });
+      
+      // Apply conic gradient background
+      elFormationPie.style.background = `conic-gradient(${gradientParts.join(', ')})`;
+    }
   }
 }
 
@@ -957,18 +959,18 @@ function updateLineupPitch() {
     if (elMainPitchRank) elMainPitchRank.innerHTML = `<i class="fa-solid fa-ranking-star"></i> Rank #${mgrRecord.rank}`;
   }
 
-  // 2. Update Right Column pitch header
+  // 2. Update Right Column pitch header if present
   if (elPitchManagerTeam) {
     elPitchManagerTeam.innerText = `${mgrMeta.team} (GW ${currentGW})`;
     elPitchManagerTeam.style.color = mgrMeta.color;
   }
   
   // Reset Rows
-  elPitchRowFWD.innerHTML = '';
-  elPitchRowMID.innerHTML = '';
-  elPitchRowDEF.innerHTML = '';
-  elPitchRowGKP.innerHTML = '';
-  elPitchRowBench.innerHTML = '';
+  if (elPitchRowFWD) elPitchRowFWD.innerHTML = '';
+  if (elPitchRowMID) elPitchRowMID.innerHTML = '';
+  if (elPitchRowDEF) elPitchRowDEF.innerHTML = '';
+  if (elPitchRowGKP) elPitchRowGKP.innerHTML = '';
+  if (elPitchRowBench) elPitchRowBench.innerHTML = '';
 
   if (elMainPitchRowFWD) elMainPitchRowFWD.innerHTML = '';
   if (elMainPitchRowMID) elMainPitchRowMID.innerHTML = '';
@@ -978,7 +980,7 @@ function updateLineupPitch() {
   
   if (!mgrLineup || mgrLineup.length === 0) {
     const errorMsg = `<div style="color:var(--text-secondary); width:100%; text-align:center; padding: 20px;">No lineup data collected for this week.</div>`;
-    elPitchRowGKP.innerHTML = errorMsg;
+    if (elPitchRowGKP) elPitchRowGKP.innerHTML = errorMsg;
     if (elMainPitchRowGKP) elMainPitchRowGKP.innerHTML = errorMsg;
     return;
   }
@@ -1012,7 +1014,7 @@ function updateLineupPitch() {
   sortedBench.forEach(player => {
     const card1 = createPlayerCardDOM(player, maxPts);
     const card2 = createPlayerCardDOM(player, maxPts);
-    elPitchRowBench.appendChild(card1);
+    if (elPitchRowBench) elPitchRowBench.appendChild(card1);
     if (elMainPitchRowBench) elMainPitchRowBench.appendChild(card2);
   });
 }
