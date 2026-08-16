@@ -323,32 +323,37 @@ function switchTab(tab) {
   activeTab = tab;
   
   if (elTabFieldRoster) elTabFieldRoster.classList.remove('active');
-  elTabBarRace.classList.remove('active');
-  elTabBumpChart.classList.remove('active');
-  elTabGlobalRank.classList.remove('active');
-  elTabScatterPlot.classList.remove('active');
+  if (elTabBarRace) elTabBarRace.classList.remove('active');
+  if (elTabBumpChart) elTabBumpChart.classList.remove('active');
+  if (elTabGlobalRank) elTabGlobalRank.classList.remove('active');
+  if (elTabScatterPlot) elTabScatterPlot.classList.remove('active');
   
   if (elPanelFieldRoster) elPanelFieldRoster.classList.remove('active');
-  elPanelBarRace.classList.remove('active');
-  elPanelBumpChart.classList.remove('active');
-  elPanelGlobalRank.classList.remove('active');
-  elPanelScatterPlot.classList.remove('active');
+  if (elPanelBarRace) elPanelBarRace.classList.remove('active');
+  if (elPanelBumpChart) elPanelBumpChart.classList.remove('active');
+  if (elPanelGlobalRank) elPanelGlobalRank.classList.remove('active');
+  if (elPanelScatterPlot) elPanelScatterPlot.classList.remove('active');
   
   if (tab === 'field-roster') {
     if (elTabFieldRoster) elTabFieldRoster.classList.add('active');
     if (elPanelFieldRoster) elPanelFieldRoster.classList.add('active');
   } else if (tab === 'bar-race') {
-    elTabBarRace.classList.add('active');
-    elPanelBarRace.classList.add('active');
+    if (elTabBarRace) elTabBarRace.classList.add('active');
+    if (elPanelBarRace) elPanelBarRace.classList.add('active');
+    renderBarChartRace();
   } else if (tab === 'bump-chart') {
-    elTabBumpChart.classList.add('active');
-    elPanelBumpChart.classList.add('active');
+    if (elTabBumpChart) elTabBumpChart.classList.add('active');
+    if (elPanelBumpChart) elPanelBumpChart.classList.add('active');
+    renderBumpChart();
+    updateBumpTracker();
   } else if (tab === 'global-rank') {
-    elTabGlobalRank.classList.add('active');
-    elPanelGlobalRank.classList.add('active');
+    if (elTabGlobalRank) elTabGlobalRank.classList.add('active');
+    if (elPanelGlobalRank) elPanelGlobalRank.classList.add('active');
+    renderGlobalRankChart();
+    updateBumpTracker();
   } else if (tab === 'scatter-plot') {
-    elTabScatterPlot.classList.add('active');
-    elPanelScatterPlot.classList.add('active');
+    if (elTabScatterPlot) elTabScatterPlot.classList.add('active');
+    if (elPanelScatterPlot) elPanelScatterPlot.classList.add('active');
   }
 }
 
