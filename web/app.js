@@ -212,15 +212,31 @@ function populateTeamDropdown() {
 }
 
 function populateGwDropdown() {
-  if (!elSelectGw) return;
+  if (!elSelectGw || !appData || !appData.gameweeks) return;
   elSelectGw.innerHTML = '';
-  for (let i = 1; i <= TOTAL_GWS; i++) {
+  
+  const gws = Object.keys(appData.gameweeks).map(Number).sort((a, b) => a - b);
+  
+  gws.forEach(i => {
+    const gwStr = i.toString();
+    const standings = appData.gameweeks[gwStr] ? appData.gameweeks[gwStr].standings : [];
+    const hasData = standings.some(s => (s.gw_points && s.gw_points > 0) || (s.overall_points && s.overall_points > 0));
+    
     const opt = document.createElement('option');
     opt.value = i;
-    opt.innerText = `Gameweek ${i}`;
+    
+    if (hasData) {
+      opt.innerText = `Gameweek ${i}`;
+    } else {
+      opt.innerText = i === 1 ? `GW 1 (Starts Friday)` : `GW ${i} (Upcoming)`;
+      if (i > 1 && currentSeason === '2026_27') {
+        opt.disabled = true;
+      }
+    }
+    
     if (i === currentGW) opt.selected = true;
     elSelectGw.appendChild(opt);
-  }
+  });
 }
 
 function setupEventListeners() {
