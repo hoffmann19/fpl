@@ -1019,9 +1019,40 @@ function updateLineupPitch() {
   });
 }
 
+const CLUB_BADGES = {
+  'ARS': 'https://resources.premierleague.com/premierleague/badges/70/t3.png',
+  'AVL': 'https://resources.premierleague.com/premierleague/badges/70/t7.png',
+  'AST': 'https://resources.premierleague.com/premierleague/badges/70/t7.png',
+  'BOU': 'https://resources.premierleague.com/premierleague/badges/70/t91.png',
+  'BRE': 'https://resources.premierleague.com/premierleague/badges/70/t94.png',
+  'BHA': 'https://resources.premierleague.com/premierleague/badges/70/t36.png',
+  'CHE': 'https://resources.premierleague.com/premierleague/badges/70/t8.png',
+  'CRY': 'https://resources.premierleague.com/premierleague/badges/70/t31.png',
+  'EVE': 'https://resources.premierleague.com/premierleague/badges/70/t11.png',
+  'FUL': 'https://resources.premierleague.com/premierleague/badges/70/t54.png',
+  'IPS': 'https://resources.premierleague.com/premierleague/badges/70/t40.png',
+  'LEE': 'https://resources.premierleague.com/premierleague/badges/70/t2.png',
+  'LEI': 'https://resources.premierleague.com/premierleague/badges/70/t13.png',
+  'LIV': 'https://resources.premierleague.com/premierleague/badges/70/t14.png',
+  'MCI': 'https://resources.premierleague.com/premierleague/badges/70/t43.png',
+  'MUN': 'https://resources.premierleague.com/premierleague/badges/70/t1.png',
+  'NEW': 'https://resources.premierleague.com/premierleague/badges/70/t4.png',
+  'NFO': 'https://resources.premierleague.com/premierleague/badges/70/t17.png',
+  'SOU': 'https://resources.premierleague.com/premierleague/badges/70/t20.png',
+  'TOT': 'https://resources.premierleague.com/premierleague/badges/70/t6.png',
+  'WHU': 'https://resources.premierleague.com/premierleague/badges/70/t21.png',
+  'WOL': 'https://resources.premierleague.com/premierleague/badges/70/t39.png',
+  'BUR': 'https://resources.premierleague.com/premierleague/badges/70/t90.png',
+  'SHU': 'https://resources.premierleague.com/premierleague/badges/70/t49.png',
+  'LUT': 'https://resources.premierleague.com/premierleague/badges/70/t102.png'
+};
+
 function createPlayerCardDOM(player, maxSquadPts) {
   const card = document.createElement('div');
   card.className = `player-card ${player.position}`;
+  
+  const clubCode = (player.club || '').toUpperCase().trim();
+  const badgeUrl = CLUB_BADGES[clubCode] || 'https://resources.premierleague.com/premierleague/badges/70/t3.png';
   
   // Captaincy badge
   let badgeHtml = '';
@@ -1040,23 +1071,24 @@ function createPlayerCardDOM(player, maxSquadPts) {
   // Sub indicators
   let subHtml = '';
   if (player.sub_in) {
-    subHtml = `<i class="fa-solid fa-circle-chevron-up sub-in-icon" style="color:var(--success); position:absolute; bottom:0; right:0; font-size: 0.8rem; background:#000; border-radius:50%;"></i>`;
+    subHtml = `<i class="fa-solid fa-circle-chevron-up sub-in-icon" style="color:var(--success); position:absolute; bottom:-2px; right:-2px; font-size: 0.9rem; background:#000; border-radius:50%;"></i>`;
   } else if (player.sub_out) {
-    subHtml = `<i class="fa-solid fa-circle-chevron-down sub-out-icon" style="color:var(--danger); position:absolute; bottom:0; right:0; font-size: 0.8rem; background:#000; border-radius:50%;"></i>`;
+    subHtml = `<i class="fa-solid fa-circle-chevron-down sub-out-icon" style="color:var(--danger); position:absolute; bottom:-2px; right:-2px; font-size: 0.9rem; background:#000; border-radius:50%;"></i>`;
   }
   
-  // Points display text (sign indicator)
-  const ptsText = player.points >= 0 ? `+${player.points}` : player.points;
+  // Points display text
+  const ptsText = player.points >= 0 ? `+${player.points}` : `${player.points}`;
   
   card.innerHTML = `
-    <div class="player-shirt">
-      ${ptsText}
+    <div class="player-badge-container">
+      <img src="${badgeUrl}" alt="${player.club}" class="club-badge-img" onerror="this.style.opacity='0.4'">
+      <span class="player-pts-tag">${ptsText}</span>
       ${badgeHtml}
       ${mvpHtml}
       ${subHtml}
     </div>
     <span class="player-name">${player.name}</span>
-    <span class="player-club">${player.club}</span>
+    <span class="player-club-sub">${player.club}</span>
   `;
   
   return card;
