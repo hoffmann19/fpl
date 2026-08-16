@@ -1139,9 +1139,9 @@ function createPlayerCardDOM(player, maxSquadPts) {
       <!-- Collar Trim -->
       <path d="M 40 12 C 46 17, 54 17, 60 12" fill="none" stroke="${kit.collar}" stroke-width="3"/>
       <!-- Player Name on Back of Jersey -->
-      <text x="50" y="32" font-family="'Outfit', sans-serif" font-weight="800" font-size="9.5" fill="${kit.name}" text-anchor="middle" letter-spacing="0.5">${nameOnJersey}</text>
+      <text x="50" y="30" font-family="'Outfit', sans-serif" font-weight="800" font-size="11" fill="${kit.name}" text-anchor="middle" letter-spacing="0.5">${nameOnJersey}</text>
       <!-- Gameweek Points Number on Back -->
-      <text x="50" y="68" font-family="'Space Grotesk', sans-serif" font-weight="900" font-size="28" fill="${kit.text}" text-anchor="middle" dominant-baseline="central">${ptsText}</text>
+      <text x="50" y="65" font-family="'Space Grotesk', sans-serif" font-weight="900" font-size="34" fill="${kit.text}" text-anchor="middle" dominant-baseline="central">${ptsText}</text>
     </svg>
   `;
   

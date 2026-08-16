@@ -937,12 +937,13 @@ body {
 }
 
 .player-jersey-wrapper {
-  width: 68px;
-  height: 68px;
+  width: 84px;
+  height: 84px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
 }
 
 .jersey-svg {
@@ -954,10 +955,10 @@ body {
 /* Small Club Crest Badge on Jersey */
 .jersey-club-crest {
   position: absolute;
-  top: 10px;
-  right: 14px;
-  width: 18px;
-  height: 18px;
+  top: 12px;
+  right: 16px;
+  width: 22px;
+  height: 22px;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
   pointer-events: none;
@@ -968,14 +969,14 @@ body {
 .player-pts-pill-tag {
   position: absolute;
   bottom: -4px;
-  right: -6px;
+  right: -4px;
   background: #0f172a;
   color: #00ff87;
   border: 1.5px solid #00ff87;
   border-radius: 10px;
-  padding: 1px 6px;
+  padding: 2px 7px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 800;
   box-shadow: 0 2px 8px rgba(0,0,0,0.6);
   z-index: 6;
@@ -985,7 +986,7 @@ body {
 .player-badge {
   position: absolute;
   border-radius: 50%;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -996,22 +997,22 @@ body {
 .player-badge.captain {
   background: #ff4757;
   color: #fff;
-  top: -2px;
-  left: -4px;
+  top: 0px;
+  left: -2px;
   border: 1.5px solid #fff;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   z-index: 7;
 }
 
 .player-badge.vice-captain {
   background: #ffa502;
   color: #fff;
-  top: -2px;
-  left: -4px;
+  top: 0px;
+  left: -2px;
   border: 1.5px solid #fff;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   z-index: 7;
 }
 
@@ -1019,10 +1020,10 @@ body {
   background: #ffd700;
   color: #000;
   bottom: -2px;
-  left: -4px;
+  left: -2px;
   border: 1.5px solid #000;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   z-index: 7;
   animation: pulse 1.5s infinite;
 }
