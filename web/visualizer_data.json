@@ -63,6 +63,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -81,6 +83,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -99,6 +103,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -117,6 +123,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -135,6 +143,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -153,6 +163,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -171,6 +183,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -189,6 +203,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -207,6 +223,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -225,6 +243,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -243,6 +263,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -2104,6 +2126,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -2122,6 +2146,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -2140,6 +2166,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -2158,6 +2186,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -2176,6 +2206,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -2194,6 +2226,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -2212,6 +2246,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -2230,6 +2266,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -2248,6 +2286,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -2266,6 +2306,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -2284,6 +2326,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -4145,6 +4189,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -4163,6 +4209,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -4181,6 +4229,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -4199,6 +4249,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -4217,6 +4269,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -4235,6 +4289,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -4253,6 +4309,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -4271,6 +4329,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -4289,6 +4349,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -4307,6 +4369,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -4325,6 +4389,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -6186,6 +6252,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -6204,6 +6272,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -6222,6 +6292,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -6240,6 +6312,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -6258,6 +6332,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -6276,6 +6352,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -6294,6 +6372,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -6312,6 +6392,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -6330,6 +6412,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -6348,6 +6432,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -6366,6 +6452,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -8227,6 +8315,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -8245,6 +8335,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -8263,6 +8355,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -8281,6 +8375,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -8299,6 +8395,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -8317,6 +8415,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -8335,6 +8435,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -8353,6 +8455,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -8371,6 +8475,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -8389,6 +8495,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -8407,6 +8515,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -10268,6 +10378,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -10286,6 +10398,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -10304,6 +10418,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -10322,6 +10438,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -10340,6 +10458,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -10358,6 +10478,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -10376,6 +10498,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -10394,6 +10518,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -10412,6 +10538,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -10430,6 +10558,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -10448,6 +10578,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -12309,6 +12441,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -12327,6 +12461,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -12345,6 +12481,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -12363,6 +12501,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -12381,6 +12521,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -12399,6 +12541,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -12417,6 +12561,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -12435,6 +12581,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -12453,6 +12601,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -12471,6 +12621,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -12489,6 +12641,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -14350,6 +14504,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -14368,6 +14524,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -14386,6 +14544,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -14404,6 +14564,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -14422,6 +14584,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -14440,6 +14604,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -14458,6 +14624,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -14476,6 +14644,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -14494,6 +14664,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -14512,6 +14684,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -14530,6 +14704,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -16391,6 +16567,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -16409,6 +16587,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -16427,6 +16607,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -16445,6 +16627,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -16463,6 +16647,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -16481,6 +16667,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -16499,6 +16687,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -16517,6 +16707,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -16535,6 +16727,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -16553,6 +16747,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -16571,6 +16767,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -18432,6 +18630,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -18450,6 +18650,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -18468,6 +18670,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -18486,6 +18690,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -18504,6 +18710,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -18522,6 +18730,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -18540,6 +18750,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -18558,6 +18770,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -18576,6 +18790,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -18594,6 +18810,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -18612,6 +18830,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -20473,6 +20693,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -20491,6 +20713,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -20509,6 +20733,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -20527,6 +20753,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -20545,6 +20773,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -20563,6 +20793,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -20581,6 +20813,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -20599,6 +20833,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -20617,6 +20853,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -20635,6 +20873,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -20653,6 +20893,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -22514,6 +22756,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -22532,6 +22776,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -22550,6 +22796,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -22568,6 +22816,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -22586,6 +22836,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -22604,6 +22856,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -22622,6 +22876,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -22640,6 +22896,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -22658,6 +22916,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -22676,6 +22936,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -22694,6 +22956,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -24555,6 +24819,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -24573,6 +24839,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -24591,6 +24859,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -24609,6 +24879,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -24627,6 +24899,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -24645,6 +24919,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -24663,6 +24939,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -24681,6 +24959,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -24699,6 +24979,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -24717,6 +24999,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -24735,6 +25019,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -26596,6 +26882,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -26614,6 +26902,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -26632,6 +26922,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -26650,6 +26942,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -26668,6 +26962,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -26686,6 +26982,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -26704,6 +27002,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -26722,6 +27022,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -26740,6 +27042,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -26758,6 +27062,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -26776,6 +27082,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -28637,6 +28945,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -28655,6 +28965,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -28673,6 +28985,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -28691,6 +29005,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -28709,6 +29025,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -28727,6 +29045,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -28745,6 +29065,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -28763,6 +29085,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -28781,6 +29105,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -28799,6 +29125,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -28817,6 +29145,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -30678,6 +31008,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -30696,6 +31028,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -30714,6 +31048,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -30732,6 +31068,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -30750,6 +31088,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -30768,6 +31108,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -30786,6 +31128,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -30804,6 +31148,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -30822,6 +31168,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -30840,6 +31188,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -30858,6 +31208,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -32719,6 +33071,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -32737,6 +33091,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -32755,6 +33111,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -32773,6 +33131,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -32791,6 +33151,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -32809,6 +33171,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -32827,6 +33191,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -32845,6 +33211,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -32863,6 +33231,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -32881,6 +33251,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -32899,6 +33271,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -34760,6 +35134,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -34778,6 +35154,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -34796,6 +35174,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -34814,6 +35194,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -34832,6 +35214,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -34850,6 +35234,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -34868,6 +35254,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -34886,6 +35274,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -34904,6 +35294,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -34922,6 +35314,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -34940,6 +35334,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -36801,6 +37197,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -36819,6 +37217,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -36837,6 +37237,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -36855,6 +37257,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -36873,6 +37277,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -36891,6 +37297,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -36909,6 +37317,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -36927,6 +37337,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -36945,6 +37357,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -36963,6 +37377,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -36981,6 +37397,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -38842,6 +39260,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -38860,6 +39280,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -38878,6 +39300,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -38896,6 +39320,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -38914,6 +39340,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -38932,6 +39360,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -38950,6 +39380,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -38968,6 +39400,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -38986,6 +39420,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -39004,6 +39440,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -39022,6 +39460,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -40883,6 +41323,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -40901,6 +41343,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -40919,6 +41363,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -40937,6 +41383,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -40955,6 +41403,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -40973,6 +41423,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -40991,6 +41443,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -41009,6 +41463,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -41027,6 +41483,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -41045,6 +41503,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -41063,6 +41523,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -42924,6 +43386,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -42942,6 +43406,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -42960,6 +43426,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -42978,6 +43446,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -42996,6 +43466,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -43014,6 +43486,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -43032,6 +43506,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -43050,6 +43526,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -43068,6 +43546,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -43086,6 +43566,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -43104,6 +43586,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -44965,6 +45449,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -44983,6 +45469,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -45001,6 +45489,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -45019,6 +45509,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -45037,6 +45529,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -45055,6 +45549,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -45073,6 +45569,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -45091,6 +45589,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -45109,6 +45609,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -45127,6 +45629,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -45145,6 +45649,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -47006,6 +47512,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -47024,6 +47532,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -47042,6 +47552,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -47060,6 +47572,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -47078,6 +47592,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -47096,6 +47612,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -47114,6 +47632,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -47132,6 +47652,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -47150,6 +47672,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -47168,6 +47692,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -47186,6 +47712,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -49047,6 +49575,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -49065,6 +49595,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -49083,6 +49615,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -49101,6 +49635,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -49119,6 +49655,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -49137,6 +49675,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -49155,6 +49695,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -49173,6 +49715,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -49191,6 +49735,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -49209,6 +49755,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -49227,6 +49775,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -51088,6 +51638,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -51106,6 +51658,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -51124,6 +51678,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -51142,6 +51698,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -51160,6 +51718,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -51178,6 +51738,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -51196,6 +51758,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -51214,6 +51778,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -51232,6 +51798,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -51250,6 +51818,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -51268,6 +51838,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -53129,6 +53701,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -53147,6 +53721,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -53165,6 +53741,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -53183,6 +53761,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -53201,6 +53781,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -53219,6 +53801,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -53237,6 +53821,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -53255,6 +53841,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -53273,6 +53861,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -53291,6 +53881,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -53309,6 +53901,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -55170,6 +55764,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -55188,6 +55784,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -55206,6 +55804,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -55224,6 +55824,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -55242,6 +55844,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -55260,6 +55864,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -55278,6 +55884,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -55296,6 +55904,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -55314,6 +55924,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -55332,6 +55944,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -55350,6 +55964,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -57211,6 +57827,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -57229,6 +57847,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -57247,6 +57867,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -57265,6 +57887,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -57283,6 +57907,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -57301,6 +57927,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -57319,6 +57947,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -57337,6 +57967,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -57355,6 +57987,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -57373,6 +58007,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -57391,6 +58027,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -59252,6 +59890,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -59270,6 +59910,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -59288,6 +59930,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -59306,6 +59950,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -59324,6 +59970,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -59342,6 +59990,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -59360,6 +60010,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -59378,6 +60030,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -59396,6 +60050,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -59414,6 +60070,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -59432,6 +60090,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -61293,6 +61953,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -61311,6 +61973,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -61329,6 +61993,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -61347,6 +62013,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -61365,6 +62033,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -61383,6 +62053,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -61401,6 +62073,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -61419,6 +62093,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -61437,6 +62113,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -61455,6 +62133,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -61473,6 +62153,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -63334,6 +64016,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -63352,6 +64036,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -63370,6 +64056,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -63388,6 +64076,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -63406,6 +64096,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -63424,6 +64116,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -63442,6 +64136,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -63460,6 +64156,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -63478,6 +64176,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -63496,6 +64196,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -63514,6 +64216,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -65375,6 +66079,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -65393,6 +66099,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -65411,6 +66119,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -65429,6 +66139,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -65447,6 +66159,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -65465,6 +66179,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -65483,6 +66199,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -65501,6 +66219,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -65519,6 +66239,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -65537,6 +66259,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -65555,6 +66279,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -67416,6 +68142,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -67434,6 +68162,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -67452,6 +68182,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -67470,6 +68202,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -67488,6 +68222,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -67506,6 +68242,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -67524,6 +68262,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -67542,6 +68282,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -67560,6 +68302,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -67578,6 +68322,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -67596,6 +68342,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -69457,6 +70205,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -69475,6 +70225,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -69493,6 +70245,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -69511,6 +70265,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -69529,6 +70285,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -69547,6 +70305,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -69565,6 +70325,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -69583,6 +70345,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -69601,6 +70365,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -69619,6 +70385,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -69637,6 +70405,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -71498,6 +72268,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -71516,6 +72288,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -71534,6 +72308,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -71552,6 +72328,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -71570,6 +72348,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -71588,6 +72368,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -71606,6 +72388,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -71624,6 +72408,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -71642,6 +72428,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -71660,6 +72448,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -71678,6 +72468,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -73539,6 +74331,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -73557,6 +74351,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -73575,6 +74371,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -73593,6 +74391,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -73611,6 +74411,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -73629,6 +74431,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -73647,6 +74451,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -73665,6 +74471,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -73683,6 +74491,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -73701,6 +74511,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -73719,6 +74531,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11
@@ -75580,6 +76394,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 23.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 1
@@ -75598,6 +76414,8 @@
           "bank": 0.0,
           "captain": "B.Fernandes",
           "captain_points": 4,
+          "players_left": 2,
+          "value_left": 22.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 2
@@ -75616,6 +76434,8 @@
           "bank": 0.5,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 44.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 3
@@ -75634,6 +76454,8 @@
           "bank": 0.0,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 2,
+          "value_left": 14.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 4
@@ -75652,6 +76474,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 4,
+          "value_left": 37.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 5
@@ -75670,6 +76494,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 45.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 6
@@ -75688,6 +76514,8 @@
           "bank": 0.5,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 32.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 7
@@ -75706,6 +76534,8 @@
           "bank": 0.0,
           "captain": "Haaland",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 43.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 8
@@ -75724,6 +76554,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 36.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 9
@@ -75742,6 +76574,8 @@
           "bank": 0.5,
           "captain": "Thiago",
           "captain_points": 0,
+          "players_left": 5,
+          "value_left": 34.0,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 10
@@ -75760,6 +76594,8 @@
           "bank": 0.0,
           "captain": "Jo\u00e3o Pedro",
           "captain_points": 0,
+          "players_left": 7,
+          "value_left": 47.5,
           "transfers_in": [],
           "transfers_out": [],
           "rank": 11

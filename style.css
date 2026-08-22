@@ -1209,6 +1209,35 @@ body {
   flex-direction: column;
   flex: 1;
   margin: 0 12px;
+  gap: 2px;
+}
+
+.lb-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lb-players-left-badge {
+  font-size: 0.72rem;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.lb-players-left-badge small {
+  color: #e2e8f0;
+  font-weight: 400;
+}
+
+.pitch-stat-badge.highlight-gold {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.4);
+  color: #ffd700;
 }
 
 .lb-team-title {

@@ -71,6 +71,7 @@ const elMainPitchGwPts = document.getElementById('main-pitch-gw-pts');
 const elMainPitchTotalPts = document.getElementById('main-pitch-total-pts');
 const elMainPitchRank = document.getElementById('main-pitch-rank');
 const elMainPitchAvatar = document.getElementById('main-pitch-avatar');
+const elMainPitchRemaining = document.getElementById('main-pitch-remaining');
 
 const elMainPitchRowFWD = document.getElementById('main-pitch-row-FWD');
 const elMainPitchRowMID = document.getElementById('main-pitch-row-MID');
@@ -1034,6 +1035,11 @@ function updateLineupPitch() {
     if (elMainPitchGwPts) elMainPitchGwPts.innerHTML = `<i class="fa-solid fa-bolt"></i> ${mgrRecord.gw_points} GW Pts`;
     if (elMainPitchTotalPts) elMainPitchTotalPts.innerHTML = `<i class="fa-solid fa-trophy"></i> ${mgrRecord.overall_points} Total Pts`;
     if (elMainPitchRank) elMainPitchRank.innerHTML = `<i class="fa-solid fa-ranking-star"></i> Rank #${mgrRecord.rank}`;
+    if (elMainPitchRemaining) {
+      const leftCount = mgrRecord.players_left !== undefined ? mgrRecord.players_left : 0;
+      const leftVal = mgrRecord.value_left !== undefined ? mgrRecord.value_left : 0;
+      elMainPitchRemaining.innerHTML = `<i class="fa-solid fa-stopwatch"></i> ${leftCount}/11 Left <small>(£${leftVal}m)</small>`;
+    }
   }
 
   // 2. Update Right Column pitch header if present
@@ -1352,6 +1358,12 @@ function renderLeaderboard() {
       hitBadgeHtml = `<span class="lb-hit-badge neutral" title="0 hit penalty">0 hit</span>`;
     }
     
+    // Players Remaining Badge
+    let playersLeftHtml = '';
+    if (mgrRecord.players_left !== undefined) {
+      playersLeftHtml = `<span class="lb-players-left-badge" title="${mgrRecord.players_left} players left to play (£${mgrRecord.value_left}m squad value)"><i class="fa-solid fa-user-clock"></i> ${mgrRecord.players_left} left <small>(£${mgrRecord.value_left}m)</small></span>`;
+    }
+
     const row = document.createElement('div');
     row.className = `leaderboard-row ${isSelected ? 'active' : ''}`;
     row.style.borderLeft = `4px solid ${mgrMeta.color}`;
@@ -1363,7 +1375,10 @@ function renderLeaderboard() {
       </div>
       <div class="lb-team-info">
         <span class="lb-team-title" style="color: ${mgrMeta.color}">${mgrMeta.team}</span>
-        <span class="lb-mgr-sub">${mgrRecord.manager}</span>
+        <div class="lb-sub-row">
+          <span class="lb-mgr-sub">${mgrRecord.manager}</span>
+          ${playersLeftHtml}
+        </div>
       </div>
       <div class="lb-transfers-cell">
         <span class="lb-tx-badge"><i class="fa-solid fa-right-left"></i> ${transfersCount} tx</span>

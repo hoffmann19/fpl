@@ -94,6 +94,14 @@ def main():
             for el in live_data["elements"]:
                 live_stats[el["id"]] = el.get("stats", {})
 
+        # Fetch fixtures for this GW to calculate remaining players & remaining squad value
+        fixtures_data = fetch_json(f"https://fantasy.premierleague.com/api/fixtures/?event={gw}") or []
+        team_fixture_finished = {}
+        for f in fixtures_data:
+            finished = f.get("finished", False) or f.get("finished_provisional", False)
+            team_fixture_finished[f.get("team_h")] = finished
+            team_fixture_finished[f.get("team_a")] = finished
+
         gw_standings_raw = []
 
         for mgr_name, meta in managers_meta.items():
@@ -118,6 +126,8 @@ def main():
 
             captain_name = ""
             captain_pts = 0
+            players_left = 0
+            value_left = 0.0
             mgr_lineup = []
 
             for p in picks:
@@ -139,6 +149,13 @@ def main():
                 if is_cap:
                     captain_name = web_name
                     captain_pts = p_pts * multiplier
+
+                if is_start:
+                    p_team_id = el_info.get("team")
+                    is_match_finished = team_fixture_finished.get(p_team_id, False)
+                    if not is_match_finished:
+                        players_left += 1
+                        value_left += (el_info.get("now_cost", 0) / 10.0)
 
                 mgr_lineup.append({
                     "name": web_name,
@@ -166,6 +183,8 @@ def main():
                 "bank": bank,
                 "captain": captain_name,
                 "captain_points": captain_pts,
+                "players_left": players_left,
+                "value_left": round(value_left, 1),
                 "transfers_in": [],
                 "transfers_out": []
             })
