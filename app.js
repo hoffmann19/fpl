@@ -149,12 +149,13 @@ function loadSeasonData(seasonKey) {
     return;
   }
   
-  const jsonUrl = seasonKey === '2025_26' ? './visualizer_data_2025_26.json' : './visualizer_data_2026_27.json';
+  const cacheBuster = '?t=' + Date.now();
+  const jsonUrl = (seasonKey === '2025_26' ? './visualizer_data_2025_26.json' : './visualizer_data_2026_27.json') + cacheBuster;
   
   fetch(jsonUrl)
     .then(response => {
       if (!response.ok) {
-        return fetch('./visualizer_data.json').then(r => r.json());
+        return fetch('./visualizer_data.json' + cacheBuster).then(r => r.json());
       }
       return response.json();
     })
