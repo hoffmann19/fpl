@@ -174,8 +174,8 @@ function getLatestGWWithData(data) {
   for (const gw of gws) {
     const gwStr = gw.toString();
     const standings = data.gameweeks[gwStr] ? data.gameweeks[gwStr].standings : [];
-    const hasPoints = standings.some(s => (s.gw_points && s.gw_points > 0) || (s.overall_points && s.overall_points > 0));
-    if (hasPoints) return gw;
+    const hasData = standings.some(s => (s.gw_points && s.gw_points > 0) || (s.transfers && s.transfers > 0) || (s.gw_hits && s.gw_hits !== 0));
+    if (hasData) return gw;
   }
   return 1;
 }
@@ -216,22 +216,19 @@ function populateGwDropdown() {
   elSelectGw.innerHTML = '';
   
   const gws = Object.keys(appData.gameweeks).map(Number).sort((a, b) => a - b);
+  const maxPlayedGW = getLatestGWWithData(appData);
   
   gws.forEach(i => {
-    const gwStr = i.toString();
-    const standings = appData.gameweeks[gwStr] ? appData.gameweeks[gwStr].standings : [];
-    const hasData = standings.some(s => (s.gw_points && s.gw_points > 0) || (s.overall_points && s.overall_points > 0));
+    const isPlayed = i <= maxPlayedGW;
     
     const opt = document.createElement('option');
     opt.value = i;
     
-    if (hasData) {
+    if (isPlayed) {
       opt.innerText = `Gameweek ${i}`;
     } else {
-      opt.innerText = i === 1 ? `GW 1 (Starts Friday)` : `GW ${i} (Upcoming)`;
-      if (i > 1 && currentSeason === '2026_27') {
-        opt.disabled = true;
-      }
+      opt.innerText = `GW ${i} (Upcoming)`;
+      opt.disabled = true;
     }
     
     if (i === currentGW) opt.selected = true;

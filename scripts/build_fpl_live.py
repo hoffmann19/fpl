@@ -185,8 +185,10 @@ def main():
     latest_lineups = gameweeks_dict[latest_gw_key]["lineups"]
 
     for gw in range(max_gw + 1, 39):
-        gameweeks_dict[str(gw)]["standings"] = latest_standings
-        gameweeks_dict[str(gw)]["lineups"] = latest_lineups
+        unplayed_standings = [dict(s, gw_points=0, gw_hits=0, gw_net_points=0, transfers=0, chip="None") for s in latest_standings]
+        unplayed_lineups = {mgr: [dict(p, points=0) for p in lineup] for mgr, lineup in latest_lineups.items()}
+        gameweeks_dict[str(gw)]["standings"] = unplayed_standings
+        gameweeks_dict[str(gw)]["lineups"] = unplayed_lineups
 
     output_data = {
         "season": "2026/27",
