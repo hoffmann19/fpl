@@ -1325,6 +1325,11 @@ function renderLeaderboard() {
     if (b.overall_points !== a.overall_points) return b.overall_points - a.overall_points;
     return b.gw_points - a.gw_points;
   });
+
+  // Find maximum score in active sort mode for bar width scaling
+  const maxScore = standings.length > 0 
+    ? (leaderboardSortMode === 'gw' ? standings[0].gw_points : standings[0].overall_points)
+    : 1;
   
   standings.forEach((mgrRecord, index) => {
     const mgrMeta = appData.managers[mgrRecord.manager] || { team: mgrRecord.manager, color: '#00d2d3' };
@@ -1332,6 +1337,10 @@ function renderLeaderboard() {
     const rankNum = index + 1;
     const isWinner = rankNum === 1;
     
+    // Calculate background bar width percentage
+    const rowScore = leaderboardSortMode === 'gw' ? mgrRecord.gw_points : mgrRecord.overall_points;
+    const barWidthPct = maxScore > 0 ? Math.max(6, (rowScore / maxScore) * 100) : 6;
+
     // Transfers & Hits
     const transfersCount = mgrRecord.transfers !== undefined ? mgrRecord.transfers : 0;
     const hitsCount = mgrRecord.gw_hits !== undefined ? mgrRecord.gw_hits : 0;
@@ -1349,6 +1358,7 @@ function renderLeaderboard() {
     row.style.borderLeft = `4px solid ${mgrMeta.color}`;
     
     row.innerHTML = `
+      <div class="lb-row-bar-bg" style="width: ${barWidthPct}%; background: ${mgrMeta.color};"></div>
       <div class="lb-rank-badge ${isWinner ? 'winner' : ''}">
         ${isWinner ? '<i class="fa-solid fa-crown"></i>' : `#${rankNum}`}
       </div>
