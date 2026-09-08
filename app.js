@@ -155,18 +155,25 @@ function loadSeasonData(seasonKey) {
   fetch(jsonUrl)
     .then(response => {
       if (!response.ok) {
-        return fetch('./visualizer_data.json' + cacheBuster).then(r => r.json());
+        return fetch('./visualizer_data.json' + cacheBuster).then(r => {
+          if (!r.ok) throw new Error(`Failed to load visualizer data (HTTP ${r.status})`);
+          return r.json();
+        });
       }
       return response.json();
     })
     .then(data => {
       loadedSeasons[seasonKey] = data;
       appData = data;
-      onSeasonDataLoaded();
+      try {
+        onSeasonDataLoaded();
+      } catch (renderError) {
+        console.error('Error rendering dashboard:', renderError);
+      }
     })
     .catch(error => {
       console.error('Error fetching season data:', error);
-      elHeaderLeader.innerText = "Error loading data";
+      if (elHeaderLeader) elHeaderLeader.innerText = "Error loading data";
     });
 }
 
@@ -855,6 +862,8 @@ function selectManager(managerName) {
 }
 
 function updateManagerCard() {
+  const mgrInfoCard = document.getElementById('manager-info-card');
+  if (!mgrInfoCard && !elManagerCaptainName && !elManagerName) return;
   if (!selectedManager || !appData) return;
   
   const gwData = appData?.gameweeks?.[currentGW.toString()];
@@ -872,7 +881,6 @@ function updateManagerCard() {
   }
   
   // Card top indicator border
-  const mgrInfoCard = document.getElementById('manager-info-card');
   if (mgrInfoCard) mgrInfoCard.style.setProperty('--accent', mgrMeta.color);
   
   // Text details
@@ -915,46 +923,52 @@ function updateManagerCard() {
   
   // Captain Row
   const capPointsStr = mgrRecord.captain_points !== undefined ? ` (${mgrRecord.captain_points} pts)` : '';
-  elManagerCaptainName.innerText = mgrRecord.captain ? `${mgrRecord.captain}${capPointsStr}` : '—';
+  if (elManagerCaptainName) elManagerCaptainName.innerText = mgrRecord.captain ? `${mgrRecord.captain}${capPointsStr}` : '—';
   
   // Chip Played
-  if (mgrRecord.chip && mgrRecord.chip !== 'None') {
-    elManagerChipBadge.classList.remove('hidden');
-    elManagerChipName.innerText = mgrRecord.chip;
-  } else {
-    elManagerChipBadge.classList.add('hidden');
+  if (elManagerChipBadge && elManagerChipName) {
+    if (mgrRecord.chip && mgrRecord.chip !== 'None') {
+      elManagerChipBadge.classList.remove('hidden');
+      elManagerChipName.innerText = mgrRecord.chip;
+    } else {
+      elManagerChipBadge.classList.add('hidden');
+    }
   }
   
   // Transfers Made
-  elManagerTransfersCount.innerText = mgrRecord.transfers;
+  if (elManagerTransfersCount) elManagerTransfersCount.innerText = mgrRecord.transfers;
   
   // Transfers In / Out lists
-  elManagerTransfersIn.innerHTML = '';
-  if (mgrRecord.transfers_in && mgrRecord.transfers_in.length > 0) {
-    mgrRecord.transfers_in.forEach(p => {
+  if (elManagerTransfersIn) {
+    elManagerTransfersIn.innerHTML = '';
+    if (mgrRecord.transfers_in && mgrRecord.transfers_in.length > 0) {
+      mgrRecord.transfers_in.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = p;
+        elManagerTransfersIn.appendChild(li);
+      });
+    } else {
       const li = document.createElement('li');
-      li.textContent = p;
+      li.className = 'transfer-none';
+      li.textContent = 'None';
       elManagerTransfersIn.appendChild(li);
-    });
-  } else {
-    const li = document.createElement('li');
-    li.className = 'transfer-none';
-    li.textContent = 'None';
-    elManagerTransfersIn.appendChild(li);
+    }
   }
 
-  elManagerTransfersOut.innerHTML = '';
-  if (mgrRecord.transfers_out && mgrRecord.transfers_out.length > 0) {
-    mgrRecord.transfers_out.forEach(p => {
+  if (elManagerTransfersOut) {
+    elManagerTransfersOut.innerHTML = '';
+    if (mgrRecord.transfers_out && mgrRecord.transfers_out.length > 0) {
+      mgrRecord.transfers_out.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = p;
+        elManagerTransfersOut.appendChild(li);
+      });
+    } else {
       const li = document.createElement('li');
-      li.textContent = p;
+      li.className = 'transfer-none';
+      li.textContent = 'None';
       elManagerTransfersOut.appendChild(li);
-    });
-  } else {
-    const li = document.createElement('li');
-    li.className = 'transfer-none';
-    li.textContent = 'None';
-    elManagerTransfersOut.appendChild(li);
+    }
   }
   
   // Render Formation Pie Chart
