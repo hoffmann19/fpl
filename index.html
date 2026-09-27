@@ -54,6 +54,7 @@
       <div class="top-bar-section nav-section">
         <div class="tab-pills-row">
           <button id="tab-field-roster" class="tab-pill active" title="Field &amp; Roster"><i class="fa-solid fa-futbol"></i> Pitch</button>
+          <button id="tab-winners" class="tab-pill" title="Gameweek Winners"><i class="fa-solid fa-trophy"></i> Winners</button>
           <button id="tab-bump-chart" class="tab-pill" title="Rank Trajectory"><i class="fa-solid fa-chart-line"></i> Rank</button>
           <button id="tab-global-rank" class="tab-pill" title="Global Rank"><i class="fa-solid fa-globe"></i> Global</button>
           <button id="tab-transfers" class="tab-pill" title="Transfers In &amp; Out"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transfers</button>
@@ -102,6 +103,83 @@
               <div class="pitch-bench">
                 <div class="bench-title"><i class="fa-solid fa-couch"></i> Substitute Bench</div>
                 <div class="bench-players" id="main-pitch-row-bench"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gameweek Winners Panel -->
+          <div id="panel-winners" class="panel">
+            <div class="winners-container">
+              <!-- Sub-header with view toggle -->
+              <div class="winners-header-row">
+                <div class="winners-header-title">
+                  <i class="fa-solid fa-trophy"></i>
+                  <span>Gameweek Winners &amp; Trophy Room</span>
+                </div>
+                <div class="winners-view-toggle">
+                  <button id="btn-view-gw-winners" class="subview-pill active" title="Show Gameweek by Gameweek Winners"><i class="fa-solid fa-list-check"></i> GW by GW</button>
+                  <button id="btn-view-wins-table" class="subview-pill" title="Show Most Wins Trophy Leaderboard"><i class="fa-solid fa-medal"></i> Trophy Standings</button>
+                </div>
+              </div>
+
+              <!-- Top Metric Cards -->
+              <div class="transfers-metrics-grid" id="winners-metrics-container">
+                <div class="metric-card">
+                  <div class="metric-icon king"><i class="fa-solid fa-crown"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Most GW Wins</span>
+                    <span class="metric-value highlight" id="metric-most-wins">-</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon"><i class="fa-solid fa-fire"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Season High Score</span>
+                    <span class="metric-value" id="metric-high-score">0 pts</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon hit"><i class="fa-solid fa-sack-dollar"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Total Cash Won</span>
+                    <span class="metric-value" id="metric-total-payout">$0</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon"><i class="fa-solid fa-chart-line"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Avg Winning Score</span>
+                    <span class="metric-value" id="metric-avg-winning-score">0 pts</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- View 1: Gameweek by Gameweek Cards -->
+              <div id="winners-gw-view" class="winners-subview active">
+                <div class="winners-cards-grid" id="winners-cards-container">
+                  <!-- Injected via JavaScript -->
+                </div>
+              </div>
+
+              <!-- View 2: Trophy Standings Table -->
+              <div id="winners-table-view" class="winners-subview hidden">
+                <div class="transfers-table-wrapper glass">
+                  <table class="transfers-season-table">
+                    <thead>
+                      <tr>
+                        <th>Rank</th>
+                        <th>Manager &amp; Team</th>
+                        <th>GW Wins</th>
+                        <th>Gameweeks Won</th>
+                        <th>Total Prize</th>
+                        <th>Highest GW Score</th>
+                      </tr>
+                    </thead>
+                    <tbody id="winners-table-body">
+                      <!-- Injected via JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

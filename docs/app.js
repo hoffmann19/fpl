@@ -51,16 +51,32 @@ const elSelectGw = document.getElementById('select-gw');
 
 // Tab Panels
 const elTabFieldRoster = document.getElementById('tab-field-roster');
+const elTabWinners = document.getElementById('tab-winners');
 const elTabBumpChart = document.getElementById('tab-bump-chart');
 const elTabGlobalRank = document.getElementById('tab-global-rank');
 const elTabScatterPlot = document.getElementById('tab-scatter-plot');
 const elTabTransfers = document.getElementById('tab-transfers');
 
 const elPanelFieldRoster = document.getElementById('panel-field-roster');
+const elPanelWinners = document.getElementById('panel-winners');
 const elPanelBumpChart = document.getElementById('panel-bump-chart');
 const elPanelGlobalRank = document.getElementById('panel-global-rank');
 const elPanelScatterPlot = document.getElementById('panel-scatter-plot');
 const elPanelTransfers = document.getElementById('panel-transfers');
+
+// Winners Elements
+const elBtnViewGwWinners = document.getElementById('btn-view-gw-winners');
+const elBtnViewWinsTable = document.getElementById('btn-view-wins-table');
+const elWinnersGwView = document.getElementById('winners-gw-view');
+const elWinnersTableView = document.getElementById('winners-table-view');
+const elWinnersCardsContainer = document.getElementById('winners-cards-container');
+const elWinnersTableBody = document.getElementById('winners-table-body');
+const elMetricMostWins = document.getElementById('metric-most-wins');
+const elMetricHighScore = document.getElementById('metric-high-score');
+const elMetricTotalPayout = document.getElementById('metric-total-payout');
+const elMetricAvgWinningScore = document.getElementById('metric-avg-winning-score');
+
+let winnersSubView = 'gw'; // 'gw' | 'table'
 
 // Transfers Elements
 const elBtnViewTeamHistory = document.getElementById('btn-view-team-history');
@@ -340,10 +356,19 @@ function setupEventListeners() {
   
   // Tabs
   if (elTabFieldRoster) elTabFieldRoster.addEventListener('click', () => switchTab('field-roster'));
+  if (elTabWinners) elTabWinners.addEventListener('click', () => switchTab('winners'));
   if (elTabBumpChart) elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
   if (elTabGlobalRank) elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
   if (elTabScatterPlot) elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
   if (elTabTransfers) elTabTransfers.addEventListener('click', () => switchTab('transfers'));
+
+  // Winners Subview Listeners
+  if (elBtnViewGwWinners) {
+    elBtnViewGwWinners.addEventListener('click', () => switchWinnersSubView('gw'));
+  }
+  if (elBtnViewWinsTable) {
+    elBtnViewWinsTable.addEventListener('click', () => switchWinnersSubView('table'));
+  }
 
   // Transfers Subview Listeners
   if (elBtnViewTeamHistory) {
@@ -404,12 +429,14 @@ function switchTab(tab) {
   activeTab = tab;
   
   if (elTabFieldRoster) elTabFieldRoster.classList.remove('active');
+  if (elTabWinners) elTabWinners.classList.remove('active');
   if (elTabBumpChart) elTabBumpChart.classList.remove('active');
   if (elTabGlobalRank) elTabGlobalRank.classList.remove('active');
   if (elTabScatterPlot) elTabScatterPlot.classList.remove('active');
   if (elTabTransfers) elTabTransfers.classList.remove('active');
   
   if (elPanelFieldRoster) elPanelFieldRoster.classList.remove('active');
+  if (elPanelWinners) elPanelWinners.classList.remove('active');
   if (elPanelBumpChart) elPanelBumpChart.classList.remove('active');
   if (elPanelGlobalRank) elPanelGlobalRank.classList.remove('active');
   if (elPanelScatterPlot) elPanelScatterPlot.classList.remove('active');
@@ -418,6 +445,10 @@ function switchTab(tab) {
   if (tab === 'field-roster') {
     if (elTabFieldRoster) elTabFieldRoster.classList.add('active');
     if (elPanelFieldRoster) elPanelFieldRoster.classList.add('active');
+  } else if (tab === 'winners') {
+    if (elTabWinners) elTabWinners.classList.add('active');
+    if (elPanelWinners) elPanelWinners.classList.add('active');
+    renderWinnersView();
   } else if (tab === 'bump-chart') {
     if (elTabBumpChart) elTabBumpChart.classList.add('active');
     if (elPanelBumpChart) elPanelBumpChart.classList.add('active');
@@ -2178,6 +2209,247 @@ function showScatterTooltip(event, managerName, record, avgCapPts) {
 function hideScatterTooltip() {
   if (elScatterTooltip) {
     elScatterTooltip.classList.add('hidden');
+  }
+}
+
+// ----------------------------------------------------
+// GAMEWEEK WINNERS & TROPHY ROOM IMPLEMENTATION
+// ----------------------------------------------------
+function switchWinnersSubView(subView) {
+  winnersSubView = subView;
+  if (elBtnViewGwWinners) elBtnViewGwWinners.classList.toggle('active', subView === 'gw');
+  if (elBtnViewWinsTable) elBtnViewWinsTable.classList.toggle('active', subView === 'table');
+  if (elWinnersGwView) elWinnersGwView.classList.toggle('hidden', subView !== 'gw');
+  if (elWinnersTableView) elWinnersTableView.classList.toggle('hidden', subView !== 'table');
+  renderWinnersView();
+}
+
+function renderWinnersView() {
+  if (!appData || !appData.gameweeks) return;
+  
+  const availableGWs = Object.keys(appData.gameweeks).map(Number).sort((a, b) => a - b);
+  const playedGWs = availableGWs.filter(gw => gw <= finalGW);
+  if (playedGWs.length === 0) return;
+
+  // Compute GW winners for each played gameweek
+  const gwWinnersList = [];
+  const managerWinStats = {};
+
+  Object.keys(appData.managers).forEach(mgr => {
+    managerWinStats[mgr] = {
+      manager: mgr,
+      team: appData.managers[mgr].team,
+      color: appData.managers[mgr].color,
+      wins: 0,
+      payout: 0,
+      highScore: 0,
+      wonGWs: []
+    };
+  });
+
+  let totalPayout = 0;
+  let seasonHighScore = { score: 0, manager: '', gw: 1 };
+  let sumWinningScores = 0;
+
+  playedGWs.forEach(gw => {
+    const gwData = appData.gameweeks[gw.toString()];
+    if (!gwData || !gwData.standings || gwData.standings.length === 0) return;
+    const standings = gwData.standings;
+    const maxPts = Math.max(...standings.map(s => s.gw_points));
+    const winners = standings.filter(s => s.gw_points === maxPts);
+    const runnerUps = standings.filter(s => s.gw_points < maxPts);
+    const secondPts = runnerUps.length > 0 ? Math.max(...runnerUps.map(s => s.gw_points)) : maxPts;
+    const margin = maxPts - secondPts;
+
+    sumWinningScores += maxPts;
+    if (maxPts > seasonHighScore.score) {
+      seasonHighScore = { score: maxPts, manager: winners[0].manager, gw: gw };
+    }
+
+    const payoutPerWinner = 15.0 / winners.length;
+
+    winners.forEach(w => {
+      const mgr = w.manager;
+      if (!managerWinStats[mgr]) {
+        managerWinStats[mgr] = {
+          manager: mgr,
+          team: w.team,
+          color: appData.managers[mgr]?.color || '#1e90ff',
+          wins: 0,
+          payout: 0,
+          highScore: 0,
+          wonGWs: []
+        };
+      }
+      managerWinStats[mgr].wins += 1;
+      managerWinStats[mgr].payout += payoutPerWinner;
+      managerWinStats[mgr].wonGWs.push(gw);
+      if (maxPts > managerWinStats[mgr].highScore) {
+        managerWinStats[mgr].highScore = maxPts;
+      }
+    });
+
+    totalPayout += 15.0;
+
+    // Get winner captain from lineups
+    const primaryWinner = winners[0];
+    const lineup = gwData.lineups?.[primaryWinner.manager] || [];
+    const captainPlayer = lineup.find(p => p.captain || p.is_captain);
+
+    gwWinnersList.push({
+      gw,
+      winningPts: maxPts,
+      margin,
+      winners,
+      payoutPerWinner,
+      chip: primaryWinner.chip,
+      captain: captainPlayer
+    });
+  });
+
+  // Calculate Most Wins Leader
+  const sortedManagers = Object.values(managerWinStats).sort((a, b) => {
+    if (b.wins !== a.wins) return b.wins - a.wins;
+    if (b.payout !== a.payout) return b.payout - a.payout;
+    return b.highScore - a.highScore;
+  });
+
+  const topLeader = sortedManagers[0];
+  if (elMetricMostWins) {
+    if (topLeader && topLeader.wins > 0) {
+      elMetricMostWins.innerText = `${topLeader.manager} (${topLeader.wins} win${topLeader.wins === 1 ? '' : 's'})`;
+    } else {
+      elMetricMostWins.innerText = '-';
+    }
+  }
+
+  if (elMetricHighScore) {
+    elMetricHighScore.innerText = `${seasonHighScore.score} pts (${seasonHighScore.manager}, GW${seasonHighScore.gw})`;
+  }
+
+  if (elMetricTotalPayout) {
+    elMetricTotalPayout.innerText = `$${Math.round(totalPayout)}`;
+  }
+
+  if (elMetricAvgWinningScore) {
+    const avg = playedGWs.length > 0 ? Math.round(sumWinningScores / playedGWs.length) : 0;
+    elMetricAvgWinningScore.innerText = `${avg} pts`;
+  }
+
+  // Render Subview 1: GW by GW Cards (Newest first)
+  if (elWinnersCardsContainer) {
+    elWinnersCardsContainer.innerHTML = '';
+    const descendingWinners = [...gwWinnersList].sort((a, b) => b.gw - a.gw);
+
+    descendingWinners.forEach(item => {
+      const winner = item.winners[0];
+      const winnerMeta = appData.managers[winner.manager] || { color: '#ffd700' };
+
+      // Margin string
+      const marginStr = item.margin > 0 ? `+${item.margin} pts ahead of #2` : 'Tied for 1st';
+
+      // Captain badge
+      let captainHtml = '';
+      if (item.captain) {
+        captainHtml = `<span class="winner-captain-badge" title="Captain played"><i class="fa-solid fa-copyright"></i> ${item.captain.name} (${item.captain.points} pts)</span>`;
+      }
+
+      // Chip badge
+      let chipHtml = '';
+      const chipInfo = getChipInfo(item.chip);
+      if (chipInfo) {
+        chipHtml = `<span class="lb-chip-badge chip-${chipInfo.cssClass}"><i class="fa-solid ${chipInfo.icon}"></i> ${chipInfo.name}</span>`;
+      }
+
+      // Payout string
+      const payoutStr = item.winners.length > 1 ? `$${item.payoutPerWinner.toFixed(1)} each` : `$15`;
+
+      const card = document.createElement('div');
+      card.className = 'winner-card';
+      card.style.borderLeft = `4px solid ${winnerMeta.color}`;
+
+      // Winners names (handles ties)
+      const winnersTitleHtml = item.winners.map(w => {
+        const m = appData.managers[w.manager] || { color: '#ffd700' };
+        return `<span style="color:${m.color}">${w.team}</span> <small>(${w.manager})</small>`;
+      }).join(' &amp; ');
+
+      card.innerHTML = `
+        <div class="winner-card-header">
+          <div class="winner-gw-badge">
+            <i class="fa-solid fa-trophy"></i> Gameweek ${item.gw} Winner
+          </div>
+          <div class="winner-score-pill">
+            <span class="winner-pts">${item.winningPts} pts</span>
+            <span class="winner-margin">${marginStr}</span>
+          </div>
+        </div>
+        <div class="winner-card-body">
+          <div class="winner-mgr-info">
+            <div class="winner-avatar" style="background: ${winnerMeta.color}">
+              ${winner.manager.charAt(0).toUpperCase()}
+            </div>
+            <div class="winner-text">
+              <span class="winner-team-title">${winnersTitleHtml}</span>
+            </div>
+          </div>
+          <div class="winner-details-badges">
+            ${captainHtml}
+            ${chipHtml}
+            <span class="winner-payout-badge"><i class="fa-solid fa-sack-dollar"></i> ${payoutStr}</span>
+            <button class="btn-goto-gw">View GW ${item.gw} <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        currentGW = item.gw;
+        selectManager(winner.manager);
+        updateDashboard();
+        switchTab('field-roster');
+      });
+
+      elWinnersCardsContainer.appendChild(card);
+    });
+  }
+
+  // Render Subview 2: Trophy Standings Table
+  if (elWinnersTableBody) {
+    elWinnersTableBody.innerHTML = '';
+    sortedManagers.forEach((stat, idx) => {
+      const rank = idx + 1;
+      const isSelected = stat.manager === selectedManager;
+      const row = document.createElement('tr');
+      if (isSelected) row.className = 'active-row';
+
+      const wonGwsStr = stat.wonGWs.length > 0 ? stat.wonGWs.map(gw => `GW${gw}`).join(', ') : 'None';
+
+      row.innerHTML = `
+        <td class="font-mono"><strong>#${rank}</strong></td>
+        <td>
+          <div class="table-mgr-col">
+            <span class="table-mgr-badge" style="background:${stat.color}"></span>
+            <div class="table-mgr-text">
+              <span class="table-mgr-team" style="color:${stat.color}">${stat.team}</span>
+              <span class="table-mgr-name">${stat.manager}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="trophy-wins-badge"><i class="fa-solid fa-trophy"></i> ${stat.wins} win${stat.wins === 1 ? '' : 's'}</span>
+        </td>
+        <td style="font-size:0.8rem; color:var(--text-secondary);">${wonGwsStr}</td>
+        <td class="font-mono" style="color:#2ed573; font-weight:700;">$${Math.round(stat.payout)}</td>
+        <td class="font-mono" style="color:#ffd700; font-weight:700;">${stat.highScore > 0 ? stat.highScore + ' pts' : '-'}</td>
+      `;
+
+      row.addEventListener('click', () => {
+        selectManager(stat.manager);
+        renderWinnersView();
+      });
+
+      elWinnersTableBody.appendChild(row);
+    });
   }
 }
 
