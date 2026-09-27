@@ -52,17 +52,23 @@ const elSelectGw = document.getElementById('select-gw');
 // Tab Panels
 const elTabFieldRoster = document.getElementById('tab-field-roster');
 const elTabWinners = document.getElementById('tab-winners');
-const elTabBumpChart = document.getElementById('tab-bump-chart');
-const elTabGlobalRank = document.getElementById('tab-global-rank');
+const elTabRankings = document.getElementById('tab-rankings');
 const elTabScatterPlot = document.getElementById('tab-scatter-plot');
 const elTabTransfers = document.getElementById('tab-transfers');
 
 const elPanelFieldRoster = document.getElementById('panel-field-roster');
 const elPanelWinners = document.getElementById('panel-winners');
-const elPanelBumpChart = document.getElementById('panel-bump-chart');
-const elPanelGlobalRank = document.getElementById('panel-global-rank');
+const elPanelRankings = document.getElementById('panel-rankings');
 const elPanelScatterPlot = document.getElementById('panel-scatter-plot');
 const elPanelTransfers = document.getElementById('panel-transfers');
+
+// Rankings Elements (Consolidated League & Global)
+const elBtnViewLeagueRank = document.getElementById('btn-view-league-rank');
+const elBtnViewGlobalRank = document.getElementById('btn-view-global-rank');
+const elSubviewLeagueRank = document.getElementById('subview-league-rank');
+const elSubviewGlobalRank = document.getElementById('subview-global-rank');
+const elRankingsHeaderTitleText = document.getElementById('rankings-header-title-text');
+let rankingsSubView = 'league'; // 'league' | 'global'
 
 // Winners Elements
 const elBtnViewGwWinners = document.getElementById('btn-view-gw-winners');
@@ -357,10 +363,17 @@ function setupEventListeners() {
   // Tabs
   if (elTabFieldRoster) elTabFieldRoster.addEventListener('click', () => switchTab('field-roster'));
   if (elTabWinners) elTabWinners.addEventListener('click', () => switchTab('winners'));
-  if (elTabBumpChart) elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
-  if (elTabGlobalRank) elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
+  if (elTabRankings) elTabRankings.addEventListener('click', () => switchTab('rankings'));
   if (elTabScatterPlot) elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
   if (elTabTransfers) elTabTransfers.addEventListener('click', () => switchTab('transfers'));
+
+  // Rankings Subview Listeners
+  if (elBtnViewLeagueRank) {
+    elBtnViewLeagueRank.addEventListener('click', () => switchRankingsSubView('league'));
+  }
+  if (elBtnViewGlobalRank) {
+    elBtnViewGlobalRank.addEventListener('click', () => switchRankingsSubView('global'));
+  }
 
   // Winners Subview Listeners
   if (elBtnViewGwWinners) {
@@ -430,15 +443,13 @@ function switchTab(tab) {
   
   if (elTabFieldRoster) elTabFieldRoster.classList.remove('active');
   if (elTabWinners) elTabWinners.classList.remove('active');
-  if (elTabBumpChart) elTabBumpChart.classList.remove('active');
-  if (elTabGlobalRank) elTabGlobalRank.classList.remove('active');
+  if (elTabRankings) elTabRankings.classList.remove('active');
   if (elTabScatterPlot) elTabScatterPlot.classList.remove('active');
   if (elTabTransfers) elTabTransfers.classList.remove('active');
   
   if (elPanelFieldRoster) elPanelFieldRoster.classList.remove('active');
   if (elPanelWinners) elPanelWinners.classList.remove('active');
-  if (elPanelBumpChart) elPanelBumpChart.classList.remove('active');
-  if (elPanelGlobalRank) elPanelGlobalRank.classList.remove('active');
+  if (elPanelRankings) elPanelRankings.classList.remove('active');
   if (elPanelScatterPlot) elPanelScatterPlot.classList.remove('active');
   if (elPanelTransfers) elPanelTransfers.classList.remove('active');
   
@@ -449,15 +460,14 @@ function switchTab(tab) {
     if (elTabWinners) elTabWinners.classList.add('active');
     if (elPanelWinners) elPanelWinners.classList.add('active');
     renderWinnersView();
-  } else if (tab === 'bump-chart') {
-    if (elTabBumpChart) elTabBumpChart.classList.add('active');
-    if (elPanelBumpChart) elPanelBumpChart.classList.add('active');
-    renderBumpChart();
-    updateBumpTracker();
-  } else if (tab === 'global-rank') {
-    if (elTabGlobalRank) elTabGlobalRank.classList.add('active');
-    if (elPanelGlobalRank) elPanelGlobalRank.classList.add('active');
-    renderGlobalRankChart();
+  } else if (tab === 'rankings') {
+    if (elTabRankings) elTabRankings.classList.add('active');
+    if (elPanelRankings) elPanelRankings.classList.add('active');
+    if (rankingsSubView === 'league') {
+      renderBumpChart();
+    } else {
+      renderGlobalRankChart();
+    }
     updateBumpTracker();
   } else if (tab === 'scatter-plot') {
     if (elTabScatterPlot) elTabScatterPlot.classList.add('active');
@@ -467,6 +477,29 @@ function switchTab(tab) {
     if (elPanelTransfers) elPanelTransfers.classList.add('active');
     renderTransfersView();
   }
+}
+
+function switchRankingsSubView(subView) {
+  rankingsSubView = subView;
+
+  if (elBtnViewLeagueRank) elBtnViewLeagueRank.classList.toggle('active', subView === 'league');
+  if (elBtnViewGlobalRank) elBtnViewGlobalRank.classList.toggle('active', subView === 'global');
+
+  if (elSubviewLeagueRank) elSubviewLeagueRank.classList.toggle('hidden', subView !== 'league');
+  if (elSubviewGlobalRank) elSubviewGlobalRank.classList.toggle('hidden', subView !== 'global');
+
+  if (elRankingsHeaderTitleText) {
+    elRankingsHeaderTitleText.innerText = subView === 'league' 
+      ? 'Blue Square Rank Trajectory' 
+      : 'Global Rank Trajectory';
+  }
+
+  if (subView === 'league') {
+    renderBumpChart();
+  } else {
+    renderGlobalRankChart();
+  }
+  updateBumpTracker();
 }
 
 // Playback Logic

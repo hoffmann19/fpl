@@ -55,8 +55,7 @@
         <div class="tab-pills-row">
           <button id="tab-field-roster" class="tab-pill active" title="Field &amp; Roster"><i class="fa-solid fa-futbol"></i> Pitch</button>
           <button id="tab-winners" class="tab-pill" title="Gameweek Winners"><i class="fa-solid fa-trophy"></i> Winners</button>
-          <button id="tab-bump-chart" class="tab-pill" title="Rank Trajectory"><i class="fa-solid fa-chart-line"></i> Rank</button>
-          <button id="tab-global-rank" class="tab-pill" title="Global Rank"><i class="fa-solid fa-globe"></i> Global</button>
+          <button id="tab-rankings" class="tab-pill" title="Blue Square &amp; Global Rankings"><i class="fa-solid fa-chart-line"></i> Rankings</button>
           <button id="tab-transfers" class="tab-pill" title="Transfers In &amp; Out"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transfers</button>
           <button id="btn-reset" class="btn-icon-sm" title="Reset to GW 1"><i class="fa-solid fa-rotate-left"></i></button>
         </div>
@@ -184,32 +183,53 @@
             </div>
           </div>
 
-          <!-- Bump Chart Panel -->
-          <div id="panel-bump-chart" class="panel">
-            <div class="bump-chart-legend" id="bump-legend">
-              <!-- Legend items added dynamically -->
-            </div>
-            <div class="bump-chart-svg-wrapper">
-              <svg id="bump-chart-svg" width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="none">
-                <!-- SVG lines and points will be injected here -->
-              </svg>
-              <!-- Vertical tracker line -->
-              <div id="bump-tracker" class="bump-tracker-line"></div>
-              <div id="bump-tooltip" class="chart-tooltip hidden"></div>
-            </div>
-          </div>
+          <!-- Consolidated Rankings Panel -->
+          <div id="panel-rankings" class="panel">
+            <div class="rankings-container">
+              <!-- Sub-header with sub-view toggle -->
+              <div class="rankings-header-row">
+                <div class="rankings-header-title">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span id="rankings-header-title-text">Blue Square Rank Trajectory</span>
+                </div>
+                <div class="transfers-view-toggle">
+                  <button id="btn-view-league-rank" class="subview-pill active" title="Show Blue Square Mini-League Rank Trajectory">
+                    <i class="fa-solid fa-square" style="color: #38bdf8;"></i> Blue Square Rank
+                  </button>
+                  <button id="btn-view-global-rank" class="subview-pill" title="Show Overall Global Rank Trajectory">
+                    <i class="fa-solid fa-globe"></i> Global Rank
+                  </button>
+                </div>
+              </div>
 
-          <!-- Global Rank Panel -->
-          <div id="panel-global-rank" class="panel">
-            <div class="bump-chart-legend" id="global-rank-legend">
-              <!-- Legend items added dynamically -->
-            </div>
-            <div class="bump-chart-svg-wrapper">
-              <svg id="global-rank-svg" width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="none">
-                <!-- Global rank SVG lines injected here -->
-              </svg>
-              <div id="global-rank-tracker" class="bump-tracker-line"></div>
-              <div id="global-rank-tooltip" class="chart-tooltip hidden"></div>
+              <!-- Sub-view 1: Blue Square League Rank (Bump Chart) -->
+              <div id="subview-league-rank" class="rankings-subview active">
+                <div class="bump-chart-legend" id="bump-legend">
+                  <!-- Legend items added dynamically -->
+                </div>
+                <div class="bump-chart-svg-wrapper">
+                  <svg id="bump-chart-svg" width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="none">
+                    <!-- SVG lines and points will be injected here -->
+                  </svg>
+                  <!-- Vertical tracker line -->
+                  <div id="bump-tracker" class="bump-tracker-line"></div>
+                  <div id="bump-tooltip" class="chart-tooltip hidden"></div>
+                </div>
+              </div>
+
+              <!-- Sub-view 2: Global Rank -->
+              <div id="subview-global-rank" class="rankings-subview hidden">
+                <div class="bump-chart-legend" id="global-rank-legend">
+                  <!-- Legend items added dynamically -->
+                </div>
+                <div class="bump-chart-svg-wrapper">
+                  <svg id="global-rank-svg" width="100%" height="100%" viewBox="0 0 1000 500" preserveAspectRatio="none">
+                    <!-- Global rank SVG lines injected here -->
+                  </svg>
+                  <div id="global-rank-tracker" class="bump-tracker-line"></div>
+                  <div id="global-rank-tooltip" class="chart-tooltip hidden"></div>
+                </div>
+              </div>
             </div>
           </div>
 

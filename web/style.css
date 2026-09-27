@@ -2056,6 +2056,48 @@ body {
   box-shadow: 0 2px 8px rgba(30, 144, 255, 0.4);
 }
 
+/* ─── Consolidated Rankings Styles ─────────────────────────────────────────── */
+.rankings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.rankings-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.rankings-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rankings-header-title i {
+  color: #38bdf8;
+}
+
+.rankings-subview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.rankings-subview.hidden {
+  display: none;
+}
+
 /* ─── Gameweek Winners & Trophy Room Styles ────────────────────────────────── */
 .winners-container {
   display: flex;
