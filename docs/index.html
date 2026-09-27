@@ -113,50 +113,61 @@
               <div class="winners-header-row">
                 <div class="winners-header-title">
                   <i class="fa-solid fa-trophy"></i>
-                  <span>Gameweek Winners &amp; Trophy Room</span>
+                  <span>Gameweek Winners</span>
                 </div>
                 <div class="winners-view-toggle">
-                  <button id="btn-view-gw-winners" class="subview-pill active" title="Show Gameweek by Gameweek Winners"><i class="fa-solid fa-list-check"></i> GW by GW</button>
+                  <button id="btn-view-gw-winners" class="subview-pill active" title="Show Gameweek by Gameweek Winners Table"><i class="fa-solid fa-list-ol"></i> GW by GW</button>
                   <button id="btn-view-wins-table" class="subview-pill" title="Show Most Wins Trophy Leaderboard"><i class="fa-solid fa-medal"></i> Trophy Standings</button>
                 </div>
               </div>
 
-              <!-- Top Metric Cards -->
-              <div class="transfers-metrics-grid" id="winners-metrics-container">
-                <div class="metric-card">
-                  <div class="metric-icon king"><i class="fa-solid fa-crown"></i></div>
-                  <div class="metric-info">
-                    <span class="metric-label">Most GW Wins</span>
-                    <span class="metric-value highlight" id="metric-most-wins">-</span>
-                  </div>
+              <!-- Sleek Minimalist Summary Strip -->
+              <div class="winners-summary-bar glass">
+                <div class="winners-summary-item">
+                  <i class="fa-solid fa-crown" style="color: #ffd700;"></i>
+                  <span class="summary-label">Leader:</span>
+                  <span class="summary-val highlight-gold" id="metric-most-wins">-</span>
                 </div>
-                <div class="metric-card">
-                  <div class="metric-icon"><i class="fa-solid fa-fire"></i></div>
-                  <div class="metric-info">
-                    <span class="metric-label">Season High Score</span>
-                    <span class="metric-value" id="metric-high-score">0 pts</span>
-                  </div>
+                <div class="winners-summary-divider"></div>
+                <div class="winners-summary-item">
+                  <i class="fa-solid fa-fire" style="color: #ff4757;"></i>
+                  <span class="summary-label">Season High:</span>
+                  <span class="summary-val" id="metric-high-score">0 pts</span>
                 </div>
-                <div class="metric-card">
-                  <div class="metric-icon"><i class="fa-solid fa-chart-line"></i></div>
-                  <div class="metric-info">
-                    <span class="metric-label">Avg Winning Score</span>
-                    <span class="metric-value" id="metric-avg-winning-score">0 pts</span>
-                  </div>
+                <div class="winners-summary-divider"></div>
+                <div class="winners-summary-item">
+                  <i class="fa-solid fa-chart-line" style="color: #38bdf8;"></i>
+                  <span class="summary-label">Avg Winner:</span>
+                  <span class="summary-val" id="metric-avg-winning-score">0 pts</span>
                 </div>
               </div>
 
-              <!-- View 1: Gameweek by Gameweek Cards -->
+              <!-- View 1: Gameweek by Gameweek Simplistic Table -->
               <div id="winners-gw-view" class="winners-subview active">
-                <div class="winners-cards-grid" id="winners-cards-container">
-                  <!-- Injected via JavaScript -->
+                <div class="transfers-table-wrapper glass">
+                  <table class="transfers-season-table winners-simple-table">
+                    <thead>
+                      <tr>
+                        <th>GW</th>
+                        <th>Winner &amp; Team</th>
+                        <th>Score</th>
+                        <th>Margin</th>
+                        <th>Captain</th>
+                        <th>Chip</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="winners-cards-container">
+                      <!-- Injected via JavaScript -->
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
               <!-- View 2: Trophy Standings Table -->
               <div id="winners-table-view" class="winners-subview hidden">
                 <div class="transfers-table-wrapper glass">
-                  <table class="transfers-season-table">
+                  <table class="transfers-season-table winners-simple-table">
                     <thead>
                       <tr>
                         <th>Rank</th>

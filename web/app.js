@@ -2446,7 +2446,7 @@ function renderWinnersView() {
     elMetricAvgWinningScore.innerText = `${avg} pts`;
   }
 
-  // Render Subview 1: GW by GW Cards (Newest first)
+  // Render Subview 1: GW by GW Simplistic Table (Newest first)
   if (elWinnersCardsContainer) {
     elWinnersCardsContainer.innerHTML = '';
     const descendingWinners = [...gwWinnersList].sort((a, b) => b.gw - a.gw);
@@ -2455,67 +2455,84 @@ function renderWinnersView() {
       const winner = item.winners[0];
       const winnerMeta = appData.managers[winner.manager] || { color: '#ffd700' };
 
-      // Margin string
-      const marginStr = item.margin > 0 ? `+${item.margin} pts ahead of #2` : 'Tied for 1st';
+      // Margin pill
+      const marginHtml = item.margin > 0 
+        ? `<span class="winner-margin-pill positive">+${item.margin} pts</span>` 
+        : `<span class="winner-margin-pill tie">Tie</span>`;
 
       // Captain badge
-      let captainHtml = '';
+      let captainHtml = '<span class="text-subtle">-</span>';
       if (item.captain) {
-        captainHtml = `<span class="winner-captain-badge" title="Captain played"><i class="fa-solid fa-copyright"></i> ${item.captain.name} (${item.captain.points} pts)</span>`;
+        captainHtml = `<span class="table-sub-badge"><i class="fa-solid fa-copyright" style="color:#ffd700"></i> ${item.captain.name} <small>(${item.captain.points}p)</small></span>`;
       }
 
       // Chip badge
-      let chipHtml = '';
+      let chipHtml = '<span class="text-subtle">-</span>';
       const chipInfo = getChipInfo(item.chip);
       if (chipInfo) {
         chipHtml = `<span class="lb-chip-badge chip-${chipInfo.cssClass}"><i class="fa-solid ${chipInfo.icon}"></i> ${chipInfo.name}</span>`;
       }
 
-      const card = document.createElement('div');
-      card.className = 'winner-card';
-      card.style.borderLeft = `4px solid ${winnerMeta.color}`;
+      const row = document.createElement('tr');
+      row.className = 'winner-row';
+      if (winner.manager === selectedManager) {
+        row.classList.add('active-row');
+      }
 
       // Winners names (handles ties)
-      const winnersTitleHtml = item.winners.map(w => {
-        const m = appData.managers[w.manager] || { color: '#ffd700' };
-        return `<span style="color:${m.color}">${w.team}</span> <small>(${w.manager})</small>`;
-      }).join(' &amp; ');
+      let winnerColHtml = '';
+      if (item.winners.length === 1) {
+        winnerColHtml = `
+          <div class="table-mgr-col">
+            <span class="table-mgr-badge" style="background:${winnerMeta.color}"></span>
+            <div class="table-mgr-text">
+              <span class="table-mgr-team" style="color:${winnerMeta.color}">${winner.team}</span>
+              <span class="table-mgr-name">${winner.manager}</span>
+            </div>
+          </div>
+        `;
+      } else {
+        const tiesHtml = item.winners.map(w => {
+          const m = appData.managers[w.manager] || { color: '#ffd700' };
+          return `
+            <div class="table-mgr-col" style="margin-bottom: 2px;">
+              <span class="table-mgr-badge" style="background:${m.color}"></span>
+              <div class="table-mgr-text">
+                <span class="table-mgr-team" style="color:${m.color}">${w.team}</span>
+                <span class="table-mgr-name">${w.manager}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+        winnerColHtml = `<div class="table-mgr-ties-wrapper">${tiesHtml}</div>`;
+      }
 
-      card.innerHTML = `
-        <div class="winner-card-header">
-          <div class="winner-gw-badge">
-            <i class="fa-solid fa-trophy"></i> Gameweek ${item.gw} Winner
-          </div>
-          <div class="winner-score-pill">
-            <span class="winner-pts">${item.winningPts} pts</span>
-            <span class="winner-margin">${marginStr}</span>
-          </div>
-        </div>
-        <div class="winner-card-body">
-          <div class="winner-mgr-info">
-            <div class="winner-avatar" style="background: ${winnerMeta.color}">
-              ${winner.manager.charAt(0).toUpperCase()}
-            </div>
-            <div class="winner-text">
-              <span class="winner-team-title">${winnersTitleHtml}</span>
-            </div>
-          </div>
-          <div class="winner-details-badges">
-            ${captainHtml}
-            ${chipHtml}
-            <button class="btn-goto-gw">View GW ${item.gw} <i class="fa-solid fa-arrow-right"></i></button>
-          </div>
-        </div>
+      row.innerHTML = `
+        <td class="font-mono">
+          <span class="gw-badge-pill">GW ${item.gw}</span>
+        </td>
+        <td>${winnerColHtml}</td>
+        <td class="font-mono winner-score-cell">
+          <strong>${item.winningPts} pts</strong>
+        </td>
+        <td>${marginHtml}</td>
+        <td>${captainHtml}</td>
+        <td>${chipHtml}</td>
+        <td style="text-align: right;">
+          <button class="btn-subtle-view" title="Inspect GW ${item.gw} Pitch">
+            View <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </td>
       `;
 
-      card.addEventListener('click', () => {
+      row.addEventListener('click', () => {
         currentGW = item.gw;
         selectManager(winner.manager);
         updateDashboard();
         switchTab('field-roster');
       });
 
-      elWinnersCardsContainer.appendChild(card);
+      elWinnersCardsContainer.appendChild(row);
     });
   }
 
@@ -2528,7 +2545,9 @@ function renderWinnersView() {
       const row = document.createElement('tr');
       if (isSelected) row.className = 'active-row';
 
-      const wonGwsStr = stat.wonGWs.length > 0 ? stat.wonGWs.map(gw => `GW${gw}`).join(', ') : 'None';
+      const wonGwsStr = stat.wonGWs.length > 0 
+        ? stat.wonGWs.map(gw => `<span class="gw-pill-mini">GW${gw}</span>`).join(' ') 
+        : '<span class="text-subtle">-</span>';
 
       row.innerHTML = `
         <td class="font-mono"><strong>#${rank}</strong></td>
@@ -2544,7 +2563,7 @@ function renderWinnersView() {
         <td>
           <span class="trophy-wins-badge"><i class="fa-solid fa-trophy"></i> ${stat.wins} win${stat.wins === 1 ? '' : 's'}</span>
         </td>
-        <td style="font-size:0.8rem; color:var(--text-secondary);">${wonGwsStr}</td>
+        <td>${wonGwsStr}</td>
         <td class="font-mono" style="color:#ffd700; font-weight:700;">${stat.highScore > 0 ? stat.highScore + ' pts' : '-'}</td>
       `;
 
