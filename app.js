@@ -622,7 +622,7 @@ function renderBumpChart() {
     gridLine.setAttribute("y1", BUMP_MARGIN.top);
     gridLine.setAttribute("x2", x);
     gridLine.setAttribute("y2", SVG_HEIGHT - BUMP_MARGIN.bottom);
-    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke", "#e2e8f0");
     gridLine.setAttribute("stroke-width", "1");
     elBumpSvg.appendChild(gridLine);
     
@@ -651,7 +651,7 @@ function renderBumpChart() {
     gridLine.setAttribute("y1", y);
     gridLine.setAttribute("x2", SVG_WIDTH - BUMP_MARGIN.right);
     gridLine.setAttribute("y2", y);
-    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke", "#e2e8f0");
     gridLine.setAttribute("stroke-width", "1");
     elBumpSvg.appendChild(gridLine);
     
@@ -1691,7 +1691,7 @@ function renderGlobalRankChart() {
     gridLine.setAttribute("y1", BUMP_MARGIN.top);
     gridLine.setAttribute("x2", x);
     gridLine.setAttribute("y2", SVG_HEIGHT - BUMP_MARGIN.bottom);
-    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke", "#e2e8f0");
     gridLine.setAttribute("stroke-width", "1");
     elGlobalSvg.appendChild(gridLine);
     
@@ -1722,7 +1722,7 @@ function renderGlobalRankChart() {
     gridLine.setAttribute("y1", y);
     gridLine.setAttribute("x2", SVG_WIDTH - BUMP_MARGIN.right);
     gridLine.setAttribute("y2", y);
-    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke", "#e2e8f0");
     gridLine.setAttribute("stroke-width", "1");
     elGlobalSvg.appendChild(gridLine);
 
@@ -2053,7 +2053,7 @@ function renderScatterPlotBase() {
     gridLine.setAttribute("y1", SCATTER_MARGIN.top);
     gridLine.setAttribute("x2", x);
     gridLine.setAttribute("y2", SVG_HEIGHT - SCATTER_MARGIN.bottom);
-    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke", "#e2e8f0");
     gridLine.setAttribute("stroke-width", "1");
     elScatterSvg.appendChild(gridLine);
     
@@ -2061,7 +2061,7 @@ function renderScatterPlotBase() {
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.setAttribute("x", x);
     text.setAttribute("y", SVG_HEIGHT - SCATTER_MARGIN.bottom + 18);
-    text.setAttribute("fill", "#94a3b8");
+    text.setAttribute("fill", "#64748b");
     text.setAttribute("font-size", "10px");
     text.setAttribute("font-family", "Space Grotesk");
     text.setAttribute("text-anchor", "middle");
@@ -2081,7 +2081,7 @@ function renderScatterPlotBase() {
     gridLine.setAttribute("y1", y);
     gridLine.setAttribute("x2", SVG_WIDTH - SCATTER_MARGIN.right);
     gridLine.setAttribute("y2", y);
-    gridLine.setAttribute("stroke", "rgba(255,255,255,0.03)");
+    gridLine.setAttribute("stroke", "#e2e8f0");
     gridLine.setAttribute("stroke-width", "1");
     elScatterSvg.appendChild(gridLine);
     
@@ -2089,7 +2089,7 @@ function renderScatterPlotBase() {
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.setAttribute("x", SCATTER_MARGIN.left - 12);
     text.setAttribute("y", y + 4);
-    text.setAttribute("fill", "#94a3b8");
+    text.setAttribute("fill", "#64748b");
     text.setAttribute("font-size", "10px");
     text.setAttribute("font-family", "Space Grotesk");
     text.setAttribute("text-anchor", "end");
@@ -2103,7 +2103,7 @@ function renderScatterPlotBase() {
   xAxis.setAttribute("y1", SVG_HEIGHT - SCATTER_MARGIN.bottom);
   xAxis.setAttribute("x2", SVG_WIDTH - SCATTER_MARGIN.right);
   xAxis.setAttribute("y2", SVG_HEIGHT - SCATTER_MARGIN.bottom);
-  xAxis.setAttribute("stroke", "rgba(255,255,255,0.1)");
+  xAxis.setAttribute("stroke", "#cbd5e1");
   xAxis.setAttribute("stroke-width", "1");
   elScatterSvg.appendChild(xAxis);
 
@@ -2112,7 +2112,7 @@ function renderScatterPlotBase() {
   yAxis.setAttribute("y1", SCATTER_MARGIN.top);
   yAxis.setAttribute("x2", SCATTER_MARGIN.left);
   yAxis.setAttribute("y2", SVG_HEIGHT - SCATTER_MARGIN.bottom);
-  yAxis.setAttribute("stroke", "rgba(255,255,255,0.1)");
+  yAxis.setAttribute("stroke", "#cbd5e1");
   yAxis.setAttribute("stroke-width", "1");
   elScatterSvg.appendChild(yAxis);
   
@@ -2121,7 +2121,7 @@ function renderScatterPlotBase() {
   xAxisTitle.setAttribute("x", SCATTER_MARGIN.left + SCATTER_INNER_WIDTH / 2);
   xAxisTitle.setAttribute("y", SVG_HEIGHT - 12);
   xAxisTitle.setAttribute("text-anchor", "middle");
-  xAxisTitle.setAttribute("fill", "#cbd5e1");
+  xAxisTitle.setAttribute("fill", "#475569");
   xAxisTitle.setAttribute("font-size", "12px");
   xAxisTitle.setAttribute("font-weight", "600");
   xAxisTitle.setAttribute("font-family", "Space Grotesk");
