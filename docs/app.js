@@ -506,9 +506,17 @@ function pauseTimeline() {
   }
 }
 
-// Coordinate helper for Bump Chart SVG
+// Coordinate helper for Bump Chart & Global Rank SVGs
+function getMaxChartGW() {
+  const maxGW = finalGW || getLatestGWWithData(appData) || 1;
+  return Math.max(1, maxGW);
+}
+
 function getBumpX(gw) {
-  return BUMP_MARGIN.left + (gw - 1) * STEP_X;
+  const maxGW = getMaxChartGW();
+  if (maxGW <= 1) return BUMP_MARGIN.left + BUMP_INNER_WIDTH / 2;
+  const stepX = BUMP_INNER_WIDTH / (maxGW - 1);
+  return BUMP_MARGIN.left + (gw - 1) * stepX;
 }
 
 function getBumpY(rank) {
@@ -553,10 +561,11 @@ function renderBumpChart() {
   elBumpLegend.innerHTML = '';
   
   const managers = Object.keys(appData.managers);
+  const maxGW = getMaxChartGW();
   
   // 1. Draw SVG Background Grid Lines
   // Draw gameweek vertical lines
-  for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+  for (let gw = 1; gw <= maxGW; gw++) {
     const x = getBumpX(gw);
     const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     gridLine.setAttribute("x1", x);
@@ -567,13 +576,15 @@ function renderBumpChart() {
     gridLine.setAttribute("stroke-width", "1");
     elBumpSvg.appendChild(gridLine);
     
-    // Add GW label text at top and bottom occasionally (every 5 weeks)
-    if (gw === 1 || gw % 5 === 0 || gw === TOTAL_GWS) {
+    // Add GW label text at top
+    const showLabel = (maxGW <= 15) || (gw === 1 || gw % 5 === 0 || gw === maxGW);
+    if (showLabel) {
       const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
       text.setAttribute("x", x);
       text.setAttribute("y", BUMP_MARGIN.top - 12);
       text.setAttribute("fill", "#64748b");
-      text.setAttribute("font-size", "10px");
+      text.setAttribute("font-size", "11px");
+      text.setAttribute("font-weight", "600");
       text.setAttribute("font-family", "Space Grotesk");
       text.setAttribute("text-anchor", "middle");
       text.textContent = `GW${gw}`;
@@ -640,9 +651,9 @@ function renderBumpChart() {
       const yCurr = getBumpY(pCurr.rank);
       
       // Control points for cubic bezier curves (smooth S-curve)
-      const cpX1 = xPrev + STEP_X / 2;
+      const cpX1 = xPrev + (xCurr - xPrev) / 2;
       const cpY1 = yPrev;
-      const cpX2 = xCurr - STEP_X / 2;
+      const cpX2 = xCurr - (xCurr - xPrev) / 2;
       const cpY2 = yCurr;
       
       d += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${xCurr} ${yCurr}`;
@@ -1556,9 +1567,11 @@ function renderGlobalRankChart() {
   globalRankYMinLimit = Math.max(1, globalRankMin - pad);
   globalRankYMaxLimit = globalRankMax + pad;
 
+  const maxGW = getMaxChartGW();
+
   // 1. Draw SVG Background Grid Lines
   // Draw gameweek vertical lines
-  for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+  for (let gw = 1; gw <= maxGW; gw++) {
     const x = getBumpX(gw);
     const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     gridLine.setAttribute("x1", x);
@@ -1569,12 +1582,14 @@ function renderGlobalRankChart() {
     gridLine.setAttribute("stroke-width", "1");
     elGlobalSvg.appendChild(gridLine);
     
-    if (gw === 1 || gw % 5 === 0 || gw === TOTAL_GWS) {
+    const showLabel = (maxGW <= 15) || (gw === 1 || gw % 5 === 0 || gw === maxGW);
+    if (showLabel) {
       const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
       text.setAttribute("x", x);
       text.setAttribute("y", BUMP_MARGIN.top - 12);
       text.setAttribute("fill", "#64748b");
-      text.setAttribute("font-size", "10px");
+      text.setAttribute("font-size", "11px");
+      text.setAttribute("font-weight", "600");
       text.setAttribute("font-family", "Space Grotesk");
       text.setAttribute("text-anchor", "middle");
       text.textContent = `GW${gw}`;
@@ -1641,9 +1656,9 @@ function renderGlobalRankChart() {
       const xCurr = getBumpX(pCurr.gw);
       const yCurr = getGlobalRankY(pCurr.overall_rank);
 
-      const cpX1 = xPrev + STEP_X / 2;
+      const cpX1 = xPrev + (xCurr - xPrev) / 2;
       const cpY1 = yPrev;
-      const cpX2 = xCurr - STEP_X / 2;
+      const cpX2 = xCurr - (xCurr - xPrev) / 2;
       const cpY2 = yCurr;
 
       d += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${xCurr} ${yCurr}`;
@@ -1864,7 +1879,7 @@ function calculateScatterRanges() {
     managerCumulativeCapPoints[mgr] = {};
     let runningCapPts = 0;
     
-    for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+    for (let gw = 1; gw <= finalGW; gw++) {
       const standings = appData.gameweeks[gw.toString()]?.standings;
       if (!standings) continue;
       
@@ -2274,7 +2289,8 @@ function renderWinnersView() {
       seasonHighScore = { score: maxPts, manager: winners[0].manager, gw: gw };
     }
 
-    const payoutPerWinner = 15.0 / winners.length;
+    const gwPrize = (currentSeason === '2026_27' || !currentSeason) ? 10.0 : (currentSeason === '2025_26' ? 15.0 : 10.0);
+    const payoutPerWinner = gwPrize / winners.length;
 
     winners.forEach(w => {
       const mgr = w.manager;
@@ -2297,7 +2313,7 @@ function renderWinnersView() {
       }
     });
 
-    totalPayout += 15.0;
+    totalPayout += gwPrize;
 
     // Get winner captain from lineups
     const primaryWinner = winners[0];
@@ -2370,7 +2386,8 @@ function renderWinnersView() {
       }
 
       // Payout string
-      const payoutStr = item.winners.length > 1 ? `$${item.payoutPerWinner.toFixed(1)} each` : `$15`;
+      const singlePayout = Math.round(item.payoutPerWinner);
+      const payoutStr = item.winners.length > 1 ? `$${item.payoutPerWinner.toFixed(1)} each` : `$${singlePayout}`;
 
       const card = document.createElement('div');
       card.className = 'winner-card';
@@ -2431,6 +2448,7 @@ function renderWinnersView() {
       if (isSelected) row.className = 'active-row';
 
       const wonGwsStr = stat.wonGWs.length > 0 ? stat.wonGWs.map(gw => `GW${gw}`).join(', ') : 'None';
+      const formattedPayout = stat.payout % 1 === 0 ? `$${stat.payout}` : `$${stat.payout.toFixed(1)}`;
 
       row.innerHTML = `
         <td class="font-mono"><strong>#${rank}</strong></td>
@@ -2447,7 +2465,7 @@ function renderWinnersView() {
           <span class="trophy-wins-badge"><i class="fa-solid fa-trophy"></i> ${stat.wins} win${stat.wins === 1 ? '' : 's'}</span>
         </td>
         <td style="font-size:0.8rem; color:var(--text-secondary);">${wonGwsStr}</td>
-        <td class="font-mono" style="color:#2ed573; font-weight:700;">$${Math.round(stat.payout)}</td>
+        <td class="font-mono" style="color:#2ed573; font-weight:700;">${formattedPayout}</td>
         <td class="font-mono" style="color:#ffd700; font-weight:700;">${stat.highScore > 0 ? stat.highScore + ' pts' : '-'}</td>
       `;
 
