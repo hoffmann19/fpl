@@ -54,7 +54,6 @@
       <div class="top-bar-section nav-section">
         <div class="tab-pills-row">
           <button id="tab-field-roster" class="tab-pill active" title="Field &amp; Roster"><i class="fa-solid fa-futbol"></i> Pitch</button>
-          <button id="tab-bar-race" class="tab-pill" title="Bar Chart Race"><i class="fa-solid fa-chart-bar"></i> Bars</button>
           <button id="tab-bump-chart" class="tab-pill" title="Rank Trajectory"><i class="fa-solid fa-chart-line"></i> Rank</button>
           <button id="tab-global-rank" class="tab-pill" title="Global Rank"><i class="fa-solid fa-globe"></i> Global</button>
           <button id="tab-transfers" class="tab-pill" title="Transfers In &amp; Out"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transfers</button>
@@ -112,13 +111,6 @@
             </div>
           </div>
 
-          <!-- Bar Chart Race Panel -->
-          <div id="panel-bar-race" class="panel">
-            <div class="bar-chart-race-container" id="bar-race-container">
-              <!-- Animated Bars will be injected here via JavaScript -->
-            </div>
-          </div>
-
           <!-- Bump Chart Panel -->
           <div id="panel-bump-chart" class="panel">
             <div class="bump-chart-legend" id="bump-legend">
@@ -155,11 +147,32 @@
               <div class="transfers-header-row">
                 <div class="transfers-header-title">
                   <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                  <span>Gameweek <span id="transfers-gw-title">1</span> Transfer Activity</span>
+                  <span id="transfers-header-title-text">Team Transfer History</span>
                 </div>
                 <div class="transfers-view-toggle">
-                  <button id="btn-view-gw-transfers" class="subview-pill active" title="Show Gameweek Transfers"><i class="fa-solid fa-calendar-day"></i> GW Moves</button>
+                  <button id="btn-view-team-history" class="subview-pill active" title="Show Selected Team's Transfer History by Gameweek"><i class="fa-solid fa-clock-rotate-left"></i> Team History</button>
+                  <button id="btn-view-gw-transfers" class="subview-pill" title="Show All League Transfers in Current Gameweek"><i class="fa-solid fa-calendar-day"></i> GW Moves</button>
                   <button id="btn-view-season-transfers" class="subview-pill" title="Show Season Transfer ROI Leaderboard"><i class="fa-solid fa-award"></i> Season Leaderboard</button>
+                </div>
+              </div>
+
+              <!-- Selected Team Banner (Shows currently selected team in transfers view) -->
+              <div class="transfers-team-banner" id="transfers-team-banner">
+                <div class="transfers-team-banner-left">
+                  <div class="transfers-team-avatar" id="transfers-team-avatar">M</div>
+                  <div class="transfers-team-text">
+                    <span class="transfers-team-name" id="transfers-team-name">Team Name</span>
+                    <span class="transfers-team-mgr" id="transfers-team-mgr">Manager Name</span>
+                  </div>
+                </div>
+                <div class="transfers-team-banner-right">
+                  <div class="select-compact-wrapper">
+                    <i class="fa-solid fa-users select-icon"></i>
+                    <select id="select-transfers-team" class="select-sm">
+                      <!-- Dynamically populated with all teams -->
+                    </select>
+                  </div>
+                  <span class="pitch-stat-badge highlight" id="transfers-team-roi-badge"><i class="fa-solid fa-chart-line"></i> +0 pts net</span>
                 </div>
               </div>
 
@@ -168,35 +181,42 @@
                 <div class="metric-card">
                   <div class="metric-icon"><i class="fa-solid fa-rotate"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Total Transfers</span>
+                    <span class="metric-label" id="metric-label-1">Total Transfers</span>
                     <span class="metric-value" id="metric-total-transfers">0</span>
                   </div>
                 </div>
                 <div class="metric-card">
                   <div class="metric-icon hit"><i class="fa-solid fa-minus"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Hits Penalty</span>
+                    <span class="metric-label" id="metric-label-2">Hits Penalty</span>
                     <span class="metric-value" id="metric-total-hits">0 pts</span>
                   </div>
                 </div>
                 <div class="metric-card">
                   <div class="metric-icon king"><i class="fa-solid fa-crown"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Transfer King</span>
+                    <span class="metric-label" id="metric-label-3">Best Move</span>
                     <span class="metric-value highlight" id="metric-transfer-king">-</span>
                   </div>
                 </div>
                 <div class="metric-card">
-                  <div class="metric-icon flop"><i class="fa-solid fa-skull"></i></div>
+                  <div class="metric-icon flop"><i class="fa-solid fa-arrow-trend-up"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Transfer Flop</span>
-                    <span class="metric-value flop" id="metric-transfer-flop">-</span>
+                    <span class="metric-label" id="metric-label-4">Pts In / Pts Out</span>
+                    <span class="metric-value" id="metric-transfer-flop">-</span>
                   </div>
                 </div>
               </div>
 
+              <!-- Team History View: Gameweek by Gameweek Cards -->
+              <div id="transfers-team-view" class="transfers-subview active">
+                <div class="transfers-cards-grid" id="transfers-team-cards-container">
+                  <!-- Injected via JavaScript -->
+                </div>
+              </div>
+
               <!-- Gameweek View: Manager Cards List -->
-              <div id="transfers-gw-view" class="transfers-subview active">
+              <div id="transfers-gw-view" class="transfers-subview hidden">
                 <div class="transfers-cards-grid" id="transfers-cards-container">
                   <!-- Injected via JavaScript -->
                 </div>

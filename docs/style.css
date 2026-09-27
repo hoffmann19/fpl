@@ -1998,6 +1998,123 @@ body {
   box-shadow: 0 2px 8px rgba(30, 144, 255, 0.4);
 }
 
+/* Transfers Team Banner */
+.transfers-team-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.transfers-team-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.transfers-team-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.transfers-team-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.transfers-team-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.transfers-team-mgr {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.transfers-team-banner-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Gameweek History Card */
+.gw-history-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.gw-history-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.gw-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 8px;
+}
+
+.gw-history-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gw-pill-badge {
+  background: rgba(30, 144, 255, 0.15);
+  color: #1e90ff;
+  border: 1px solid rgba(30, 144, 255, 0.3);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.gw-history-moves-count {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.gw-history-no-moves {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.gw-history-no-moves i {
+  color: #2ed573;
+}
+
 /* Metrics Grid */
 .transfers-metrics-grid {
   display: grid;

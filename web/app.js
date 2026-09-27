@@ -53,34 +53,48 @@ const elSelectGw = document.getElementById('select-gw');
 
 // Tab Panels
 const elTabFieldRoster = document.getElementById('tab-field-roster');
-const elTabBarRace = document.getElementById('tab-bar-race');
 const elTabBumpChart = document.getElementById('tab-bump-chart');
 const elTabGlobalRank = document.getElementById('tab-global-rank');
 const elTabScatterPlot = document.getElementById('tab-scatter-plot');
 const elTabTransfers = document.getElementById('tab-transfers');
 
 const elPanelFieldRoster = document.getElementById('panel-field-roster');
-const elPanelBarRace = document.getElementById('panel-bar-race');
 const elPanelBumpChart = document.getElementById('panel-bump-chart');
 const elPanelGlobalRank = document.getElementById('panel-global-rank');
 const elPanelScatterPlot = document.getElementById('panel-scatter-plot');
 const elPanelTransfers = document.getElementById('panel-transfers');
 
 // Transfers Elements
+const elBtnViewTeamHistory = document.getElementById('btn-view-team-history');
 const elBtnViewGwTransfers = document.getElementById('btn-view-gw-transfers');
 const elBtnViewSeasonTransfers = document.getElementById('btn-view-season-transfers');
+
+const elTransfersTeamView = document.getElementById('transfers-team-view');
 const elTransfersGwView = document.getElementById('transfers-gw-view');
 const elTransfersSeasonView = document.getElementById('transfers-season-view');
+
+const elTransfersTeamCardsContainer = document.getElementById('transfers-team-cards-container');
 const elTransfersCardsContainer = document.getElementById('transfers-cards-container');
 const elTransfersSeasonTableBody = document.getElementById('transfers-season-table-body');
-const elTransfersGwTitle = document.getElementById('transfers-gw-title');
+const elTransfersHeaderTitleText = document.getElementById('transfers-header-title-text');
 
+const elTransfersTeamBanner = document.getElementById('transfers-team-banner');
+const elTransfersTeamAvatar = document.getElementById('transfers-team-avatar');
+const elTransfersTeamName = document.getElementById('transfers-team-name');
+const elTransfersTeamMgr = document.getElementById('transfers-team-mgr');
+const elTransfersTeamRoiBadge = document.getElementById('transfers-team-roi-badge');
+const elSelectTransfersTeam = document.getElementById('select-transfers-team');
+
+const elMetricLabel1 = document.getElementById('metric-label-1');
+const elMetricLabel2 = document.getElementById('metric-label-2');
+const elMetricLabel3 = document.getElementById('metric-label-3');
+const elMetricLabel4 = document.getElementById('metric-label-4');
 const elMetricTotalTransfers = document.getElementById('metric-total-transfers');
 const elMetricTotalHits = document.getElementById('metric-total-hits');
 const elMetricTransferKing = document.getElementById('metric-transfer-king');
 const elMetricTransferFlop = document.getElementById('metric-transfer-flop');
 
-let transfersSubView = 'gw'; // 'gw' | 'season'
+let transfersSubView = 'team'; // 'team' | 'gw' | 'season'
 
 // Main Pitch Elements
 const elMainPitchTeamName = document.getElementById('main-pitch-team-name');
@@ -219,8 +233,9 @@ function onSeasonDataLoaded() {
 }
 
 function populateTeamDropdown() {
-  if (!elSelectTeam || !appData || !appData.managers) return;
-  elSelectTeam.innerHTML = '<option value="">-- All Teams / Leader --</option>';
+  if (!appData || !appData.managers) return;
+  if (elSelectTeam) elSelectTeam.innerHTML = '<option value="">-- All Teams / Leader --</option>';
+  if (elSelectTransfersTeam) elSelectTransfersTeam.innerHTML = '';
   
   const sortedManagers = Object.keys(appData.managers).sort((a, b) => {
     return appData.managers[a].team.localeCompare(appData.managers[b].team);
@@ -228,13 +243,20 @@ function populateTeamDropdown() {
   
   sortedManagers.forEach(mgr => {
     const meta = appData.managers[mgr];
-    const opt = document.createElement('option');
-    opt.value = mgr;
-    opt.innerText = `${meta.team} (${mgr})`;
-    if (mgr === selectedManager) {
-      opt.selected = true;
+    if (elSelectTeam) {
+      const opt = document.createElement('option');
+      opt.value = mgr;
+      opt.innerText = `${meta.team} (${mgr})`;
+      if (mgr === selectedManager) opt.selected = true;
+      elSelectTeam.appendChild(opt);
     }
-    elSelectTeam.appendChild(opt);
+    if (elSelectTransfersTeam) {
+      const optT = document.createElement('option');
+      optT.value = mgr;
+      optT.innerText = `${meta.team} (${mgr})`;
+      if (mgr === selectedManager) optT.selected = true;
+      elSelectTransfersTeam.appendChild(optT);
+    }
   });
 }
 
@@ -320,32 +342,28 @@ function setupEventListeners() {
   
   // Tabs
   if (elTabFieldRoster) elTabFieldRoster.addEventListener('click', () => switchTab('field-roster'));
-  if (elTabBarRace) elTabBarRace.addEventListener('click', () => switchTab('bar-race'));
   if (elTabBumpChart) elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
   if (elTabGlobalRank) elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
   if (elTabScatterPlot) elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
   if (elTabTransfers) elTabTransfers.addEventListener('click', () => switchTab('transfers'));
 
   // Transfers Subview Listeners
+  if (elBtnViewTeamHistory) {
+    elBtnViewTeamHistory.addEventListener('click', () => switchTransfersSubView('team'));
+  }
   if (elBtnViewGwTransfers) {
-    elBtnViewGwTransfers.addEventListener('click', () => {
-      transfersSubView = 'gw';
-      elBtnViewGwTransfers.classList.add('active');
-      if (elBtnViewSeasonTransfers) elBtnViewSeasonTransfers.classList.remove('active');
-      if (elTransfersGwView) elTransfersGwView.classList.remove('hidden');
-      if (elTransfersSeasonView) elTransfersSeasonView.classList.add('hidden');
-      renderTransfersView();
-    });
+    elBtnViewGwTransfers.addEventListener('click', () => switchTransfersSubView('gw'));
+  }
+  if (elBtnViewSeasonTransfers) {
+    elBtnViewSeasonTransfers.addEventListener('click', () => switchTransfersSubView('season'));
   }
 
-  if (elBtnViewSeasonTransfers) {
-    elBtnViewSeasonTransfers.addEventListener('click', () => {
-      transfersSubView = 'season';
-      elBtnViewSeasonTransfers.classList.add('active');
-      if (elBtnViewGwTransfers) elBtnViewGwTransfers.classList.remove('active');
-      if (elTransfersSeasonView) elTransfersSeasonView.classList.remove('hidden');
-      if (elTransfersGwView) elTransfersGwView.classList.add('hidden');
-      renderSeasonTransfersLeaderboard();
+  // Transfers Team Select Dropdown Listener
+  if (elSelectTransfersTeam) {
+    elSelectTransfersTeam.addEventListener('change', (e) => {
+      if (e.target.value) {
+        selectManager(e.target.value);
+      }
     });
   }
 
@@ -368,9 +386,6 @@ function initDashboard() {
   const availableGWs = Object.keys(appData.gameweeks).map(Number);
   finalGW = Math.max(...availableGWs);
   
-  // Create Bars in HTML for Bar Chart Race
-  createBarRaceElements();
-  
   // Render Bump Chart (which remains static in background, only tracker moves)
   renderBumpChart();
   
@@ -391,14 +406,12 @@ function switchTab(tab) {
   activeTab = tab;
   
   if (elTabFieldRoster) elTabFieldRoster.classList.remove('active');
-  if (elTabBarRace) elTabBarRace.classList.remove('active');
   if (elTabBumpChart) elTabBumpChart.classList.remove('active');
   if (elTabGlobalRank) elTabGlobalRank.classList.remove('active');
   if (elTabScatterPlot) elTabScatterPlot.classList.remove('active');
   if (elTabTransfers) elTabTransfers.classList.remove('active');
   
   if (elPanelFieldRoster) elPanelFieldRoster.classList.remove('active');
-  if (elPanelBarRace) elPanelBarRace.classList.remove('active');
   if (elPanelBumpChart) elPanelBumpChart.classList.remove('active');
   if (elPanelGlobalRank) elPanelGlobalRank.classList.remove('active');
   if (elPanelScatterPlot) elPanelScatterPlot.classList.remove('active');
@@ -407,10 +420,6 @@ function switchTab(tab) {
   if (tab === 'field-roster') {
     if (elTabFieldRoster) elTabFieldRoster.classList.add('active');
     if (elPanelFieldRoster) elPanelFieldRoster.classList.add('active');
-  } else if (tab === 'bar-race') {
-    if (elTabBarRace) elTabBarRace.classList.add('active');
-    if (elPanelBarRace) elPanelBarRace.classList.add('active');
-    renderBarChartRace();
   } else if (tab === 'bump-chart') {
     if (elTabBumpChart) elTabBumpChart.classList.add('active');
     if (elPanelBumpChart) elPanelBumpChart.classList.add('active');
@@ -427,11 +436,7 @@ function switchTab(tab) {
   } else if (tab === 'transfers') {
     if (elTabTransfers) elTabTransfers.classList.add('active');
     if (elPanelTransfers) elPanelTransfers.classList.add('active');
-    if (transfersSubView === 'season') {
-      renderSeasonTransfersLeaderboard();
-    } else {
-      renderTransfersView();
-    }
+    renderTransfersView();
   }
 }
 
@@ -482,89 +487,8 @@ function getBumpY(rank) {
 }
 
 // ----------------------------------------------------
-// BAR CHART RACE IMPLEMENTATION
+// CHIP HELPER
 // ----------------------------------------------------
-function createBarRaceElements() {
-  elBarRaceContainer.innerHTML = '';
-  
-  Object.keys(appData.managers).forEach(managerName => {
-    const mgrInfo = appData.managers[managerName];
-    
-    const barRow = document.createElement('div');
-    barRow.className = 'bar-row';
-    barRow.id = `bar-row-${managerName.replace(/\s+/g, '_')}`;
-    barRow.setAttribute('data-manager', managerName);
-    
-    barRow.innerHTML = `
-      <div class="bar-rank">#</div>
-      <div class="bar-label">
-        <span class="bar-manager-name">${mgrInfo.team}</span>
-      </div>
-      <div class="bar-track">
-        <div class="bar-fill" style="background: ${mgrInfo.color}; width: 0%;"></div>
-      </div>
-      <div class="bar-points-value">0 pts</div>
-      <div class="bar-chip-indicator hidden">WC</div>
-    `;
-    
-    barRow.addEventListener('click', () => {
-      selectManager(managerName);
-    });
-    
-    elBarRaceContainer.appendChild(barRow);
-  });
-}
-
-function renderBarChartRace() {
-  const gwData = appData?.gameweeks?.[currentGW.toString()];
-  if (!gwData || !gwData.standings) return;
-  const standings = gwData.standings;
-  
-  // Find current maximum overall points to calculate scale
-  const maxPts = Math.max(...standings.map(s => s.overall_points));
-  
-  standings.forEach(record => {
-    const managerName = record.manager;
-    const barRow = document.getElementById(`bar-row-${managerName.replace(/\s+/g, '_')}`);
-    if (!barRow) return;
-    
-    // Sort vertical position based on rank (1-indexed)
-    // 0-indexed top offset
-    const rowHeight = 39; // Row height + margin
-    const topPosition = (record.rank - 1) * rowHeight;
-    barRow.style.top = `${topPosition}px`;
-    
-    // Update rank display
-    const rankEl = barRow.querySelector('.bar-rank');
-    rankEl.innerText = record.rank;
-    
-    // Calculate width percentage relative to leader (ensure min 5% for visibility)
-    const percentage = maxPts > 0 ? Math.max(5, (record.overall_points / maxPts) * 100) : 5;
-    const fillEl = barRow.querySelector('.bar-fill');
-    fillEl.style.width = `${percentage}%`;
-    
-    // Points text
-    const pointsEl = barRow.querySelector('.bar-points-value');
-    pointsEl.innerText = `${record.overall_points} pts`;
-    
-    // Chip Indicator
-    const chipEl = barRow.querySelector('.bar-chip-indicator');
-    if (record.chip && record.chip !== 'None') {
-      chipEl.classList.remove('hidden');
-      chipEl.innerText = getChipShortName(record.chip);
-      chipEl.title = record.chip;
-    } else {
-      chipEl.classList.add('hidden');
-    }
-    
-    // Highlight if selected
-    if (managerName === selectedManager) {
-      barRow.classList.add('selected');
-    } else {
-      barRow.classList.remove('selected');
-    }
-  });
-}
 
 function getChipShortName(chip) {
   if (chip.includes("Wildcard")) return "WC";
@@ -888,29 +812,28 @@ function selectManager(managerName) {
   if (elSelectTeam) {
     elSelectTeam.value = managerName;
   }
+  if (elSelectTransfersTeam) {
+    elSelectTransfersTeam.value = managerName;
+  }
   
   // Update UI components
   updateManagerCard();
   updateLineupPitch();
   
-  // Highlight selected bar in Bar Chart Race
-  const barRows = elBarRaceContainer.querySelectorAll('.bar-row');
-  barRows.forEach(row => {
-    if (row.getAttribute('data-manager') === managerName) {
-      row.classList.add('selected');
-    } else {
-      row.classList.remove('selected');
-    }
-  });
-  
   // Highlight selected path in Bump Chart
   updateBumpChartHighlight();
+  
+  // Highlight selected path in Global Rank Chart
+  updateGlobalRankChartHighlight();
   
   // Highlight selected bubble in Scatter Plot
   if (elScatterSvg) updateScatterPlotHighlight();
   
   // Highlight selected leaderboard row
   renderLeaderboard();
+
+  // Re-render Transfers View (updates team history by gameweek for this manager)
+  renderTransfersView();
 }
 
 function updateManagerCard() {
@@ -1343,10 +1266,7 @@ function updateDashboard() {
     if (leaderMeta && elHeaderLeader) elHeaderLeader.style.color = leaderMeta.color;
   }
   
-  // 2. Render Bar Chart Race
-  renderBarChartRace();
-  
-  // 3. Move Bump Tracker Line
+  // 2. Move Bump Tracker Line
   updateBumpTracker();
   
   // 4. Update highlights in bump chart
@@ -2254,20 +2174,240 @@ function hideScatterTooltip() {
 // ----------------------------------------------------
 // TRANSFERS IN & OUT HUB IMPLEMENTATION
 // ----------------------------------------------------
+function switchTransfersSubView(subView) {
+  transfersSubView = subView;
+
+  if (elBtnViewTeamHistory) elBtnViewTeamHistory.classList.toggle('active', subView === 'team');
+  if (elBtnViewGwTransfers) elBtnViewGwTransfers.classList.toggle('active', subView === 'gw');
+  if (elBtnViewSeasonTransfers) elBtnViewSeasonTransfers.classList.toggle('active', subView === 'season');
+
+  if (elTransfersTeamView) elTransfersTeamView.classList.toggle('hidden', subView !== 'team');
+  if (elTransfersGwView) elTransfersGwView.classList.toggle('hidden', subView !== 'gw');
+  if (elTransfersSeasonView) elTransfersSeasonView.classList.toggle('hidden', subView !== 'season');
+
+  renderTransfersView();
+}
+
 function renderTransfersView() {
   if (!appData || !appData.gameweeks) return;
-  if (elTransfersGwTitle) elTransfersGwTitle.innerText = currentGW;
+
+  if (transfersSubView === 'team') {
+    renderTeamTransfersHistory();
+  } else if (transfersSubView === 'gw') {
+    renderLeagueGwTransfers();
+  } else if (transfersSubView === 'season') {
+    renderSeasonTransfersLeaderboard();
+  }
+}
+
+// 1. Team Transfer History: Gameweek by Gameweek for Selected Team
+function renderTeamTransfersHistory() {
+  if (!appData || !appData.gameweeks || !elTransfersTeamCardsContainer) return;
+  elTransfersTeamCardsContainer.innerHTML = '';
+
+  const managerNames = Object.keys(appData.managers);
+  const targetManager = selectedManager || managerNames[0];
+  const mgrMeta = appData.managers[targetManager] || { team: targetManager, color: '#1e90ff' };
+
+  // Update Selected Team Banner
+  if (elTransfersTeamAvatar) {
+    elTransfersTeamAvatar.style.background = mgrMeta.color;
+    elTransfersTeamAvatar.innerText = targetManager.charAt(0).toUpperCase();
+  }
+  if (elTransfersTeamName) elTransfersTeamName.innerText = mgrMeta.team;
+  if (elTransfersTeamMgr) elTransfersTeamMgr.innerText = `${targetManager} · Transfer Timeline`;
+  if (elTransfersHeaderTitleText) elTransfersHeaderTitleText.innerText = `${mgrMeta.team} Transfer History`;
+  if (elSelectTransfersTeam) elSelectTransfersTeam.value = targetManager;
+
+  // Set Metric Labels for Team View
+  if (elMetricLabel1) elMetricLabel1.innerText = 'Total Transfers';
+  if (elMetricLabel2) elMetricLabel2.innerText = 'Hits Penalty';
+  if (elMetricLabel3) elMetricLabel3.innerText = 'Best Move';
+  if (elMetricLabel4) elMetricLabel4.innerText = 'Pts In / Pts Out';
+
+  // Gather stats across all played GWs for this manager
+  const availableGWs = Object.keys(appData.gameweeks).map(Number).sort((a, b) => a - b);
+  const playedGWs = availableGWs.filter(gw => gw <= finalGW);
+
+  let totalMoves = 0;
+  let totalHits = 0;
+  let totalPtsIn = 0;
+  let totalPtsOut = 0;
+  let bestMove = null;
+
+  playedGWs.forEach(gw => {
+    const gwStandings = appData.gameweeks[gw.toString()]?.standings || [];
+    const record = gwStandings.find(s => s.manager === targetManager);
+    if (!record) return;
+
+    const moves = record.transfers !== undefined ? record.transfers : (record.transfers_detail ? record.transfers_detail.length : 0);
+    totalMoves += moves;
+    const hitCost = Math.abs(record.gw_hits || 0);
+    totalHits += hitCost;
+
+    if (record.transfers_detail && record.transfers_detail.length > 0) {
+      record.transfers_detail.forEach(t => {
+        const inPts = t.in_points || 0;
+        const outPts = t.out_points || 0;
+        totalPtsIn += inPts;
+        totalPtsOut += outPts;
+        const delta = t.net_points !== undefined ? t.net_points : (inPts - outPts);
+        if (!bestMove || delta > bestMove.delta) {
+          bestMove = {
+            in_name: t.in_name,
+            out_name: t.out_name,
+            delta: delta,
+            gw: gw
+          };
+        }
+      });
+    }
+  });
+
+  const grossGain = totalPtsIn - totalPtsOut;
+  const netRoi = grossGain - totalHits;
+
+  // Update Top Metrics
+  if (elMetricTotalTransfers) elMetricTotalTransfers.innerText = `${totalMoves} moves`;
+  if (elMetricTotalHits) elMetricTotalHits.innerText = totalHits > 0 ? `-${totalHits} pts` : '0 pts';
+  if (elMetricTransferKing) {
+    if (bestMove && bestMove.delta > 0) {
+      elMetricTransferKing.innerText = `${bestMove.in_name} (+${bestMove.delta} pts in GW${bestMove.gw})`;
+    } else {
+      elMetricTransferKing.innerText = totalMoves > 0 ? 'None' : '-';
+    }
+  }
+  if (elMetricTransferFlop) {
+    elMetricTransferFlop.innerText = `${totalPtsIn} in / ${totalPtsOut} out`;
+  }
+
+  // Update Team Banner ROI Badge
+  if (elTransfersTeamRoiBadge) {
+    const roiPrefix = netRoi > 0 ? '+' : '';
+    elTransfersTeamRoiBadge.innerText = `${roiPrefix}${netRoi} pts net ROI`;
+    elTransfersTeamRoiBadge.className = `pitch-stat-badge ${netRoi > 0 ? 'highlight' : (netRoi < 0 ? 'negative' : '')}`;
+  }
+
+  // Generate Gameweek Cards (Newest Gameweek first: finalGW down to 1)
+  const gwsDescending = [...playedGWs].sort((a, b) => b - a);
+
+  gwsDescending.forEach(gw => {
+    const gwStandings = appData.gameweeks[gw.toString()]?.standings || [];
+    const record = gwStandings.find(s => s.manager === targetManager);
+    if (!record) return;
+
+    const details = record.transfers_detail || [];
+    const moves = record.transfers !== undefined ? record.transfers : details.length;
+    const hitCost = Math.abs(record.gw_hits || 0);
+
+    const grossDelta = details.reduce((acc, t) => acc + (t.net_points || 0), 0);
+    const netDelta = grossDelta - hitCost;
+
+    const deltaClass = netDelta > 0 ? 'positive' : (netDelta < 0 ? 'negative' : 'neutral');
+    const deltaText = netDelta > 0 ? `+${netDelta} pts net` : (netDelta < 0 ? `${netDelta} pts net` : `0 pts net`);
+
+    // Chip badge
+    let chipBadgeHtml = '';
+    if (record.chip && record.chip !== 'None') {
+      const chipLower = record.chip.toLowerCase().replace(/\s+/g, '');
+      chipBadgeHtml = `<span class="chip-badge chip-${chipLower}"><i class="fa-solid fa-bolt"></i> ${record.chip}</span>`;
+    }
+
+    // Hit badge
+    let hitBadgeHtml = '';
+    if (hitCost > 0) {
+      hitBadgeHtml = `<span class="transfers-hit-pill">-${hitCost} pts hit</span>`;
+    }
+
+    // Transfers pairs
+    let pairsHtml = '';
+    if (details.length > 0) {
+      pairsHtml = details.map(t => {
+        const pairDelta = t.net_points !== undefined ? t.net_points : ((t.in_points || 0) - (t.out_points || 0));
+        const pairClass = pairDelta > 0 ? 'positive' : (pairDelta < 0 ? 'negative' : 'neutral');
+        const pairText = pairDelta > 0 ? `+${pairDelta} pts` : `${pairDelta} pts`;
+
+        const outCostStr = t.out_cost ? ` · £${t.out_cost}m` : '';
+        const inCostStr = t.in_cost ? ` · £${t.in_cost}m` : '';
+
+        return `
+          <div class="transfer-pair-row">
+            <div class="player-tag out">
+              <div class="player-tag-main">
+                <span class="player-tag-name"><i class="fa-solid fa-arrow-left"></i> ${t.out_name}</span>
+                <span class="player-tag-pts">${t.out_points || 0} pts</span>
+              </div>
+              <div class="player-tag-sub">${t.out_club || ''}${t.out_pos ? ' · ' + t.out_pos : ''}${outCostStr}</div>
+            </div>
+            <div class="transfer-arrow-divider"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="player-tag in">
+              <div class="player-tag-main">
+                <span class="player-tag-name"><i class="fa-solid fa-arrow-right"></i> ${t.in_name}</span>
+                <span class="player-tag-pts">${t.in_points || 0} pts</span>
+              </div>
+              <div class="player-tag-sub">${t.in_club || ''}${t.in_pos ? ' · ' + t.in_pos : ''}${inCostStr}</div>
+            </div>
+            <div class="pair-delta-badge ${pairClass}" title="In (${t.in_points || 0}) - Out (${t.out_points || 0})">${pairText}</div>
+          </div>
+        `;
+      }).join('');
+    } else if (moves > 0) {
+      pairsHtml = `<div class="transfer-pair-row" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fa-solid fa-info-circle"></i> ${moves} transfer(s) recorded.</div>`;
+    } else {
+      const msg = gw === 1 ? 'Initial Gameweek 1 squad selection (15 players)' : `No transfers made in Gameweek ${gw} (0 pts hit)`;
+      pairsHtml = `<div class="gw-history-no-moves"><i class="fa-solid fa-check"></i> ${msg}</div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'gw-history-card';
+    card.style.borderLeft = `4px solid ${mgrMeta.color}`;
+
+    const movesLabel = moves > 0 ? `${moves} transfer${moves > 1 ? 's' : ''}` : 'No transfers';
+
+    card.innerHTML = `
+      <div class="gw-history-header">
+        <div class="gw-history-title-row">
+          <span class="gw-pill-badge">GW ${gw}</span>
+          <span class="gw-history-moves-count">${movesLabel}</span>
+        </div>
+        <div class="transfer-card-badges">
+          ${chipBadgeHtml}
+          ${hitBadgeHtml}
+          ${moves > 0 || hitCost > 0 ? `<span class="transfer-delta-pill ${deltaClass}" title="Gameweek Net Transfer Delta">${deltaText}</span>` : ''}
+        </div>
+      </div>
+      <div class="transfer-pairs-list">
+        ${pairsHtml}
+      </div>
+    `;
+
+    elTransfersTeamCardsContainer.appendChild(card);
+  });
+}
+
+// 2. League Gameweek View: All Teams That Made Moves in Current GW
+function renderLeagueGwTransfers() {
+  if (!appData || !appData.gameweeks || !elTransfersCardsContainer) return;
+  elTransfersCardsContainer.innerHTML = '';
+
+  if (elTransfersHeaderTitleText) {
+    elTransfersHeaderTitleText.innerText = `Gameweek ${currentGW} League Transfers`;
+  }
+
+  // Set Metric Labels for League GW View
+  if (elMetricLabel1) elMetricLabel1.innerText = 'League Transfers';
+  if (elMetricLabel2) elMetricLabel2.innerText = 'Total Hits Penalty';
+  if (elMetricLabel3) elMetricLabel3.innerText = 'Transfer King';
+  if (elMetricLabel4) elMetricLabel4.innerText = 'Transfer Flop';
 
   const gwData = appData.gameweeks[currentGW.toString()];
   if (!gwData || !gwData.standings) return;
-
   const allStandings = gwData.standings;
 
-  // 1. Calculate League-wide Gameweek Transfer Metrics
   let totalTransfers = 0;
   let totalHits = 0;
-  let king = { manager: null, delta: -Infinity, team: '', name: '' };
-  let flop = { manager: null, delta: Infinity, team: '', name: '' };
+  let king = { manager: null, delta: -Infinity, team: '' };
+  let flop = { manager: null, delta: Infinity, team: '' };
 
   allStandings.forEach(s => {
     const moves = s.transfers !== undefined ? s.transfers : (s.transfers_detail ? s.transfers_detail.length : 0);
@@ -2287,7 +2427,7 @@ function renderTransfersView() {
     }
   });
 
-  if (elMetricTotalTransfers) elMetricTotalTransfers.innerText = totalTransfers;
+  if (elMetricTotalTransfers) elMetricTotalTransfers.innerText = `${totalTransfers} moves`;
   if (elMetricTotalHits) elMetricTotalHits.innerText = totalHits > 0 ? `-${totalHits} pts` : '0 pts';
 
   if (elMetricTransferKing) {
@@ -2308,28 +2448,18 @@ function renderTransfersView() {
     }
   }
 
-  // 2. Filter by Selected Manager if applicable
-  let targetStandings = allStandings;
-  if (selectedManager) {
-    targetStandings = allStandings.filter(s => s.manager === selectedManager);
-  }
-
-  // Filter to managers who made transfers
-  const managersWithMoves = targetStandings.filter(s => {
+  // Show all managers who made transfers in this GW
+  const managersWithMoves = allStandings.filter(s => {
     const hasDetails = s.transfers_detail && s.transfers_detail.length > 0;
     const hasTransfers = s.transfers && s.transfers > 0;
     return hasDetails || hasTransfers;
   });
 
-  if (!elTransfersCardsContainer) return;
-  elTransfersCardsContainer.innerHTML = '';
-
   if (managersWithMoves.length === 0) {
-    const filterDesc = selectedManager ? `by ${selectedManager}` : 'across the league';
     elTransfersCardsContainer.innerHTML = `
       <div class="transfers-empty-state">
         <i class="fa-solid fa-mug-hot"></i>
-        <p>No transfers made in Gameweek ${currentGW} ${filterDesc}.</p>
+        <p>No transfers made across the league in Gameweek ${currentGW}.</p>
       </div>
     `;
     return;
@@ -2348,7 +2478,7 @@ function renderTransfersView() {
     const details = mgrRecord.transfers_detail || [];
     const grossDelta = details.reduce((acc, t) => acc + (t.net_points || 0), 0);
     const netDelta = grossDelta - hitCost;
-    
+
     const deltaClass = netDelta > 0 ? 'positive' : (netDelta < 0 ? 'negative' : 'neutral');
     const deltaText = netDelta > 0 ? `+${netDelta} pts net` : (netDelta < 0 ? `${netDelta} pts net` : `0 pts net`);
 
@@ -2365,7 +2495,6 @@ function renderTransfersView() {
       hitBadgeHtml = `<span class="transfers-hit-pill">-${hitCost} pts hit</span>`;
     }
 
-    // Transfer pairs
     let pairsHtml = '';
     if (details.length > 0) {
       pairsHtml = details.map(t => {
@@ -2398,7 +2527,6 @@ function renderTransfersView() {
         `;
       }).join('');
     } else {
-      // If transfer count was recorded without pair details
       pairsHtml = `<div class="transfer-pair-row" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fa-solid fa-info-circle"></i> ${mgrRecord.transfers} transfer(s) recorded.</div>`;
     }
 
@@ -2429,25 +2557,27 @@ function renderTransfersView() {
     `;
 
     card.addEventListener('click', (e) => {
-      // If clicking inside card, select manager
-      if (!e.target.closest('button')) {
-        selectManager(mgrRecord.manager);
-      }
+      selectManager(mgrRecord.manager);
+      switchTransfersSubView('team');
     });
 
     elTransfersCardsContainer.appendChild(card);
   });
 }
 
+// 3. Season View: Cumulative ROI Leaderboard
 function renderSeasonTransfersLeaderboard() {
   if (!appData || !appData.managers || !elTransfersSeasonTableBody) return;
   elTransfersSeasonTableBody.innerHTML = '';
+
+  if (elTransfersHeaderTitleText) {
+    elTransfersHeaderTitleText.innerText = 'Season Transfer ROI Leaderboard';
+  }
 
   const managerNames = Object.keys(appData.managers);
   const availableGWs = Object.keys(appData.gameweeks).map(Number).sort((a, b) => a - b);
   const playedGWs = availableGWs.filter(gw => gw <= finalGW);
 
-  // Compile cumulative stats per manager
   const seasonStats = managerNames.map(mgrName => {
     const meta = appData.managers[mgrName] || { team: mgrName, color: '#1e90ff' };
     let totalMoves = 0;
@@ -2486,7 +2616,6 @@ function renderSeasonTransfersLeaderboard() {
     };
   });
 
-  // Sort by netRoi descending (then grossGain, then totalMoves)
   seasonStats.sort((a, b) => {
     if (b.netRoi !== a.netRoi) return b.netRoi - a.netRoi;
     if (b.grossGain !== a.grossGain) return b.grossGain - a.grossGain;
@@ -2522,7 +2651,7 @@ function renderSeasonTransfersLeaderboard() {
 
     row.addEventListener('click', () => {
       selectManager(stat.manager);
-      renderSeasonTransfersLeaderboard();
+      switchTransfersSubView('team');
     });
 
     elTransfersSeasonTableBody.appendChild(row);
