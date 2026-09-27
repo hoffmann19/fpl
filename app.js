@@ -103,6 +103,7 @@ const elTransfersTeamAvatar = document.getElementById('transfers-team-avatar');
 const elTransfersTeamName = document.getElementById('transfers-team-name');
 const elTransfersTeamMgr = document.getElementById('transfers-team-mgr');
 const elTransfersTeamRoiBadge = document.getElementById('transfers-team-roi-badge');
+const elTransfersTeamFtBadge = document.getElementById('transfers-team-ft-badge');
 const elSelectTransfersTeam = document.getElementById('select-transfers-team');
 
 const elMetricLabel1 = document.getElementById('metric-label-1');
@@ -2651,6 +2652,64 @@ function renderTeamTransfersHistory() {
     elTransfersTeamRoiBadge.className = `pitch-stat-badge ${netRoi > 0 ? 'highlight' : (netRoi < 0 ? 'negative' : '')}`;
   }
 
+  // Calculate Free Transfers Remaining across the timeline
+  const seasonStr = (appData.season || '').toString();
+  const maxFtCap = (seasonStr.includes('2024') || seasonStr.includes('2025') || seasonStr.includes('2026')) ? 5 : 2;
+
+  const ftTimeline = {};
+  let currentFt = 1;
+
+  playedGWs.forEach(gw => {
+    const gwStandings = appData.gameweeks[gw.toString()]?.standings || [];
+    const record = gwStandings.find(s => s.manager === targetManager);
+    if (!record) return;
+
+    const details = record.transfers_detail || [];
+    const moves = record.transfers !== undefined ? record.transfers : details.length;
+    const chip = (record.chip || '').toLowerCase();
+
+    let avail = 1;
+    let used = 0;
+    let remaining = 0;
+    let nextAvail = 1;
+
+    if (gw === 1) {
+      avail = 1;
+      used = 0;
+      remaining = 0; // unlimited setup; 1 banked for GW2
+      nextAvail = 1;
+    } else {
+      avail = currentFt;
+      if (chip === 'wildcard' || chip === 'freehit') {
+        used = 0;
+        remaining = avail;
+        nextAvail = Math.min(maxFtCap, remaining + 1);
+      } else {
+        used = Math.min(moves, avail);
+        remaining = avail - used;
+        nextAvail = Math.min(maxFtCap, remaining + 1);
+      }
+    }
+
+    ftTimeline[gw] = {
+      available: avail,
+      used: used,
+      remaining: remaining,
+      nextAvailable: nextAvail
+    };
+
+    currentFt = nextAvail;
+  });
+
+  // Update Team Banner Free Transfers Available for upcoming gameweek
+  if (elTransfersTeamFtBadge) {
+    const latestFtInfo = ftTimeline[maxPlayedGW];
+    const upcomingFt = latestFtInfo ? latestFtInfo.nextAvailable : 1;
+    const ftWord = upcomingFt === 1 ? 'Free Transfer' : 'Free Transfers';
+    elTransfersTeamFtBadge.innerHTML = `<i class="fa-solid fa-bolt"></i> ${upcomingFt} ${ftWord} Available`;
+    elTransfersTeamFtBadge.title = `${upcomingFt} Free Transfer(s) available for Gameweek ${maxPlayedGW + 1} (Max cap: ${maxFtCap})`;
+  }
+
   // Generate Gameweek Cards (Newest Gameweek first: finalGW down to 1)
   const gwsDescending = [...playedGWs].sort((a, b) => b - a);
 
@@ -2680,6 +2739,20 @@ function renderTeamTransfersHistory() {
     let hitBadgeHtml = '';
     if (hitCost > 0) {
       hitBadgeHtml = `<span class="transfers-hit-pill">-${hitCost} pts hit</span>`;
+    }
+
+    // Free transfer remaining badge
+    let ftBadgeHtml = '';
+    const ftInfo = ftTimeline[gw];
+    if (ftInfo) {
+      if (gw === 1) {
+        ftBadgeHtml = `<span class="transfers-ft-pill" title="Initial squad creation. 1 FT rolled into GW2"><i class="fa-solid fa-bolt"></i> 1 FT saved</span>`;
+      } else {
+        const ftRem = ftInfo.remaining;
+        const ftClass = ftRem === 0 ? 'ft-empty' : '';
+        const ftTitle = `${ftInfo.available} FT available at deadline, ${ftInfo.used} used. ${ftRem} FT saved (${ftInfo.nextAvailable} available in GW${gw + 1})`;
+        ftBadgeHtml = `<span class="transfers-ft-pill ${ftClass}" title="${ftTitle}"><i class="fa-solid fa-bolt"></i> ${ftRem} FT left</span>`;
+      }
     }
 
     // Transfers pairs
@@ -2734,6 +2807,7 @@ function renderTeamTransfersHistory() {
           <span class="gw-history-moves-count">${movesLabel}</span>
         </div>
         <div class="transfer-card-badges">
+          ${ftBadgeHtml}
           ${chipBadgeHtml}
           ${hitBadgeHtml}
           ${moves > 0 || hitCost > 0 ? `<span class="transfer-delta-pill ${deltaClass}" title="Gameweek Net Transfer Delta">${deltaText}</span>` : ''}

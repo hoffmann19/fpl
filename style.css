@@ -2998,5 +2998,34 @@ body {
   color: #ff4757;
 }
 
+/* Free Transfers Badges & Pills */
+.pitch-stat-badge.highlight-ft {
+  background: rgba(0, 210, 211, 0.12);
+  border: 1px solid rgba(0, 210, 211, 0.4);
+  color: #00d2d3;
+  box-shadow: 0 0 10px rgba(0, 210, 211, 0.15);
+  font-weight: 700;
+}
+
+.transfers-ft-pill {
+  background: rgba(0, 210, 211, 0.12);
+  border: 1px solid rgba(0, 210, 211, 0.35);
+  color: #00d2d3;
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.transfers-ft-pill.ft-empty {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  color: var(--text-secondary);
+}
+
 
 
