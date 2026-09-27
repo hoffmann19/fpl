@@ -1499,7 +1499,7 @@ function renderLeaderboard() {
           ${playersLeftHtml}
         </div>
       </div>
-      <div class="lb-transfers-cell">
+      <div class="lb-transfers-cell" title="Click to view ${mgrRecord.manager}'s transfers for GW ${currentGW}">
         <span class="lb-tx-badge"><i class="fa-solid fa-right-left"></i> ${transfersCount} tx</span>
         ${hitBadgeHtml}
         ${netDeltaBadge}
@@ -1510,11 +1510,51 @@ function renderLeaderboard() {
       </div>
     `;
     
+    // Clicking anywhere on the row selects the manager
     row.addEventListener('click', () => {
       selectManager(mgrRecord.manager);
     });
+
+    // Clicking specifically on the transfers cell navigates to the Transfers tab to see what the manager did
+    const transfersCell = row.querySelector('.lb-transfers-cell');
+    if (transfersCell) {
+      transfersCell.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent row click double handling
+        selectManager(mgrRecord.manager);
+        showManagerTransfersView(mgrRecord.manager);
+      });
+    }
     
     elLeaderboardList.appendChild(row);
+  });
+}
+
+function showManagerTransfersView(managerName) {
+  // 1. Switch to Transfers tab
+  switchTab('transfers');
+
+  // 2. Default to GW Moves view for current gameweek
+  switchTransfersSubView('gw');
+
+  // 3. Find this manager's card in GW Moves
+  requestAnimationFrame(() => {
+    const card = document.querySelector(`.transfer-card[data-manager="${managerName}"]`);
+    if (card) {
+      // Expand card if collapsed
+      card.classList.remove('collapsed');
+      card.classList.add('expanded');
+
+      // Add target highlight flash animation
+      card.classList.remove('target-highlight');
+      void card.offsetWidth; // trigger reflow for animation restart
+      card.classList.add('target-highlight');
+
+      // Scroll into view smoothly
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      // Manager made no transfers in current GW, switch to Team History view to show full timeline
+      switchTransfersSubView('team');
+    }
   });
 }
 
@@ -2972,6 +3012,7 @@ function renderLeagueGwTransfers() {
 
     const card = document.createElement('div');
     card.className = 'transfer-card collapsible collapsed';
+    card.setAttribute('data-manager', mgrRecord.manager);
     card.style.borderLeft = `4px solid ${mgrMeta.color}`;
 
     card.innerHTML = `
