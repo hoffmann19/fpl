@@ -42,8 +42,6 @@ const elBtnPlayPause = document.getElementById('btn-play-pause');
 const elSelectSpeed = document.getElementById('select-speed');
 const elSlider = document.getElementById('timeline-slider');
 const elHeaderGw = document.getElementById('header-gw');
-const elHeaderLeader = document.getElementById('header-leader');
-const elHeaderLeaderPts = document.getElementById('header-leader-pts');
 const elBtnReset = document.getElementById('btn-reset');
 
 // Filter Selectors
@@ -1251,22 +1249,7 @@ function updateDashboard() {
   if (elSlider) elSlider.value = currentGW;
   if (elHeaderGw) elHeaderGw.innerText = currentGW;
   
-  // 1. Find Leader for current GW
-  const gwData = appData.gameweeks[currentGW.toString()];
-  if (!gwData || !gwData.standings) return;
-  const standings = gwData.standings;
-  const leaderRecord = standings.find(s => s.rank === 1);
-  
-  if (leaderRecord) {
-    if (elHeaderLeader) elHeaderLeader.innerText = leaderRecord.team || leaderRecord.manager;
-    if (elHeaderLeaderPts) elHeaderLeaderPts.innerText = `${leaderRecord.overall_points} pts`;
-    
-    // Dynamically color leader box
-    const leaderMeta = appData.managers[leaderRecord.manager];
-    if (leaderMeta && elHeaderLeader) elHeaderLeader.style.color = leaderMeta.color;
-  }
-  
-  // 2. Move Bump Tracker Line
+  // 1. Move Bump Tracker Line
   updateBumpTracker();
   
   // 4. Update highlights in bump chart
