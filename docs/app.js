@@ -395,19 +395,19 @@ function setupEventListeners() {
 }
 
 function initDashboard() {
+  // Determine the latest gameweek that has actually been played
+  finalGW = getLatestGWWithData(appData);
+
   // Populate Gameweek dropdown and slider limits
   populateGwDropdown();
   if (elSlider) {
     elSlider.min = 1;
-    elSlider.max = TOTAL_GWS;
+    elSlider.max = finalGW;
     elSlider.value = currentGW;
   }
   
   // Calculate historical MVP stats
   calculateSeasonStats();
-  
-  const availableGWs = Object.keys(appData.gameweeks).map(Number);
-  finalGW = Math.max(...availableGWs);
   
   // Render Bump Chart (which remains static in background, only tracker moves)
   renderBumpChart();
@@ -474,7 +474,7 @@ function togglePlayback() {
   if (playing) {
     pauseTimeline();
   } else {
-    if (currentGW >= TOTAL_GWS) {
+    if (currentGW >= finalGW) {
       currentGW = 1;
     }
     playTimeline();
@@ -488,9 +488,9 @@ function playTimeline() {
   
   playbackInterval = setInterval(() => {
     currentGW++;
-    if (currentGW > TOTAL_GWS) {
+    if (currentGW > finalGW) {
       pauseTimeline();
-      currentGW = TOTAL_GWS;
+      currentGW = finalGW;
     } else {
       updateDashboard();
     }
@@ -612,7 +612,7 @@ function renderBumpChart() {
     
     // Build path points
     let points = [];
-    for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+    for (let gw = 1; gw <= finalGW; gw++) {
       const gwData = appData?.gameweeks?.[gw.toString()];
       if (!gwData || !gwData.standings) continue;
       const standings = gwData.standings;
@@ -1292,6 +1292,10 @@ function createPlayerCardDOM(player, maxSquadPts, isTransferredIn = false) {
 function updateDashboard() {
   if (!appData || !appData.gameweeks) return;
   
+  if (finalGW && currentGW > finalGW) {
+    currentGW = finalGW;
+  }
+  
   // Sync Gameweek selector, slider and header tags
   if (elSelectGw) elSelectGw.value = currentGW;
   if (elSlider) elSlider.value = currentGW;
@@ -1484,8 +1488,10 @@ function calculateSeasonStats() {
     managerFormations[mgr] = {};
   });
   
-  // Go through all gameweeks
+  // Go through played gameweeks only
+  const maxPlayedGW = finalGW || getLatestGWWithData(appData);
   Object.keys(appData.gameweeks).forEach(gw => {
+    if (Number(gw) > maxPlayedGW) return;
     const lineups = appData.gameweeks[gw].lineups;
     if (!lineups) return;
     
@@ -1528,7 +1534,7 @@ function renderGlobalRankChart() {
   // Find min and max global rank to scale Y-axis
   globalRankMin = Infinity;
   globalRankMax = -Infinity;
-  for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+  for (let gw = 1; gw <= finalGW; gw++) {
     const gwObj = appData.gameweeks?.[gw.toString()];
     if (!gwObj || !gwObj.standings) continue;
     gwObj.standings.forEach(s => {
@@ -1609,7 +1615,7 @@ function renderGlobalRankChart() {
     const mgrColor = appData.managers[managerName].color;
 
     let points = [];
-    for (let gw = 1; gw <= TOTAL_GWS; gw++) {
+    for (let gw = 1; gw <= finalGW; gw++) {
       const gwObj = appData.gameweeks?.[gw.toString()];
       if (!gwObj || !gwObj.standings) continue;
       const record = gwObj.standings.find(s => s.manager === managerName);
@@ -2227,8 +2233,9 @@ function switchWinnersSubView(subView) {
 function renderWinnersView() {
   if (!appData || !appData.gameweeks) return;
   
+  const maxPlayedGW = finalGW || getLatestGWWithData(appData);
   const availableGWs = Object.keys(appData.gameweeks).map(Number).sort((a, b) => a - b);
-  const playedGWs = availableGWs.filter(gw => gw <= finalGW);
+  const playedGWs = availableGWs.filter(gw => gw <= maxPlayedGW);
   if (playedGWs.length === 0) return;
 
   // Compute GW winners for each played gameweek
@@ -2256,6 +2263,7 @@ function renderWinnersView() {
     if (!gwData || !gwData.standings || gwData.standings.length === 0) return;
     const standings = gwData.standings;
     const maxPts = Math.max(...standings.map(s => s.gw_points));
+    if (maxPts <= 0 && !standings.some(s => (s.transfers && s.transfers > 0) || (s.gw_hits && s.gw_hits !== 0))) return;
     const winners = standings.filter(s => s.gw_points === maxPts);
     const runnerUps = standings.filter(s => s.gw_points < maxPts);
     const secondPts = runnerUps.length > 0 ? Math.max(...runnerUps.map(s => s.gw_points)) : maxPts;
@@ -2508,8 +2516,9 @@ function renderTeamTransfersHistory() {
   if (elMetricLabel4) elMetricLabel4.innerText = 'Pts In / Pts Out';
 
   // Gather stats across all played GWs for this manager
+  const maxPlayedGW = finalGW || getLatestGWWithData(appData);
   const availableGWs = Object.keys(appData.gameweeks).map(Number).sort((a, b) => a - b);
-  const playedGWs = availableGWs.filter(gw => gw <= finalGW);
+  const playedGWs = availableGWs.filter(gw => gw <= maxPlayedGW);
 
   let totalMoves = 0;
   let totalHits = 0;
@@ -2857,8 +2866,9 @@ function renderSeasonTransfersLeaderboard() {
   }
 
   const managerNames = Object.keys(appData.managers);
+  const maxPlayedGW = finalGW || getLatestGWWithData(appData);
   const availableGWs = Object.keys(appData.gameweeks).map(Number).sort((a, b) => a - b);
-  const playedGWs = availableGWs.filter(gw => gw <= finalGW);
+  const playedGWs = availableGWs.filter(gw => gw <= maxPlayedGW);
 
   const seasonStats = managerNames.map(mgrName => {
     const meta = appData.managers[mgrName] || { team: mgrName, color: '#1e90ff' };
