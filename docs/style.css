@@ -2885,13 +2885,20 @@ body {
   padding: 0 4px;
 }
 
+.pair-metrics-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  margin-left: auto;
+}
+
 .pair-delta-badge {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   font-weight: 700;
   padding: 3px 6px;
   border-radius: 5px;
-  margin-left: auto;
   white-space: nowrap;
 }
 
@@ -2908,6 +2915,43 @@ body {
 .pair-delta-badge.neutral {
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-secondary);
+}
+
+.pair-metric-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.pair-metric-badge.positive {
+  background: rgba(46, 213, 115, 0.1);
+  color: #2ed573;
+  border: 1px solid rgba(46, 213, 115, 0.25);
+}
+
+.pair-metric-badge.negative {
+  background: rgba(255, 71, 87, 0.1);
+  color: #ff6b81;
+  border: 1px solid rgba(255, 71, 87, 0.25);
+}
+
+.pair-metric-badge.neutral {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  border: 1px solid var(--card-border);
+}
+
+.player-ppg-sub {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 1px;
 }
 
 /* Empty State */

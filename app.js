@@ -2603,6 +2603,103 @@ function renderTransfersView() {
   }
 }
 
+function getPlayerStatsHelper(playerName, transferObj, isIncoming) {
+  // 1. Direct transfer record properties if populated by scraper/collector
+  if (isIncoming) {
+    if (transferObj.in_season_points !== undefined && transferObj.in_ppg !== undefined) {
+      return { totalPoints: transferObj.in_season_points, ppg: transferObj.in_ppg };
+    }
+  } else {
+    if (transferObj.out_season_points !== undefined && transferObj.out_ppg !== undefined) {
+      return { totalPoints: transferObj.out_season_points, ppg: transferObj.out_ppg };
+    }
+  }
+
+  // 2. Lookup in appData.players catalog if present
+  if (appData && appData.players && appData.players[playerName]) {
+    const p = appData.players[playerName];
+    return { totalPoints: p.total_points || 0, ppg: p.points_per_game || 0.0 };
+  }
+
+  // 3. Fallback: Aggregate player points and games from all played gameweek lineups
+  if (appData && appData.gameweeks) {
+    let totPts = 0;
+    const gwsSeen = new Set();
+    const maxPlayed = finalGW || getLatestGWWithData(appData);
+
+    for (let gwNum = 1; gwNum <= maxPlayed; gwNum++) {
+      const gwo = appData.gameweeks[gwNum.toString()];
+      if (!gwo || !gwo.lineups) continue;
+      for (const mgr in gwo.lineups) {
+        const found = gwo.lineups[mgr].find(pl => pl.name === playerName);
+        if (found && !gwsSeen.has(gwNum)) {
+          gwsSeen.add(gwNum);
+          totPts += (found.points || 0);
+          break;
+        }
+      }
+    }
+
+    if (gwsSeen.size > 0) {
+      const ppg = Math.round((totPts / gwsSeen.size) * 10) / 10;
+      return { totalPoints: totPts, ppg: ppg };
+    }
+  }
+
+  // Fallback to GW points
+  const fallbackPts = isIncoming ? (transferObj.in_points || 0) : (transferObj.out_points || 0);
+  return { totalPoints: fallbackPts, ppg: fallbackPts };
+}
+
+function renderTransferPairRowHtml(t) {
+  const inPts = t.in_points || 0;
+  const outPts = t.out_points || 0;
+  const pairDelta = t.net_points !== undefined ? t.net_points : (inPts - outPts);
+  const pairClass = pairDelta > 0 ? 'positive' : (pairDelta < 0 ? 'negative' : 'neutral');
+  const pairText = pairDelta > 0 ? `+${pairDelta} GW pts` : `${pairDelta} GW pts`;
+
+  const inStats = getPlayerStatsHelper(t.in_name, t, true);
+  const outStats = getPlayerStatsHelper(t.out_name, t, false);
+
+  const lifetimeDiff = inStats.totalPoints - outStats.totalPoints;
+  const lifetimeClass = lifetimeDiff > 0 ? 'positive' : (lifetimeDiff < 0 ? 'negative' : 'neutral');
+  const lifetimeText = lifetimeDiff > 0 ? `+${lifetimeDiff} life pts` : `${lifetimeDiff} life pts`;
+
+  const ppgDiff = Math.round((inStats.ppg - outStats.ppg) * 10) / 10;
+  const ppgClass = ppgDiff > 0 ? 'positive' : (ppgDiff < 0 ? 'negative' : 'neutral');
+  const ppgText = ppgDiff > 0 ? `+${ppgDiff.toFixed(1)} PPG` : `${ppgDiff.toFixed(1)} PPG`;
+
+  const outCostStr = t.out_cost ? ` · £${t.out_cost}m` : '';
+  const inCostStr = t.in_cost ? ` · £${t.in_cost}m` : '';
+
+  return `
+    <div class="transfer-pair-row">
+      <div class="player-tag out">
+        <div class="player-tag-main">
+          <span class="player-tag-name"><i class="fa-solid fa-arrow-left"></i> ${t.out_name}</span>
+          <span class="player-tag-pts">${outPts} pts</span>
+        </div>
+        <div class="player-tag-sub">${t.out_club || ''}${t.out_pos ? ' · ' + t.out_pos : ''}${outCostStr}</div>
+        <div class="player-ppg-sub" title="Season total points & points per game">${outStats.totalPoints} pts · ${outStats.ppg.toFixed(1)} PPG</div>
+      </div>
+      <div class="transfer-arrow-divider"><i class="fa-solid fa-arrow-right"></i></div>
+      <div class="player-tag in">
+        <div class="player-tag-main">
+          <span class="player-tag-name"><i class="fa-solid fa-arrow-right"></i> ${t.in_name}</span>
+          <span class="player-tag-pts">${inPts} pts</span>
+        </div>
+        <div class="player-tag-sub">${t.in_club || ''}${t.in_pos ? ' · ' + t.in_pos : ''}${inCostStr}</div>
+        <div class="player-ppg-sub" title="Season total points & points per game">${inStats.totalPoints} pts · ${inStats.ppg.toFixed(1)} PPG</div>
+      </div>
+      <div class="pair-metrics-col">
+        <div class="pair-delta-badge ${pairClass}" title="Gameweek net delta: In (${inPts}) - Out (${outPts})">${pairText}</div>
+        <div class="pair-metric-badge ${lifetimeClass}" title="Lifetime season points difference: In (${inStats.totalPoints}) - Out (${outStats.totalPoints})">${lifetimeText}</div>
+        <div class="pair-metric-badge ${ppgClass}" title="Points Per Game difference: In (${inStats.ppg.toFixed(1)}) - Out (${outStats.ppg.toFixed(1)})">${ppgText}</div>
+      </div>
+    </div>
+  `;
+}
+
 // 1. Team Transfer History: Gameweek by Gameweek for Selected Team
 function renderTeamTransfersHistory() {
   if (!appData || !appData.gameweeks || !elTransfersTeamCardsContainer) return;
@@ -2798,35 +2895,7 @@ function renderTeamTransfersHistory() {
     // Transfers pairs
     let pairsHtml = '';
     if (details.length > 0) {
-      pairsHtml = details.map(t => {
-        const pairDelta = t.net_points !== undefined ? t.net_points : ((t.in_points || 0) - (t.out_points || 0));
-        const pairClass = pairDelta > 0 ? 'positive' : (pairDelta < 0 ? 'negative' : 'neutral');
-        const pairText = pairDelta > 0 ? `+${pairDelta} pts` : `${pairDelta} pts`;
-
-        const outCostStr = t.out_cost ? ` · £${t.out_cost}m` : '';
-        const inCostStr = t.in_cost ? ` · £${t.in_cost}m` : '';
-
-        return `
-          <div class="transfer-pair-row">
-            <div class="player-tag out">
-              <div class="player-tag-main">
-                <span class="player-tag-name"><i class="fa-solid fa-arrow-left"></i> ${t.out_name}</span>
-                <span class="player-tag-pts">${t.out_points || 0} pts</span>
-              </div>
-              <div class="player-tag-sub">${t.out_club || ''}${t.out_pos ? ' · ' + t.out_pos : ''}${outCostStr}</div>
-            </div>
-            <div class="transfer-arrow-divider"><i class="fa-solid fa-arrow-right"></i></div>
-            <div class="player-tag in">
-              <div class="player-tag-main">
-                <span class="player-tag-name"><i class="fa-solid fa-arrow-right"></i> ${t.in_name}</span>
-                <span class="player-tag-pts">${t.in_points || 0} pts</span>
-              </div>
-              <div class="player-tag-sub">${t.in_club || ''}${t.in_pos ? ' · ' + t.in_pos : ''}${inCostStr}</div>
-            </div>
-            <div class="pair-delta-badge ${pairClass}" title="In (${t.in_points || 0}) - Out (${t.out_points || 0})">${pairText}</div>
-          </div>
-        `;
-      }).join('');
+      pairsHtml = details.map(t => renderTransferPairRowHtml(t)).join('');
     } else if (moves > 0) {
       pairsHtml = `<div class="transfer-pair-row" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fa-solid fa-info-circle"></i> ${moves} transfer(s) recorded.</div>`;
     } else {
@@ -2974,35 +3043,7 @@ function renderLeagueGwTransfers() {
 
     let pairsHtml = '';
     if (details.length > 0) {
-      pairsHtml = details.map(t => {
-        const pairDelta = t.net_points !== undefined ? t.net_points : (t.in_points - t.out_points);
-        const pairClass = pairDelta > 0 ? 'positive' : (pairDelta < 0 ? 'negative' : 'neutral');
-        const pairText = pairDelta > 0 ? `+${pairDelta} pts` : `${pairDelta} pts`;
-
-        const outCostStr = t.out_cost ? ` · £${t.out_cost}m` : '';
-        const inCostStr = t.in_cost ? ` · £${t.in_cost}m` : '';
-
-        return `
-          <div class="transfer-pair-row">
-            <div class="player-tag out">
-              <div class="player-tag-main">
-                <span class="player-tag-name"><i class="fa-solid fa-arrow-left"></i> ${t.out_name}</span>
-                <span class="player-tag-pts">${t.out_points} pts</span>
-              </div>
-              <div class="player-tag-sub">${t.out_club || ''}${t.out_pos ? ' · ' + t.out_pos : ''}${outCostStr}</div>
-            </div>
-            <div class="transfer-arrow-divider"><i class="fa-solid fa-arrow-right"></i></div>
-            <div class="player-tag in">
-              <div class="player-tag-main">
-                <span class="player-tag-name"><i class="fa-solid fa-arrow-right"></i> ${t.in_name}</span>
-                <span class="player-tag-pts">${t.in_points} pts</span>
-              </div>
-              <div class="player-tag-sub">${t.in_club || ''}${t.in_pos ? ' · ' + t.in_pos : ''}${inCostStr}</div>
-            </div>
-            <div class="pair-delta-badge ${pairClass}" title="In (${t.in_points}) - Out (${t.out_points})">${pairText}</div>
-          </div>
-        `;
-      }).join('');
+      pairsHtml = details.map(t => renderTransferPairRowHtml(t)).join('');
     } else {
       pairsHtml = `<div class="transfer-pair-row" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fa-solid fa-info-circle"></i> ${mgrRecord.transfers} transfer(s) recorded.</div>`;
     }

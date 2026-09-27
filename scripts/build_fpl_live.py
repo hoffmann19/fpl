@@ -201,6 +201,11 @@ def main():
                 in_pts = live_stats.get(in_id, {}).get("total_points", 0)
                 out_pts = live_stats.get(out_id, {}).get("total_points", 0)
 
+                in_season_pts = in_el.get("total_points", in_pts)
+                out_season_pts = out_el.get("total_points", out_pts)
+                in_ppg = float(in_el.get("points_per_game") or 0.0)
+                out_ppg = float(out_el.get("points_per_game") or 0.0)
+
                 transfers_in_names.append(in_name)
                 transfers_out_names.append(out_name)
                 transfers_detail.append({
@@ -209,11 +214,15 @@ def main():
                     "in_pos": in_pos,
                     "in_cost": round(t.get("element_in_cost", 0) / 10.0, 1),
                     "in_points": in_pts,
+                    "in_season_points": in_season_pts,
+                    "in_ppg": in_ppg,
                     "out_name": out_name,
                     "out_club": out_club,
                     "out_pos": out_pos,
                     "out_cost": round(t.get("element_out_cost", 0) / 10.0, 1),
                     "out_points": out_pts,
+                    "out_season_points": out_season_pts,
+                    "out_ppg": out_ppg,
                     "net_points": in_pts - out_pts,
                     "time": t.get("time")
                 })
@@ -233,6 +242,11 @@ def main():
                         out_n = out_p["name"] if out_p else "-"
                         in_p_pts = in_p["points"] if in_p else 0
                         out_p_pts = 0
+                        
+                        # Match with element in bootstrap if available
+                        in_el_fb = next((e for e in elements.values() if e.get("web_name") == in_n), {}) if in_p else {}
+                        out_el_fb = next((e for e in elements.values() if e.get("web_name") == out_n), {}) if out_p else {}
+
                         if in_p:
                             transfers_in_names.append(in_n)
                         if out_p:
@@ -243,11 +257,15 @@ def main():
                             "in_pos": in_p["position"] if in_p else "",
                             "in_cost": 0.0,
                             "in_points": in_p_pts,
+                            "in_season_points": in_el_fb.get("total_points", in_p_pts),
+                            "in_ppg": float(in_el_fb.get("points_per_game") or 0.0),
                             "out_name": out_n,
                             "out_club": out_p["club"] if out_p else "",
                             "out_pos": out_p["position"] if out_p else "",
                             "out_cost": 0.0,
                             "out_points": out_p_pts,
+                            "out_season_points": out_el_fb.get("total_points", out_p_pts),
+                            "out_ppg": float(out_el_fb.get("points_per_game") or 0.0),
                             "net_points": in_p_pts - out_p_pts,
                             "time": None
                         })
@@ -293,9 +311,26 @@ def main():
         gameweeks_dict[str(gw)]["standings"] = unplayed_standings
         gameweeks_dict[str(gw)]["lineups"] = unplayed_lineups
 
+    # Create compact players catalog with total_points, PPG, cost, etc.
+    players_catalog = {}
+    for pid, p in elements.items():
+        wname = p.get("web_name", "")
+        t_info = teams.get(p.get("team"), {})
+        pos_code = element_types.get(p.get("element_type"), "MID")
+        players_catalog[wname] = {
+            "id": pid,
+            "web_name": wname,
+            "team": t_info.get("short_name", ""),
+            "position": pos_code,
+            "total_points": p.get("total_points", 0),
+            "points_per_game": float(p.get("points_per_game") or 0.0),
+            "cost": round(p.get("now_cost", 0) / 10.0, 1)
+        }
+
     output_data = {
         "season": "2026/27",
         "managers": {m: {"team": meta["team"], "color": meta["color"]} for m, meta in managers_meta.items()},
+        "players": players_catalog,
         "gameweeks": gameweeks_dict
     }
 
