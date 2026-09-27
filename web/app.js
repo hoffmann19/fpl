@@ -2425,7 +2425,6 @@ function renderWinnersView() {
   // Calculate Most Wins Leader
   const sortedManagers = Object.values(managerWinStats).sort((a, b) => {
     if (b.wins !== a.wins) return b.wins - a.wins;
-    if (b.payout !== a.payout) return b.payout - a.payout;
     return b.highScore - a.highScore;
   });
 
@@ -2440,10 +2439,6 @@ function renderWinnersView() {
 
   if (elMetricHighScore) {
     elMetricHighScore.innerText = `${seasonHighScore.score} pts (${seasonHighScore.manager}, GW${seasonHighScore.gw})`;
-  }
-
-  if (elMetricTotalPayout) {
-    elMetricTotalPayout.innerText = `$${Math.round(totalPayout)}`;
   }
 
   if (elMetricAvgWinningScore) {
@@ -2475,10 +2470,6 @@ function renderWinnersView() {
       if (chipInfo) {
         chipHtml = `<span class="lb-chip-badge chip-${chipInfo.cssClass}"><i class="fa-solid ${chipInfo.icon}"></i> ${chipInfo.name}</span>`;
       }
-
-      // Payout string
-      const singlePayout = Math.round(item.payoutPerWinner);
-      const payoutStr = item.winners.length > 1 ? `$${item.payoutPerWinner.toFixed(1)} each` : `$${singlePayout}`;
 
       const card = document.createElement('div');
       card.className = 'winner-card';
@@ -2512,7 +2503,6 @@ function renderWinnersView() {
           <div class="winner-details-badges">
             ${captainHtml}
             ${chipHtml}
-            <span class="winner-payout-badge"><i class="fa-solid fa-sack-dollar"></i> ${payoutStr}</span>
             <button class="btn-goto-gw">View GW ${item.gw} <i class="fa-solid fa-arrow-right"></i></button>
           </div>
         </div>
@@ -2539,7 +2529,6 @@ function renderWinnersView() {
       if (isSelected) row.className = 'active-row';
 
       const wonGwsStr = stat.wonGWs.length > 0 ? stat.wonGWs.map(gw => `GW${gw}`).join(', ') : 'None';
-      const formattedPayout = stat.payout % 1 === 0 ? `$${stat.payout}` : `$${stat.payout.toFixed(1)}`;
 
       row.innerHTML = `
         <td class="font-mono"><strong>#${rank}</strong></td>
@@ -2556,7 +2545,6 @@ function renderWinnersView() {
           <span class="trophy-wins-badge"><i class="fa-solid fa-trophy"></i> ${stat.wins} win${stat.wins === 1 ? '' : 's'}</span>
         </td>
         <td style="font-size:0.8rem; color:var(--text-secondary);">${wonGwsStr}</td>
-        <td class="font-mono" style="color:#2ed573; font-weight:700;">${formattedPayout}</td>
         <td class="font-mono" style="color:#ffd700; font-weight:700;">${stat.highScore > 0 ? stat.highScore + ' pts' : '-'}</td>
       `;
 
