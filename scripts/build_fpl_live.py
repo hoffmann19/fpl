@@ -9,6 +9,8 @@ import json
 import os
 import sys
 import urllib.request
+import sqlite3
+from datetime import datetime, timezone
 
 LEAGUE_ID = 352792
 
@@ -29,6 +31,333 @@ def fetch_json(url):
     except Exception as e:
         print(f"[!] Error fetching {url}: {e}")
         return None
+
+def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks_dict, player_gw_scores, max_gw):
+    """
+    Sync all live FPL data into SQLite database:
+    - minileague_members (current ranks, team names, total points)
+    - minileague_standings (gameweek-by-gameweek standings, hits, points, chips, captain)
+    - minileague_lineups (squads, starters, bench, captain, points)
+    - minileague_transfers (all player transfers, GW points, points since move, PPG)
+    - player_gameweek_scores (each player's gameweek score across all played gameweeks)
+    - players (updated current season total points, PPG, cost, status)
+    """
+    print(f"[*] Syncing all live data to SQLite database at {db_path}...")
+    now_iso = datetime.now(timezone.utc).isoformat()
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+
+    # 1. minileague_members
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS minileague_members (
+            league_id INTEGER,
+            league_name TEXT,
+            entry_id INTEGER,
+            team_name TEXT,
+            manager_name TEXT,
+            joined_time TEXT,
+            rank TEXT,
+            last_rank TEXT,
+            event_total INTEGER,
+            total_points INTEGER,
+            summary_overall_points TEXT,
+            summary_overall_rank TEXT,
+            summary_event_points TEXT,
+            summary_event_rank TEXT,
+            fpl_region TEXT,
+            fpl_joined_date TEXT,
+            PRIMARY KEY (league_id, entry_id)
+        );
+    """)
+
+    for item in results:
+        entry_id = item.get("entry")
+        cur.execute("""
+            INSERT INTO minileague_members (
+                league_id, league_name, entry_id, team_name, manager_name,
+                rank, last_rank, event_total, total_points
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(league_id, entry_id) DO UPDATE SET
+                team_name = excluded.team_name,
+                manager_name = excluded.manager_name,
+                rank = excluded.rank,
+                last_rank = excluded.last_rank,
+                event_total = excluded.event_total,
+                total_points = excluded.total_points
+        """, (
+            league_id,
+            "Blue Square",
+            entry_id,
+            item.get("entry_name"),
+            item.get("player_name"),
+            str(item.get("rank")),
+            str(item.get("last_rank")),
+            item.get("event_total"),
+            item.get("total")
+        ))
+
+    # 2. minileague_standings
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS minileague_standings (
+            league_id INTEGER,
+            event INTEGER,
+            entry_id INTEGER,
+            manager_name TEXT,
+            team_name TEXT,
+            gw_points INTEGER,
+            gw_hits INTEGER,
+            gw_net_points INTEGER,
+            overall_points INTEGER,
+            overall_rank INTEGER,
+            rank INTEGER,
+            chip TEXT,
+            transfers INTEGER,
+            team_value REAL,
+            bank REAL,
+            captain_name TEXT,
+            captain_points INTEGER,
+            updated_at TEXT,
+            PRIMARY KEY (league_id, event, entry_id)
+        );
+    """)
+
+    # 3. minileague_lineups
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS minileague_lineups (
+            league_id INTEGER,
+            event INTEGER,
+            entry_id INTEGER,
+            manager_name TEXT,
+            player_name TEXT,
+            club TEXT,
+            position TEXT,
+            points INTEGER,
+            is_captain INTEGER,
+            is_vice_captain INTEGER,
+            is_starting INTEGER,
+            updated_at TEXT,
+            PRIMARY KEY (league_id, event, entry_id, player_name)
+        );
+    """)
+
+    # 4. minileague_transfers
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS minileague_transfers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            league_id INTEGER,
+            event INTEGER,
+            entry_id INTEGER,
+            manager_name TEXT,
+            team_name TEXT,
+            in_name TEXT,
+            in_club TEXT,
+            in_pos TEXT,
+            in_cost REAL,
+            in_points INTEGER,
+            in_season_points INTEGER,
+            in_points_since INTEGER,
+            in_ppg REAL,
+            out_name TEXT,
+            out_club TEXT,
+            out_pos TEXT,
+            out_cost REAL,
+            out_points INTEGER,
+            out_season_points INTEGER,
+            out_points_since INTEGER,
+            out_ppg REAL,
+            net_points INTEGER,
+            net_points_since INTEGER,
+            transfer_time TEXT,
+            updated_at TEXT
+        );
+    """)
+    cur.execute("DELETE FROM minileague_transfers WHERE league_id = ?", (league_id,))
+
+    for gw in range(1, max_gw + 1):
+        gw_key = str(gw)
+        gw_data = gameweeks_dict.get(gw_key, {})
+        standings = gw_data.get("standings", [])
+        lineups = gw_data.get("lineups", {})
+
+        for s in standings:
+            mgr_name = s.get("manager")
+            entry_id = managers_meta.get(mgr_name, {}).get("entry_id")
+            if not entry_id:
+                continue
+
+            cur.execute("""
+                INSERT INTO minileague_standings (
+                    league_id, event, entry_id, manager_name, team_name,
+                    gw_points, gw_hits, gw_net_points, overall_points, overall_rank,
+                    rank, chip, transfers, team_value, bank,
+                    captain_name, captain_points, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(league_id, event, entry_id) DO UPDATE SET
+                    gw_points = excluded.gw_points,
+                    gw_hits = excluded.gw_hits,
+                    gw_net_points = excluded.gw_net_points,
+                    overall_points = excluded.overall_points,
+                    overall_rank = excluded.overall_rank,
+                    rank = excluded.rank,
+                    chip = excluded.chip,
+                    transfers = excluded.transfers,
+                    team_value = excluded.team_value,
+                    bank = excluded.bank,
+                    captain_name = excluded.captain_name,
+                    captain_points = excluded.captain_points,
+                    updated_at = excluded.updated_at
+            """, (
+                league_id, gw, entry_id, mgr_name, s.get("team"),
+                s.get("gw_points", 0), s.get("gw_hits", 0), s.get("gw_net_points", 0),
+                s.get("overall_points", 0), s.get("overall_rank", 0), s.get("rank", 0),
+                s.get("chip", "None"), s.get("transfers", 0), s.get("team_value", 0.0),
+                s.get("bank", 0.0), s.get("captain", ""), s.get("captain_points", 0),
+                now_iso
+            ))
+
+            for t in s.get("transfers_detail", []):
+                cur.execute("""
+                    INSERT INTO minileague_transfers (
+                        league_id, event, entry_id, manager_name, team_name,
+                        in_name, in_club, in_pos, in_cost, in_points,
+                        in_season_points, in_points_since, in_ppg,
+                        out_name, out_club, out_pos, out_cost, out_points,
+                        out_season_points, out_points_since, out_ppg,
+                        net_points, net_points_since, transfer_time, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    league_id, gw, entry_id, mgr_name, s.get("team"),
+                    t.get("in_name"), t.get("in_club"), t.get("in_pos"), t.get("in_cost", 0.0),
+                    t.get("in_points", 0), t.get("in_season_points", 0), t.get("in_points_since", 0),
+                    t.get("in_ppg", 0.0), t.get("out_name"), t.get("out_club"), t.get("out_pos"),
+                    t.get("out_cost", 0.0), t.get("out_points", 0), t.get("out_season_points", 0),
+                    t.get("out_points_since", 0), t.get("out_ppg", 0.0), t.get("net_points", 0),
+                    t.get("net_points_since", 0), t.get("time"), now_iso
+                ))
+
+        for mgr_name, mgr_lineup in lineups.items():
+            entry_id = managers_meta.get(mgr_name, {}).get("entry_id")
+            if not entry_id:
+                continue
+            for p in mgr_lineup:
+                cur.execute("""
+                    INSERT INTO minileague_lineups (
+                        league_id, event, entry_id, manager_name, player_name,
+                        club, position, points, is_captain, is_vice_captain,
+                        is_starting, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(league_id, event, entry_id, player_name) DO UPDATE SET
+                        club = excluded.club,
+                        position = excluded.position,
+                        points = excluded.points,
+                        is_captain = excluded.is_captain,
+                        is_vice_captain = excluded.is_vice_captain,
+                        is_starting = excluded.is_starting,
+                        updated_at = excluded.updated_at
+                """, (
+                    league_id, gw, entry_id, mgr_name, p.get("name"),
+                    p.get("club"), p.get("position"), p.get("points", 0),
+                    1 if p.get("captain") else 0,
+                    1 if p.get("vice_captain") else 0,
+                    1 if p.get("starting") else 0,
+                    now_iso
+                ))
+
+    # 5. player_gameweek_scores
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS player_gameweek_scores (
+            element_id INTEGER,
+            web_name TEXT,
+            team TEXT,
+            position TEXT,
+            event INTEGER,
+            points INTEGER,
+            updated_at TEXT,
+            PRIMARY KEY (element_id, event)
+        );
+    """)
+
+    elements = {p["id"]: p for p in bootstrap.get("elements", [])}
+    teams = {t["id"]: t for t in bootstrap.get("teams", [])}
+    element_types = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
+
+    for pid, scores in player_gw_scores.items():
+        el = elements.get(pid, {})
+        wname = el.get("web_name", "")
+        tname = teams.get(el.get("team"), {}).get("short_name", "")
+        pos = element_types.get(el.get("element_type"), "MID")
+        for g, pts in scores.items():
+            cur.execute("""
+                INSERT INTO player_gameweek_scores (
+                    element_id, web_name, team, position, event, points, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(element_id, event) DO UPDATE SET
+                    web_name = excluded.web_name,
+                    team = excluded.team,
+                    position = excluded.position,
+                    points = excluded.points,
+                    updated_at = excluded.updated_at
+            """, (pid, wname, tname, pos, g, pts, now_iso))
+
+    # 6. Update players table
+    for pid, el in elements.items():
+        tname = teams.get(el.get("team"), {}).get("name", "")
+        tshort = teams.get(el.get("team"), {}).get("short_name", "")
+        pos = element_types.get(el.get("element_type"), "MID")
+        cur.execute("""
+            INSERT INTO players (
+                scraped_at, is_latest, id, web_name, first_name, second_name, full_name,
+                team, team_short, position, cost_m, now_cost, selected_by_percent,
+                status, news, total_points, points_per_game, minutes, goals_scored,
+                assists, clean_sheets, goals_conceded, own_goals, penalties_saved,
+                penalties_missed, yellow_cards, red_cards, saves, bonus, bps
+            ) VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(id) DO UPDATE SET
+                scraped_at = excluded.scraped_at,
+                is_latest = 1,
+                web_name = excluded.web_name,
+                first_name = excluded.first_name,
+                second_name = excluded.second_name,
+                full_name = excluded.full_name,
+                team = excluded.team,
+                team_short = excluded.team_short,
+                position = excluded.position,
+                cost_m = excluded.cost_m,
+                now_cost = excluded.now_cost,
+                selected_by_percent = excluded.selected_by_percent,
+                status = excluded.status,
+                news = excluded.news,
+                total_points = excluded.total_points,
+                points_per_game = excluded.points_per_game,
+                minutes = excluded.minutes,
+                goals_scored = excluded.goals_scored,
+                assists = excluded.assists,
+                clean_sheets = excluded.clean_sheets,
+                goals_conceded = excluded.goals_conceded,
+                own_goals = excluded.own_goals,
+                penalties_saved = excluded.penalties_saved,
+                penalties_missed = excluded.penalties_missed,
+                yellow_cards = excluded.yellow_cards,
+                red_cards = excluded.red_cards,
+                saves = excluded.saves,
+                bonus = excluded.bonus,
+                bps = excluded.bps
+        """, (
+            now_iso, pid, el.get("web_name"), el.get("first_name"), el.get("second_name"),
+            f"{el.get('first_name', '')} {el.get('second_name', '')}".strip(),
+            tname, tshort, pos,
+            round(el.get("now_cost", 0) / 10.0, 1), el.get("now_cost", 0),
+            float(el.get("selected_by_percent") or 0.0), el.get("status"), el.get("news"),
+            el.get("total_points", 0), float(el.get("points_per_game") or 0.0),
+            el.get("minutes", 0), el.get("goals_scored", 0), el.get("assists", 0),
+            el.get("clean_sheets", 0), el.get("goals_conceded", 0), el.get("own_goals", 0),
+            el.get("penalties_saved", 0), el.get("penalties_missed", 0), el.get("yellow_cards", 0),
+            el.get("red_cards", 0), el.get("saves", 0), el.get("bonus", 0), el.get("bps", 0)
+        ))
+
+    conn.commit()
+    conn.close()
+    print(f"[+] SQLite database successfully synced at {db_path}!")
 
 def main():
     print("[*] Fetching FPL bootstrap static data...")
@@ -377,6 +706,11 @@ def main():
         json.dump(output_data, f, indent=2)
 
     print(f"[+] Successfully wrote {out_2026_27} and {out_master}!")
+
+    # Sync to SQLite database
+    db_path = os.path.join(project_root, "fpl_data", "fpl_2026_27.db")
+    if os.path.exists(os.path.dirname(db_path)):
+        sync_sqlite(db_path, LEAGUE_ID, bootstrap, results, managers_meta, gameweeks_dict, player_gw_scores, max_gw)
 
 if __name__ == "__main__":
     main()
