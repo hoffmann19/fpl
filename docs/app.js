@@ -2819,8 +2819,15 @@ function renderTeamTransfersHistory() {
       avail = currentFt;
       if (chip === 'wildcard' || chip === 'freehit') {
         used = 0;
-        remaining = avail;
-        nextAvail = Math.min(maxFtCap, remaining + 1);
+        if (maxFtCap > 2) {
+          // Modern rules (2024/25+): Banked transfers are preserved, but NO new free transfer is gained in this gameweek
+          remaining = avail;
+          nextAvail = remaining;
+        } else {
+          // Legacy rules (pre-2024/25): Banked transfers were lost on Wildcard/Free Hit and reset to 1
+          remaining = 0;
+          nextAvail = 1;
+        }
       } else {
         used = Math.min(moves, avail);
         remaining = avail - used;
@@ -2858,6 +2865,7 @@ function renderTeamTransfersHistory() {
     const details = record.transfers_detail || [];
     const moves = record.transfers !== undefined ? record.transfers : details.length;
     const hitCost = Math.abs(record.gw_hits || 0);
+    const chip = (record.chip || '').toLowerCase().trim();
 
     const grossDelta = details.reduce((acc, t) => acc + (t.net_points || 0), 0);
     const netDelta = grossDelta - hitCost;
@@ -2884,6 +2892,12 @@ function renderTeamTransfersHistory() {
     if (ftInfo) {
       if (gw === 1) {
         ftBadgeHtml = `<span class="transfers-ft-pill" title="Initial squad creation. 1 FT rolled into GW2"><i class="fa-solid fa-bolt"></i> 1 FT saved</span>`;
+      } else if (chip === 'wildcard' || chip === 'freehit') {
+        const ftRem = ftInfo.remaining;
+        const chipName = chip === 'wildcard' ? 'Wildcard' : 'Free Hit';
+        const ftClass = ftRem === 0 ? 'ft-empty' : '';
+        const ftTitle = `${chipName} active: Unlimited transfers with 0 hit. Saved ${ftRem} FT preserved (no extra FT gained; ${ftInfo.nextAvailable} available in GW${gw + 1})`;
+        ftBadgeHtml = `<span class="transfers-ft-pill ${ftClass}" title="${ftTitle}"><i class="fa-solid fa-bolt"></i> ${ftRem} FT saved</span>`;
       } else {
         const ftRem = ftInfo.remaining;
         const ftClass = ftRem === 0 ? 'ft-empty' : '';
