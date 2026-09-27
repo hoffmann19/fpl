@@ -83,6 +83,17 @@ def main():
             "lineups": {}
         }
 
+    # Pre-fetch manager transfer histories for all managers
+    manager_transfers = {}
+    print("[*] Fetching manager transfer histories...")
+    for mgr_name, meta in managers_meta.items():
+        entry_id = meta.get("entry_id")
+        if entry_id:
+            t_data = fetch_json(f"https://fantasy.premierleague.com/api/entry/{entry_id}/transfers/") or []
+            manager_transfers[mgr_name] = t_data
+        else:
+            manager_transfers[mgr_name] = []
+
     # Process played gameweeks (1 to max_gw)
     for gw in range(1, max_gw + 1):
         print(f"[*] Processing Gameweek {gw}...")
@@ -169,6 +180,78 @@ def main():
                     "sub_out": False
                 })
 
+            # Calculate transfers detail for this manager in this GW
+            mgr_gw_transfers = [t for t in manager_transfers.get(mgr_name, []) if t.get("event") == gw]
+            transfers_detail = []
+            transfers_in_names = []
+            transfers_out_names = []
+
+            for t in mgr_gw_transfers:
+                in_id = t.get("element_in")
+                out_id = t.get("element_out")
+                in_el = elements.get(in_id, {})
+                out_el = elements.get(out_id, {})
+                in_name = in_el.get("web_name", "Unknown")
+                out_name = out_el.get("web_name", "Unknown")
+                in_club = teams.get(in_el.get("team"), {}).get("short_name", "")
+                out_club = teams.get(out_el.get("team"), {}).get("short_name", "")
+                in_pos = element_types.get(in_el.get("element_type"), "MID")
+                out_pos = element_types.get(out_el.get("element_type"), "MID")
+
+                in_pts = live_stats.get(in_id, {}).get("total_points", 0)
+                out_pts = live_stats.get(out_id, {}).get("total_points", 0)
+
+                transfers_in_names.append(in_name)
+                transfers_out_names.append(out_name)
+                transfers_detail.append({
+                    "in_name": in_name,
+                    "in_club": in_club,
+                    "in_pos": in_pos,
+                    "in_cost": round(t.get("element_in_cost", 0) / 10.0, 1),
+                    "in_points": in_pts,
+                    "out_name": out_name,
+                    "out_club": out_club,
+                    "out_pos": out_pos,
+                    "out_cost": round(t.get("element_out_cost", 0) / 10.0, 1),
+                    "out_points": out_pts,
+                    "net_points": in_pts - out_pts,
+                    "time": t.get("time")
+                })
+
+            # Fallback to squad diffing if transfers were recorded but not in transfers endpoint
+            if not transfers_detail and gw > 1:
+                prev_lineup = gameweeks_dict.get(str(gw - 1), {}).get("lineups", {}).get(mgr_name, [])
+                if prev_lineup:
+                    curr_names = {p["name"]: p for p in mgr_lineup}
+                    prev_names = {p["name"]: p for p in prev_lineup}
+                    ins = [p for name, p in curr_names.items() if name not in prev_names]
+                    outs = [p for name, p in prev_names.items() if name not in curr_names]
+                    for i in range(max(len(ins), len(outs))):
+                        in_p = ins[i] if i < len(ins) else None
+                        out_p = outs[i] if i < len(outs) else None
+                        in_n = in_p["name"] if in_p else "-"
+                        out_n = out_p["name"] if out_p else "-"
+                        in_p_pts = in_p["points"] if in_p else 0
+                        out_p_pts = 0
+                        if in_p:
+                            transfers_in_names.append(in_n)
+                        if out_p:
+                            transfers_out_names.append(out_n)
+                        transfers_detail.append({
+                            "in_name": in_n,
+                            "in_club": in_p["club"] if in_p else "",
+                            "in_pos": in_p["position"] if in_p else "",
+                            "in_cost": 0.0,
+                            "in_points": in_p_pts,
+                            "out_name": out_n,
+                            "out_club": out_p["club"] if out_p else "",
+                            "out_pos": out_p["position"] if out_p else "",
+                            "out_cost": 0.0,
+                            "out_points": out_p_pts,
+                            "net_points": in_p_pts - out_p_pts,
+                            "time": None
+                        })
+
             gw_standings_raw.append({
                 "manager": mgr_name,
                 "team": meta["team"],
@@ -185,8 +268,9 @@ def main():
                 "captain_points": captain_pts,
                 "players_left": players_left,
                 "value_left": round(value_left, 1),
-                "transfers_in": [],
-                "transfers_out": []
+                "transfers_in": transfers_in_names,
+                "transfers_out": transfers_out_names,
+                "transfers_detail": transfers_detail
             })
 
             gameweeks_dict[str(gw)]["lineups"][mgr_name] = mgr_lineup
@@ -204,7 +288,7 @@ def main():
     latest_lineups = gameweeks_dict[latest_gw_key]["lineups"]
 
     for gw in range(max_gw + 1, 39):
-        unplayed_standings = [dict(s, gw_points=0, gw_hits=0, gw_net_points=0, transfers=0, chip="None") for s in latest_standings]
+        unplayed_standings = [dict(s, gw_points=0, gw_hits=0, gw_net_points=0, transfers=0, chip="None", transfers_in=[], transfers_out=[], transfers_detail=[]) for s in latest_standings]
         unplayed_lineups = {mgr: [dict(p, points=0) for p in lineup] for mgr, lineup in latest_lineups.items()}
         gameweeks_dict[str(gw)]["standings"] = unplayed_standings
         gameweeks_dict[str(gw)]["lineups"] = unplayed_lineups

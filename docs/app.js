@@ -57,12 +57,30 @@ const elTabBarRace = document.getElementById('tab-bar-race');
 const elTabBumpChart = document.getElementById('tab-bump-chart');
 const elTabGlobalRank = document.getElementById('tab-global-rank');
 const elTabScatterPlot = document.getElementById('tab-scatter-plot');
+const elTabTransfers = document.getElementById('tab-transfers');
 
 const elPanelFieldRoster = document.getElementById('panel-field-roster');
 const elPanelBarRace = document.getElementById('panel-bar-race');
 const elPanelBumpChart = document.getElementById('panel-bump-chart');
 const elPanelGlobalRank = document.getElementById('panel-global-rank');
 const elPanelScatterPlot = document.getElementById('panel-scatter-plot');
+const elPanelTransfers = document.getElementById('panel-transfers');
+
+// Transfers Elements
+const elBtnViewGwTransfers = document.getElementById('btn-view-gw-transfers');
+const elBtnViewSeasonTransfers = document.getElementById('btn-view-season-transfers');
+const elTransfersGwView = document.getElementById('transfers-gw-view');
+const elTransfersSeasonView = document.getElementById('transfers-season-view');
+const elTransfersCardsContainer = document.getElementById('transfers-cards-container');
+const elTransfersSeasonTableBody = document.getElementById('transfers-season-table-body');
+const elTransfersGwTitle = document.getElementById('transfers-gw-title');
+
+const elMetricTotalTransfers = document.getElementById('metric-total-transfers');
+const elMetricTotalHits = document.getElementById('metric-total-hits');
+const elMetricTransferKing = document.getElementById('metric-transfer-king');
+const elMetricTransferFlop = document.getElementById('metric-transfer-flop');
+
+let transfersSubView = 'gw'; // 'gw' | 'season'
 
 // Main Pitch Elements
 const elMainPitchTeamName = document.getElementById('main-pitch-team-name');
@@ -306,6 +324,30 @@ function setupEventListeners() {
   if (elTabBumpChart) elTabBumpChart.addEventListener('click', () => switchTab('bump-chart'));
   if (elTabGlobalRank) elTabGlobalRank.addEventListener('click', () => switchTab('global-rank'));
   if (elTabScatterPlot) elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
+  if (elTabTransfers) elTabTransfers.addEventListener('click', () => switchTab('transfers'));
+
+  // Transfers Subview Listeners
+  if (elBtnViewGwTransfers) {
+    elBtnViewGwTransfers.addEventListener('click', () => {
+      transfersSubView = 'gw';
+      elBtnViewGwTransfers.classList.add('active');
+      if (elBtnViewSeasonTransfers) elBtnViewSeasonTransfers.classList.remove('active');
+      if (elTransfersGwView) elTransfersGwView.classList.remove('hidden');
+      if (elTransfersSeasonView) elTransfersSeasonView.classList.add('hidden');
+      renderTransfersView();
+    });
+  }
+
+  if (elBtnViewSeasonTransfers) {
+    elBtnViewSeasonTransfers.addEventListener('click', () => {
+      transfersSubView = 'season';
+      elBtnViewSeasonTransfers.classList.add('active');
+      if (elBtnViewGwTransfers) elBtnViewGwTransfers.classList.remove('active');
+      if (elTransfersSeasonView) elTransfersSeasonView.classList.remove('hidden');
+      if (elTransfersGwView) elTransfersGwView.classList.add('hidden');
+      renderSeasonTransfersLeaderboard();
+    });
+  }
 
   // Leaderboard Sort Listeners
   setupLeaderboardListeners();
@@ -353,12 +395,14 @@ function switchTab(tab) {
   if (elTabBumpChart) elTabBumpChart.classList.remove('active');
   if (elTabGlobalRank) elTabGlobalRank.classList.remove('active');
   if (elTabScatterPlot) elTabScatterPlot.classList.remove('active');
+  if (elTabTransfers) elTabTransfers.classList.remove('active');
   
   if (elPanelFieldRoster) elPanelFieldRoster.classList.remove('active');
   if (elPanelBarRace) elPanelBarRace.classList.remove('active');
   if (elPanelBumpChart) elPanelBumpChart.classList.remove('active');
   if (elPanelGlobalRank) elPanelGlobalRank.classList.remove('active');
   if (elPanelScatterPlot) elPanelScatterPlot.classList.remove('active');
+  if (elPanelTransfers) elPanelTransfers.classList.remove('active');
   
   if (tab === 'field-roster') {
     if (elTabFieldRoster) elTabFieldRoster.classList.add('active');
@@ -380,6 +424,14 @@ function switchTab(tab) {
   } else if (tab === 'scatter-plot') {
     if (elTabScatterPlot) elTabScatterPlot.classList.add('active');
     if (elPanelScatterPlot) elPanelScatterPlot.classList.add('active');
+  } else if (tab === 'transfers') {
+    if (elTabTransfers) elTabTransfers.classList.add('active');
+    if (elPanelTransfers) elPanelTransfers.classList.add('active');
+    if (transfersSubView === 'season') {
+      renderSeasonTransfersLeaderboard();
+    } else {
+      renderTransfersView();
+    }
   }
 }
 
@@ -1096,10 +1148,14 @@ function updateLineupPitch() {
     bench = mgrLineup.slice(11).map(p => ({ ...p, starting: false }));
   }
   
+  // Identify players transferred in for this manager in this gameweek
+  const transferredInSet = new Set(mgrRecord?.transfers_in || []);
+
   // Render Starters by row
   starters.forEach(player => {
-    const card1 = createPlayerCardDOM(player, maxPts);
-    const card2 = createPlayerCardDOM(player, maxPts);
+    const isTransferredIn = transferredInSet.has(player.name);
+    const card1 = createPlayerCardDOM(player, maxPts, isTransferredIn);
+    const card2 = createPlayerCardDOM(player, maxPts, isTransferredIn);
     
     const targetRowRight = document.getElementById(`pitch-row-${player.position}`);
     if (targetRowRight) targetRowRight.appendChild(card1);
@@ -1116,8 +1172,9 @@ function updateLineupPitch() {
   });
   
   sortedBench.forEach(player => {
-    const card1 = createPlayerCardDOM(player, maxPts);
-    const card2 = createPlayerCardDOM(player, maxPts);
+    const isTransferredIn = transferredInSet.has(player.name);
+    const card1 = createPlayerCardDOM(player, maxPts, isTransferredIn);
+    const card2 = createPlayerCardDOM(player, maxPts, isTransferredIn);
     if (elPitchRowBench) elPitchRowBench.appendChild(card1);
     if (elMainPitchRowBench) elMainPitchRowBench.appendChild(card2);
   });
@@ -1177,7 +1234,7 @@ const CLUB_KITS = {
 
 const GKP_KIT = { bg: '#00FF87', sleeve: '#00FF87', text: '#38003C', name: '#38003C', collar: '#38003C' };
 
-function createPlayerCardDOM(player, maxSquadPts) {
+function createPlayerCardDOM(player, maxSquadPts, isTransferredIn = false) {
   const card = document.createElement('div');
   card.className = `player-card ${player.position}`;
   
@@ -1205,6 +1262,12 @@ function createPlayerCardDOM(player, maxSquadPts) {
   let mvpHtml = '';
   if (player.points === maxSquadPts && player.points > 0) {
     mvpHtml = `<span class="player-badge mvp" title="GW Squad MVP"><i class="fa-solid fa-star"></i></span>`;
+  }
+
+  // Transferred-in badge
+  let transferInHtml = '';
+  if (isTransferredIn) {
+    transferInHtml = `<span class="player-badge transfer-in-badge" title="New transfer signing in GW ${currentGW}">IN</span>`;
   }
   
   // Sub indicators
@@ -1244,6 +1307,7 @@ function createPlayerCardDOM(player, maxSquadPts) {
       ${jerseySvg}
       ${badgeHtml}
       ${mvpHtml}
+      ${transferInHtml}
       ${subHtml}
     </div>
     <span class="player-name">${player.name}</span>
@@ -1295,7 +1359,10 @@ function updateDashboard() {
   // 6. Update Leaderboard
   renderLeaderboard();
   
-  // 7. Update Scatter Plot
+  // 7. Update Transfers View
+  renderTransfersView();
+
+  // 8. Update Scatter Plot
   if (elScatterSvg) updateScatterPlot();
 }
 
@@ -1362,7 +1429,7 @@ function renderLeaderboard() {
     const barWidthPct = maxScore > 0 ? Math.max(6, (rowScore / maxScore) * 100) : 6;
 
     // Transfers & Hits
-    const transfersCount = mgrRecord.transfers !== undefined ? mgrRecord.transfers : 0;
+    const transfersCount = mgrRecord.transfers !== undefined ? mgrRecord.transfers : (mgrRecord.transfers_detail?.length || 0);
     const hitsCount = mgrRecord.gw_hits !== undefined ? mgrRecord.gw_hits : 0;
     const hitsPenalty = Math.abs(hitsCount);
     
@@ -1371,6 +1438,16 @@ function renderLeaderboard() {
       hitBadgeHtml = `<span class="lb-hit-badge danger" title="${hitsPenalty} pts hit penalty">-${hitsPenalty} hit</span>`;
     } else {
       hitBadgeHtml = `<span class="lb-hit-badge neutral" title="0 hit penalty">0 hit</span>`;
+    }
+
+    // Net transfer delta badge
+    let netDeltaBadge = '';
+    if (mgrRecord.transfers_detail && mgrRecord.transfers_detail.length > 0) {
+      const gross = mgrRecord.transfers_detail.reduce((sum, t) => sum + (t.net_points || 0), 0);
+      const net = gross - hitsPenalty;
+      const netClass = net > 0 ? 'positive' : (net < 0 ? 'negative' : 'neutral');
+      const netPrefix = net > 0 ? '+' : '';
+      netDeltaBadge = `<span class="lb-net-delta-pill ${netClass}" title="Transfer ROI: ${netPrefix}${net} pts">${netPrefix}${net} net</span>`;
     }
     
     // Players Remaining Badge
@@ -1398,6 +1475,7 @@ function renderLeaderboard() {
       <div class="lb-transfers-cell">
         <span class="lb-tx-badge"><i class="fa-solid fa-right-left"></i> ${transfersCount} tx</span>
         ${hitBadgeHtml}
+        ${netDeltaBadge}
       </div>
       <div class="lb-points-cell">
         <span class="lb-gw-pts ${leaderboardSortMode === 'gw' ? 'highlight-sort' : ''}">+${mgrRecord.gw_points} <small>GW${currentGW}</small></span>
@@ -2171,5 +2249,283 @@ function hideScatterTooltip() {
   if (elScatterTooltip) {
     elScatterTooltip.classList.add('hidden');
   }
+}
+
+// ----------------------------------------------------
+// TRANSFERS IN & OUT HUB IMPLEMENTATION
+// ----------------------------------------------------
+function renderTransfersView() {
+  if (!appData || !appData.gameweeks) return;
+  if (elTransfersGwTitle) elTransfersGwTitle.innerText = currentGW;
+
+  const gwData = appData.gameweeks[currentGW.toString()];
+  if (!gwData || !gwData.standings) return;
+
+  const allStandings = gwData.standings;
+
+  // 1. Calculate League-wide Gameweek Transfer Metrics
+  let totalTransfers = 0;
+  let totalHits = 0;
+  let king = { manager: null, delta: -Infinity, team: '', name: '' };
+  let flop = { manager: null, delta: Infinity, team: '', name: '' };
+
+  allStandings.forEach(s => {
+    const moves = s.transfers !== undefined ? s.transfers : (s.transfers_detail ? s.transfers_detail.length : 0);
+    totalTransfers += moves;
+    const hitCost = Math.abs(s.gw_hits || 0);
+    totalHits += hitCost;
+
+    if (s.transfers_detail && s.transfers_detail.length > 0) {
+      const grossDelta = s.transfers_detail.reduce((acc, t) => acc + (t.net_points || 0), 0);
+      const netDelta = grossDelta - hitCost;
+      if (netDelta > king.delta) {
+        king = { manager: s.manager, delta: netDelta, team: s.team };
+      }
+      if (netDelta < flop.delta) {
+        flop = { manager: s.manager, delta: netDelta, team: s.team };
+      }
+    }
+  });
+
+  if (elMetricTotalTransfers) elMetricTotalTransfers.innerText = totalTransfers;
+  if (elMetricTotalHits) elMetricTotalHits.innerText = totalHits > 0 ? `-${totalHits} pts` : '0 pts';
+
+  if (elMetricTransferKing) {
+    if (king.manager && king.delta > 0) {
+      elMetricTransferKing.innerText = `${king.manager} (+${king.delta} pts)`;
+    } else if (king.manager && king.delta === 0) {
+      elMetricTransferKing.innerText = `${king.manager} (0 pts)`;
+    } else {
+      elMetricTransferKing.innerText = totalTransfers > 0 ? 'None' : '-';
+    }
+  }
+
+  if (elMetricTransferFlop) {
+    if (flop.manager && flop.delta < 0) {
+      elMetricTransferFlop.innerText = `${flop.manager} (${flop.delta} pts)`;
+    } else {
+      elMetricTransferFlop.innerText = totalTransfers > 0 ? 'None' : '-';
+    }
+  }
+
+  // 2. Filter by Selected Manager if applicable
+  let targetStandings = allStandings;
+  if (selectedManager) {
+    targetStandings = allStandings.filter(s => s.manager === selectedManager);
+  }
+
+  // Filter to managers who made transfers
+  const managersWithMoves = targetStandings.filter(s => {
+    const hasDetails = s.transfers_detail && s.transfers_detail.length > 0;
+    const hasTransfers = s.transfers && s.transfers > 0;
+    return hasDetails || hasTransfers;
+  });
+
+  if (!elTransfersCardsContainer) return;
+  elTransfersCardsContainer.innerHTML = '';
+
+  if (managersWithMoves.length === 0) {
+    const filterDesc = selectedManager ? `by ${selectedManager}` : 'across the league';
+    elTransfersCardsContainer.innerHTML = `
+      <div class="transfers-empty-state">
+        <i class="fa-solid fa-mug-hot"></i>
+        <p>No transfers made in Gameweek ${currentGW} ${filterDesc}.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Sort managers by highest net delta first
+  managersWithMoves.sort((a, b) => {
+    const deltaA = ((a.transfers_detail || []).reduce((acc, t) => acc + (t.net_points || 0), 0)) - Math.abs(a.gw_hits || 0);
+    const deltaB = ((b.transfers_detail || []).reduce((acc, t) => acc + (t.net_points || 0), 0)) - Math.abs(b.gw_hits || 0);
+    return deltaB - deltaA;
+  });
+
+  managersWithMoves.forEach(mgrRecord => {
+    const mgrMeta = appData.managers[mgrRecord.manager] || { team: mgrRecord.team || mgrRecord.manager, color: '#1e90ff' };
+    const hitCost = Math.abs(mgrRecord.gw_hits || 0);
+    const details = mgrRecord.transfers_detail || [];
+    const grossDelta = details.reduce((acc, t) => acc + (t.net_points || 0), 0);
+    const netDelta = grossDelta - hitCost;
+    
+    const deltaClass = netDelta > 0 ? 'positive' : (netDelta < 0 ? 'negative' : 'neutral');
+    const deltaText = netDelta > 0 ? `+${netDelta} pts net` : (netDelta < 0 ? `${netDelta} pts net` : `0 pts net`);
+
+    // Chip badge
+    let chipBadgeHtml = '';
+    if (mgrRecord.chip && mgrRecord.chip !== 'None') {
+      const chipLower = mgrRecord.chip.toLowerCase().replace(/\s+/g, '');
+      chipBadgeHtml = `<span class="chip-badge chip-${chipLower}"><i class="fa-solid fa-bolt"></i> ${mgrRecord.chip}</span>`;
+    }
+
+    // Hit badge
+    let hitBadgeHtml = '';
+    if (hitCost > 0) {
+      hitBadgeHtml = `<span class="transfers-hit-pill">-${hitCost} pts hit</span>`;
+    }
+
+    // Transfer pairs
+    let pairsHtml = '';
+    if (details.length > 0) {
+      pairsHtml = details.map(t => {
+        const pairDelta = t.net_points !== undefined ? t.net_points : (t.in_points - t.out_points);
+        const pairClass = pairDelta > 0 ? 'positive' : (pairDelta < 0 ? 'negative' : 'neutral');
+        const pairText = pairDelta > 0 ? `+${pairDelta} pts` : `${pairDelta} pts`;
+
+        const outCostStr = t.out_cost ? ` · £${t.out_cost}m` : '';
+        const inCostStr = t.in_cost ? ` · £${t.in_cost}m` : '';
+
+        return `
+          <div class="transfer-pair-row">
+            <div class="player-tag out">
+              <div class="player-tag-main">
+                <span class="player-tag-name"><i class="fa-solid fa-arrow-left"></i> ${t.out_name}</span>
+                <span class="player-tag-pts">${t.out_points} pts</span>
+              </div>
+              <div class="player-tag-sub">${t.out_club || ''}${t.out_pos ? ' · ' + t.out_pos : ''}${outCostStr}</div>
+            </div>
+            <div class="transfer-arrow-divider"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="player-tag in">
+              <div class="player-tag-main">
+                <span class="player-tag-name"><i class="fa-solid fa-arrow-right"></i> ${t.in_name}</span>
+                <span class="player-tag-pts">${t.in_points} pts</span>
+              </div>
+              <div class="player-tag-sub">${t.in_club || ''}${t.in_pos ? ' · ' + t.in_pos : ''}${inCostStr}</div>
+            </div>
+            <div class="pair-delta-badge ${pairClass}" title="In (${t.in_points}) - Out (${t.out_points})">${pairText}</div>
+          </div>
+        `;
+      }).join('');
+    } else {
+      // If transfer count was recorded without pair details
+      pairsHtml = `<div class="transfer-pair-row" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fa-solid fa-info-circle"></i> ${mgrRecord.transfers} transfer(s) recorded.</div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'transfer-card';
+    card.style.borderLeft = `4px solid ${mgrMeta.color}`;
+
+    card.innerHTML = `
+      <div class="transfer-card-header">
+        <div class="transfer-mgr-info">
+          <div class="transfer-mgr-avatar" style="background:${mgrMeta.color};">
+            ${mgrRecord.manager.charAt(0).toUpperCase()}
+          </div>
+          <div class="transfer-mgr-text">
+            <span class="transfer-mgr-team" style="color:${mgrMeta.color};">${mgrMeta.team}</span>
+            <span class="transfer-mgr-name">${mgrRecord.manager}</span>
+          </div>
+        </div>
+        <div class="transfer-card-badges">
+          ${chipBadgeHtml}
+          ${hitBadgeHtml}
+          <span class="transfer-delta-pill ${deltaClass}" title="Total GW Transfer Gain/Loss">${deltaText}</span>
+        </div>
+      </div>
+      <div class="transfer-pairs-list">
+        ${pairsHtml}
+      </div>
+    `;
+
+    card.addEventListener('click', (e) => {
+      // If clicking inside card, select manager
+      if (!e.target.closest('button')) {
+        selectManager(mgrRecord.manager);
+      }
+    });
+
+    elTransfersCardsContainer.appendChild(card);
+  });
+}
+
+function renderSeasonTransfersLeaderboard() {
+  if (!appData || !appData.managers || !elTransfersSeasonTableBody) return;
+  elTransfersSeasonTableBody.innerHTML = '';
+
+  const managerNames = Object.keys(appData.managers);
+  const availableGWs = Object.keys(appData.gameweeks).map(Number).sort((a, b) => a - b);
+  const playedGWs = availableGWs.filter(gw => gw <= finalGW);
+
+  // Compile cumulative stats per manager
+  const seasonStats = managerNames.map(mgrName => {
+    const meta = appData.managers[mgrName] || { team: mgrName, color: '#1e90ff' };
+    let totalMoves = 0;
+    let totalHitsCost = 0;
+    let totalPtsIn = 0;
+    let totalPtsOut = 0;
+
+    playedGWs.forEach(gw => {
+      const gwStandings = appData.gameweeks[gw.toString()]?.standings || [];
+      const record = gwStandings.find(s => s.manager === mgrName);
+      if (record) {
+        totalMoves += (record.transfers || record.transfers_detail?.length || 0);
+        totalHitsCost += Math.abs(record.gw_hits || 0);
+        if (record.transfers_detail && record.transfers_detail.length > 0) {
+          record.transfers_detail.forEach(t => {
+            totalPtsIn += (t.in_points || 0);
+            totalPtsOut += (t.out_points || 0);
+          });
+        }
+      }
+    });
+
+    const grossGain = totalPtsIn - totalPtsOut;
+    const netRoi = grossGain - totalHitsCost;
+
+    return {
+      manager: mgrName,
+      team: meta.team,
+      color: meta.color,
+      totalMoves,
+      totalHitsCost,
+      totalPtsIn,
+      totalPtsOut,
+      grossGain,
+      netRoi
+    };
+  });
+
+  // Sort by netRoi descending (then grossGain, then totalMoves)
+  seasonStats.sort((a, b) => {
+    if (b.netRoi !== a.netRoi) return b.netRoi - a.netRoi;
+    if (b.grossGain !== a.grossGain) return b.grossGain - a.grossGain;
+    return a.totalHitsCost - b.totalHitsCost;
+  });
+
+  seasonStats.forEach((stat, idx) => {
+    const rank = idx + 1;
+    const isSelected = stat.manager === selectedManager;
+    const row = document.createElement('tr');
+    if (isSelected) row.className = 'active-row';
+
+    const roiClass = stat.netRoi > 0 ? 'roi-positive' : (stat.netRoi < 0 ? 'roi-negative' : '');
+    const roiPrefix = stat.netRoi > 0 ? '+' : '';
+
+    row.innerHTML = `
+      <td class="font-mono"><strong>#${rank}</strong></td>
+      <td>
+        <div class="table-mgr-col">
+          <span class="table-mgr-badge" style="background:${stat.color}"></span>
+          <div class="table-mgr-text">
+            <span class="table-mgr-team" style="color:${stat.color}">${stat.team}</span>
+            <span class="table-mgr-name">${stat.manager}</span>
+          </div>
+        </div>
+      </td>
+      <td class="font-mono">${stat.totalMoves}</td>
+      <td class="font-mono" style="color:${stat.totalHitsCost > 0 ? '#ff4757' : 'inherit'}">-${stat.totalHitsCost} pts</td>
+      <td class="font-mono" style="color:#2ed573">${stat.totalPtsIn} pts</td>
+      <td class="font-mono" style="color:#ff6b81">${stat.totalPtsOut} pts</td>
+      <td class="font-mono ${roiClass}">${roiPrefix}${stat.netRoi} pts</td>
+    `;
+
+    row.addEventListener('click', () => {
+      selectManager(stat.manager);
+      renderSeasonTransfersLeaderboard();
+    });
+
+    elTransfersSeasonTableBody.appendChild(row);
+  });
 }
 

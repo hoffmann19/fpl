@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="style.css?v=20260908_2">
+  <link rel="stylesheet" href="style.css?v=20260921_transfers">
 </head>
 <body>
   <div class="app-container">
@@ -57,6 +57,7 @@
           <button id="tab-bar-race" class="tab-pill" title="Bar Chart Race"><i class="fa-solid fa-chart-bar"></i> Bars</button>
           <button id="tab-bump-chart" class="tab-pill" title="Rank Trajectory"><i class="fa-solid fa-chart-line"></i> Rank</button>
           <button id="tab-global-rank" class="tab-pill" title="Global Rank"><i class="fa-solid fa-globe"></i> Global</button>
+          <button id="tab-transfers" class="tab-pill" title="Transfers In &amp; Out"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transfers</button>
           <button id="btn-reset" class="btn-icon-sm" title="Reset to GW 1"><i class="fa-solid fa-rotate-left"></i></button>
         </div>
 
@@ -146,6 +147,84 @@
               <div id="global-rank-tooltip" class="chart-tooltip hidden"></div>
             </div>
           </div>
+
+          <!-- Transfers In & Out Panel -->
+          <div id="panel-transfers" class="panel">
+            <div class="transfers-container">
+              <!-- Sub-header with sub-view toggle and filters -->
+              <div class="transfers-header-row">
+                <div class="transfers-header-title">
+                  <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                  <span>Gameweek <span id="transfers-gw-title">1</span> Transfer Activity</span>
+                </div>
+                <div class="transfers-view-toggle">
+                  <button id="btn-view-gw-transfers" class="subview-pill active" title="Show Gameweek Transfers"><i class="fa-solid fa-calendar-day"></i> GW Moves</button>
+                  <button id="btn-view-season-transfers" class="subview-pill" title="Show Season Transfer ROI Leaderboard"><i class="fa-solid fa-award"></i> Season Leaderboard</button>
+                </div>
+              </div>
+
+              <!-- Top Highlight Stats Widgets -->
+              <div class="transfers-metrics-grid" id="transfers-metrics-container">
+                <div class="metric-card">
+                  <div class="metric-icon"><i class="fa-solid fa-rotate"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Total Transfers</span>
+                    <span class="metric-value" id="metric-total-transfers">0</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon hit"><i class="fa-solid fa-minus"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Hits Penalty</span>
+                    <span class="metric-value" id="metric-total-hits">0 pts</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon king"><i class="fa-solid fa-crown"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Transfer King</span>
+                    <span class="metric-value highlight" id="metric-transfer-king">-</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon flop"><i class="fa-solid fa-skull"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Transfer Flop</span>
+                    <span class="metric-value flop" id="metric-transfer-flop">-</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Gameweek View: Manager Cards List -->
+              <div id="transfers-gw-view" class="transfers-subview active">
+                <div class="transfers-cards-grid" id="transfers-cards-container">
+                  <!-- Injected via JavaScript -->
+                </div>
+              </div>
+
+              <!-- Season View: Cumulative ROI Leaderboard -->
+              <div id="transfers-season-view" class="transfers-subview hidden">
+                <div class="transfers-table-wrapper glass">
+                  <table class="transfers-season-table">
+                    <thead>
+                      <tr>
+                        <th>Rank</th>
+                        <th>Manager &amp; Team</th>
+                        <th>Total Moves</th>
+                        <th>Hits Cost</th>
+                        <th>Pts In</th>
+                        <th>Pts Out</th>
+                        <th>Net Transfer Delta</th>
+                      </tr>
+                    </thead>
+                    <tbody id="transfers-season-table-body">
+                      <!-- Injected via JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -177,6 +256,6 @@
     </footer>
   </div>
 
-  <script src="app.js?v=20260908_2"></script>
+  <script src="app.js?v=20260921_transfers"></script>
 </body>
 </html>

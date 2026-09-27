@@ -2,9 +2,13 @@ name: Auto Update Live FPL Data
 
 on:
   schedule:
-    # Run every 5 minutes on GitHub Cloud
-    - cron: '*/5 * * * *'
-  workflow_dispatch: # Allows manual one-click trigger from GitHub Actions UI
+    # Weekend Matchdays (Saturday & Sunday): Every 5 minutes from 10:00 to 23:55 UTC
+    - cron: '*/5 10-23 * * 0,6'
+    # Friday & Monday Night Football: Every 5 minutes from 18:00 to 23:55 UTC
+    - cron: '*/5 18-23 * * 1,5'
+    # Midweek Matchdays (Tuesday, Wednesday, Thursday): Every 10 minutes from 18:00 to 23:55 UTC
+    - cron: '*/10 18-23 * * 2,3,4'
+  workflow_dispatch: # Allows manual one-click trigger anytime from GitHub Actions UI
 
 permissions:
   contents: write
@@ -22,12 +26,25 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Check Match Day Status
+        id: match_check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "reason=Manual trigger via workflow_dispatch" >> "$GITHUB_OUTPUT"
+            echo "Manual workflow dispatch trigger: forcing run."
+          else
+            python3 scripts/check_match_day.py
+          fi
+
       - name: Fetch Live FPL Data & Compile Web Assets
+        if: steps.match_check.outputs.should_run == 'true'
         run: |
           python3 scripts/build_fpl_live.py
           python3 scripts/organize_web_files.py
 
       - name: Commit and Push Data Updates
+        if: steps.match_check.outputs.should_run == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
