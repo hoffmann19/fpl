@@ -94,16 +94,29 @@ def main():
         else:
             manager_transfers[mgr_name] = []
 
+    # Pre-fetch live player stats for all gameweeks 1 to max_gw
+    gw_live_stats = {}
+    player_gw_scores = {}
+    print(f"[*] Pre-fetching live player stats for Gameweeks 1 to {max_gw}...")
+    for g in range(1, max_gw + 1):
+        live_data = fetch_json(f"https://fantasy.premierleague.com/api/event/{g}/live/")
+        g_stats = {}
+        if live_data and "elements" in live_data:
+            for el in live_data["elements"]:
+                pid = el["id"]
+                pts = el.get("stats", {}).get("total_points", 0)
+                g_stats[pid] = el.get("stats", {})
+                if pid not in player_gw_scores:
+                    player_gw_scores[pid] = {}
+                player_gw_scores[pid][g] = pts
+        gw_live_stats[g] = g_stats
+
     # Process played gameweeks (1 to max_gw)
     for gw in range(1, max_gw + 1):
         print(f"[*] Processing Gameweek {gw}...")
         
-        # Fetch live player stats for this GW
-        live_data = fetch_json(f"https://fantasy.premierleague.com/api/event/{gw}/live/")
-        live_stats = {}
-        if live_data and "elements" in live_data:
-            for el in live_data["elements"]:
-                live_stats[el["id"]] = el.get("stats", {})
+        # Use pre-fetched live player stats for this GW
+        live_stats = gw_live_stats.get(gw, {})
 
         # Fetch fixtures for this GW to calculate remaining players & remaining squad value
         fixtures_data = fetch_json(f"https://fantasy.premierleague.com/api/fixtures/?event={gw}") or []
@@ -201,6 +214,10 @@ def main():
                 in_pts = live_stats.get(in_id, {}).get("total_points", 0)
                 out_pts = live_stats.get(out_id, {}).get("total_points", 0)
 
+                in_pts_since = sum(player_gw_scores.get(in_id, {}).get(g, 0) for g in range(gw, max_gw + 1))
+                out_pts_since = sum(player_gw_scores.get(out_id, {}).get(g, 0) for g in range(gw, max_gw + 1))
+                net_pts_since = in_pts_since - out_pts_since
+
                 in_season_pts = in_el.get("total_points", in_pts)
                 out_season_pts = out_el.get("total_points", out_pts)
                 in_ppg = float(in_el.get("points_per_game") or 0.0)
@@ -215,6 +232,7 @@ def main():
                     "in_cost": round(t.get("element_in_cost", 0) / 10.0, 1),
                     "in_points": in_pts,
                     "in_season_points": in_season_pts,
+                    "in_points_since": in_pts_since,
                     "in_ppg": in_ppg,
                     "out_name": out_name,
                     "out_club": out_club,
@@ -222,8 +240,11 @@ def main():
                     "out_cost": round(t.get("element_out_cost", 0) / 10.0, 1),
                     "out_points": out_pts,
                     "out_season_points": out_season_pts,
+                    "out_points_since": out_pts_since,
                     "out_ppg": out_ppg,
                     "net_points": in_pts - out_pts,
+                    "net_points_since": net_pts_since,
+                    "transfer_gw": gw,
                     "time": t.get("time")
                 })
 
@@ -247,6 +268,11 @@ def main():
                         in_el_fb = next((e for e in elements.values() if e.get("web_name") == in_n), {}) if in_p else {}
                         out_el_fb = next((e for e in elements.values() if e.get("web_name") == out_n), {}) if out_p else {}
 
+                        in_pid = in_el_fb.get("id")
+                        out_pid = out_el_fb.get("id")
+                        in_pts_since = sum(player_gw_scores.get(in_pid, {}).get(g, 0) for g in range(gw, max_gw + 1)) if in_pid else in_p_pts
+                        out_pts_since = sum(player_gw_scores.get(out_pid, {}).get(g, 0) for g in range(gw, max_gw + 1)) if out_pid else out_p_pts
+
                         if in_p:
                             transfers_in_names.append(in_n)
                         if out_p:
@@ -258,6 +284,7 @@ def main():
                             "in_cost": 0.0,
                             "in_points": in_p_pts,
                             "in_season_points": in_el_fb.get("total_points", in_p_pts),
+                            "in_points_since": in_pts_since,
                             "in_ppg": float(in_el_fb.get("points_per_game") or 0.0),
                             "out_name": out_n,
                             "out_club": out_p["club"] if out_p else "",
@@ -265,8 +292,11 @@ def main():
                             "out_cost": 0.0,
                             "out_points": out_p_pts,
                             "out_season_points": out_el_fb.get("total_points", out_p_pts),
+                            "out_points_since": out_pts_since,
                             "out_ppg": float(out_el_fb.get("points_per_game") or 0.0),
                             "net_points": in_p_pts - out_p_pts,
+                            "net_points_since": in_pts_since - out_pts_since,
+                            "transfer_gw": gw,
                             "time": None
                         })
 
@@ -324,7 +354,8 @@ def main():
             "position": pos_code,
             "total_points": p.get("total_points", 0),
             "points_per_game": float(p.get("points_per_game") or 0.0),
-            "cost": round(p.get("now_cost", 0) / 10.0, 1)
+            "cost": round(p.get("now_cost", 0) / 10.0, 1),
+            "gw_points": {str(g): pts for g, pts in player_gw_scores.get(pid, {}).items()}
         }
 
     output_data = {

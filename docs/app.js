@@ -2639,7 +2639,45 @@ function getPlayerStatsHelper(playerName, transferObj, isIncoming) {
   return { totalPoints: fallbackPts, ppg: fallbackPts };
 }
 
-function renderTransferPairRowHtml(t) {
+function getPlayerPointsSince(playerName, startGw, fallbackGwPts) {
+  const maxPlayed = finalGW || getLatestGWWithData(appData);
+  const fromGw = startGw || maxPlayed;
+
+  // 1. Direct from appData.players[playerName].gw_points if present
+  if (appData && appData.players && appData.players[playerName] && appData.players[playerName].gw_points) {
+    const scores = appData.players[playerName].gw_points;
+    let sumPts = 0;
+    for (let g = fromGw; g <= maxPlayed; g++) {
+      if (scores[g.toString()] !== undefined) {
+        sumPts += scores[g.toString()];
+      }
+    }
+    return sumPts;
+  }
+
+  // 2. Lineup search across gameweeks from fromGw to maxPlayed
+  if (appData && appData.gameweeks) {
+    let sumPts = 0;
+    let foundAny = false;
+    for (let g = fromGw; g <= maxPlayed; g++) {
+      const gwo = appData.gameweeks[g.toString()];
+      if (!gwo || !gwo.lineups) continue;
+      for (const mgr in gwo.lineups) {
+        const found = gwo.lineups[mgr].find(pl => pl.name === playerName);
+        if (found) {
+          sumPts += (found.points || 0);
+          foundAny = true;
+          break;
+        }
+      }
+    }
+    if (foundAny) return sumPts;
+  }
+
+  return fallbackGwPts || 0;
+}
+
+function renderTransferPairRowHtml(t, cardGw) {
   const inPts = t.in_points || 0;
   const outPts = t.out_points || 0;
   const pairDelta = t.net_points !== undefined ? t.net_points : (inPts - outPts);
@@ -2649,9 +2687,16 @@ function renderTransferPairRowHtml(t) {
   const inStats = getPlayerStatsHelper(t.in_name, t, true);
   const outStats = getPlayerStatsHelper(t.out_name, t, false);
 
-  const lifetimeDiff = inStats.totalPoints - outStats.totalPoints;
-  const lifetimeClass = lifetimeDiff > 0 ? 'positive' : (lifetimeDiff < 0 ? 'negative' : 'neutral');
-  const lifetimeText = lifetimeDiff > 0 ? `+${lifetimeDiff} life pts` : `${lifetimeDiff} life pts`;
+  const transferGw = t.transfer_gw || cardGw || 1;
+  const maxPlayed = finalGW || getLatestGWWithData(appData);
+
+  const inPtsSince = t.in_points_since !== undefined ? t.in_points_since : getPlayerPointsSince(t.in_name, transferGw, inPts);
+  const outPtsSince = t.out_points_since !== undefined ? t.out_points_since : getPlayerPointsSince(t.out_name, transferGw, outPts);
+
+  const sinceDiff = t.net_points_since !== undefined ? t.net_points_since : (inPtsSince - outPtsSince);
+  const sinceClass = sinceDiff > 0 ? 'positive' : (sinceDiff < 0 ? 'negative' : 'neutral');
+  const sinceText = sinceDiff > 0 ? `+${sinceDiff} since move` : `${sinceDiff} since move`;
+  const sinceTitle = `Net points since transfer (GW${transferGw} to GW${maxPlayed}): In (${inPtsSince} pts) - Out (${outPtsSince} pts)`;
 
   const ppgDiff = Math.round((inStats.ppg - outStats.ppg) * 10) / 10;
   const ppgClass = ppgDiff > 0 ? 'positive' : (ppgDiff < 0 ? 'negative' : 'neutral');
@@ -2668,7 +2713,7 @@ function renderTransferPairRowHtml(t) {
           <span class="player-tag-pts">${outPts} pts</span>
         </div>
         <div class="player-tag-sub">${t.out_club || ''}${t.out_pos ? ' · ' + t.out_pos : ''}${outCostStr}</div>
-        <div class="player-ppg-sub" title="Season total points & points per game">${outStats.totalPoints} pts · ${outStats.ppg.toFixed(1)} PPG</div>
+        <div class="player-ppg-sub" title="Scored ${outPtsSince} pts from GW${transferGw} to GW${maxPlayed} · Season avg ${outStats.ppg.toFixed(1)} PPG">${outPtsSince} pts since move · ${outStats.ppg.toFixed(1)} PPG</div>
       </div>
       <div class="transfer-arrow-divider"><i class="fa-solid fa-arrow-right"></i></div>
       <div class="player-tag in">
@@ -2677,11 +2722,11 @@ function renderTransferPairRowHtml(t) {
           <span class="player-tag-pts">${inPts} pts</span>
         </div>
         <div class="player-tag-sub">${t.in_club || ''}${t.in_pos ? ' · ' + t.in_pos : ''}${inCostStr}</div>
-        <div class="player-ppg-sub" title="Season total points & points per game">${inStats.totalPoints} pts · ${inStats.ppg.toFixed(1)} PPG</div>
+        <div class="player-ppg-sub" title="Scored ${inPtsSince} pts from GW${transferGw} to GW${maxPlayed} · Season avg ${inStats.ppg.toFixed(1)} PPG">${inPtsSince} pts since move · ${inStats.ppg.toFixed(1)} PPG</div>
       </div>
       <div class="pair-metrics-col">
-        <div class="pair-delta-badge ${pairClass}" title="Gameweek net delta: In (${inPts}) - Out (${outPts})">${pairText}</div>
-        <div class="pair-metric-badge ${lifetimeClass}" title="Lifetime season points difference: In (${inStats.totalPoints}) - Out (${outStats.totalPoints})">${lifetimeText}</div>
+        <div class="pair-delta-badge ${pairClass}" title="Gameweek ${transferGw} net delta: In (${inPts}) - Out (${outPts})">${pairText}</div>
+        <div class="pair-metric-badge ${sinceClass}" title="${sinceTitle}">${sinceText}</div>
         <div class="pair-metric-badge ${ppgClass}" title="Points Per Game difference: In (${inStats.ppg.toFixed(1)}) - Out (${outStats.ppg.toFixed(1)})">${ppgText}</div>
       </div>
     </div>
@@ -2897,7 +2942,7 @@ function renderTeamTransfersHistory() {
     // Transfers pairs
     let pairsHtml = '';
     if (details.length > 0) {
-      pairsHtml = details.map(t => renderTransferPairRowHtml(t)).join('');
+      pairsHtml = details.map(t => renderTransferPairRowHtml(t, gw)).join('');
     } else if (moves > 0) {
       pairsHtml = `<div class="transfer-pair-row" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fa-solid fa-info-circle"></i> ${moves} transfer(s) recorded.</div>`;
     } else {
@@ -3045,7 +3090,7 @@ function renderLeagueGwTransfers() {
 
     let pairsHtml = '';
     if (details.length > 0) {
-      pairsHtml = details.map(t => renderTransferPairRowHtml(t)).join('');
+      pairsHtml = details.map(t => renderTransferPairRowHtml(t, currentGW)).join('');
     } else {
       pairsHtml = `<div class="transfer-pair-row" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fa-solid fa-info-circle"></i> ${mgrRecord.transfers} transfer(s) recorded.</div>`;
     }
