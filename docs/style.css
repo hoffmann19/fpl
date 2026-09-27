@@ -1037,10 +1037,39 @@ body {
 }
 
 .player-club-sub {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 105px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-club-sub .club-tag {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.player-club-sub .fixture-vs {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.58rem;
+  font-weight: 600;
+}
+
+.player-club-sub .fixture-opp {
+  color: #fff;
+  font-weight: 700;
 }
 
 .player-club {
@@ -3311,6 +3340,12 @@ body {
 
   .player-club-sub {
     font-size: 0.6rem;
+    padding: 1px 4px;
+    max-width: 82px;
+  }
+
+  .player-club-sub .fixture-vs {
+    font-size: 0.5rem;
   }
 
   /* Bench Players */
@@ -3561,7 +3596,14 @@ body {
   }
 
   .player-club-sub {
-    font-size: 0.56rem;
+    font-size: 0.52rem;
+    padding: 1px 3px;
+    max-width: 68px;
+    gap: 2px;
+  }
+
+  .player-club-sub .fixture-vs {
+    font-size: 0.44rem;
   }
 
   /* Bench Players */
@@ -3684,7 +3726,10 @@ body {
   }
 
   .player-club-sub {
-    display: none;
+    font-size: 0.46rem;
+    padding: 0 2px;
+    max-width: 52px;
+    gap: 1px;
   }
 
   .tab-pills-row {

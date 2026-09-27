@@ -767,10 +767,29 @@ def main():
         if not fixtures_data:
             fixtures_data = fetch_json(f"https://fantasy.premierleague.com/api/fixtures/?event={gw}") or []
         team_fixture_finished = {}
+        gw_team_fixtures = {}
         for f in fixtures_data:
             finished = f.get("finished", False) or f.get("finished_provisional", False)
-            team_fixture_finished[f.get("team_h")] = finished
-            team_fixture_finished[f.get("team_a")] = finished
+            th = f.get("team_h")
+            ta = f.get("team_a")
+            th_short = teams.get(th, {}).get("short_name", "")
+            ta_short = teams.get(ta, {}).get("short_name", "")
+            th_name = teams.get(th, {}).get("name", "")
+            ta_name = teams.get(ta, {}).get("name", "")
+            team_fixture_finished[th] = finished
+            team_fixture_finished[ta] = finished
+            if th:
+                gw_team_fixtures[th] = {
+                    "opponent": f"{ta_short} (H)",
+                    "opponent_name": ta_name,
+                    "venue": "H"
+                }
+            if ta:
+                gw_team_fixtures[ta] = {
+                    "opponent": f"{th_short} (A)",
+                    "opponent_name": th_name,
+                    "venue": "A"
+                }
 
         gw_standings_raw = []
 
@@ -803,7 +822,8 @@ def main():
             for p in picks:
                 p_id = p["element"]
                 el_info = elements.get(p_id, {})
-                t_info = teams.get(el_info.get("team"), {})
+                p_team_id = el_info.get("team")
+                t_info = teams.get(p_team_id, {})
                 stats = live_stats.get(p_id, {})
                 
                 pos_code = element_types.get(el_info.get("element_type"), "MID")
@@ -821,15 +841,20 @@ def main():
                     captain_pts = p_pts * multiplier
 
                 if is_start:
-                    p_team_id = el_info.get("team")
                     is_match_finished = team_fixture_finished.get(p_team_id, False)
                     if not is_match_finished:
                         players_left += 1
                         value_left += (el_info.get("now_cost", 0) / 10.0)
 
+                fix_info = gw_team_fixtures.get(p_team_id, {})
+                opp_str = fix_info.get("opponent", "")
+                opp_name = fix_info.get("opponent_name", "")
+
                 mgr_lineup.append({
                     "name": web_name,
                     "club": club_code,
+                    "opponent": opp_str,
+                    "opponent_name": opp_name,
                     "position": pos_code,
                     "points": p_pts * (multiplier if is_start else 1),
                     "captain": is_cap,
@@ -969,6 +994,11 @@ def main():
 
             gameweeks_dict[str(gw)]["lineups"][mgr_name] = mgr_lineup
 
+        # Save team fixtures map for this gameweek
+        gameweeks_dict[str(gw)]["team_fixtures"] = {
+            teams[tid]["short_name"]: info["opponent"] for tid, info in gw_team_fixtures.items() if tid in teams
+        }
+
         # Rank managers by overall_points (or gw_points if tie)
         gw_standings_raw.sort(key=lambda x: (x["overall_points"], x["gw_points"]), reverse=True)
         for rank_idx, record in enumerate(gw_standings_raw):
@@ -983,9 +1013,39 @@ def main():
 
     for gw in range(max_gw + 1, 39):
         unplayed_standings = [dict(s, gw_points=0, gw_hits=0, gw_net_points=0, transfers=0, chip="None", transfers_in=[], transfers_out=[], transfers_detail=[]) for s in latest_standings]
-        unplayed_lineups = {mgr: [dict(p, points=0) for p in lineup] for mgr, lineup in latest_lineups.items()}
+        
+        # Pre-populate unplayed fixtures
+        unplayed_fixtures_data = [f for f in all_fixtures if f.get("event") == gw]
+        unplayed_gw_team_fixes = {}
+        for f in unplayed_fixtures_data:
+            th = f.get("team_h")
+            ta = f.get("team_a")
+            th_short = teams.get(th, {}).get("short_name", "")
+            ta_short = teams.get(ta, {}).get("short_name", "")
+            th_name = teams.get(th, {}).get("name", "")
+            ta_name = teams.get(ta, {}).get("name", "")
+            if th:
+                unplayed_gw_team_fixes[th_short] = {"opponent": f"{ta_short} (H)", "opponent_name": ta_name}
+            if ta:
+                unplayed_gw_team_fixes[ta_short] = {"opponent": f"{th_short} (A)", "opponent_name": th_name}
+
+        unplayed_lineups = {}
+        for mgr, lineup in latest_lineups.items():
+            mgr_unplayed = []
+            for p in lineup:
+                p_copy = dict(p, points=0)
+                club = p.get("club")
+                if club in unplayed_gw_team_fixes:
+                    p_copy["opponent"] = unplayed_gw_team_fixes[club]["opponent"]
+                    p_copy["opponent_name"] = unplayed_gw_team_fixes[club]["opponent_name"]
+                mgr_unplayed.append(p_copy)
+            unplayed_lineups[mgr] = mgr_unplayed
+
         gameweeks_dict[str(gw)]["standings"] = unplayed_standings
         gameweeks_dict[str(gw)]["lineups"] = unplayed_lineups
+        gameweeks_dict[str(gw)]["team_fixtures"] = {
+            c: info["opponent"] for c, info in unplayed_gw_team_fixes.items()
+        }
 
     # Create compact players catalog with total_points, PPG, cost, etc.
     players_catalog = {}

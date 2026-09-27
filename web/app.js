@@ -1333,6 +1333,28 @@ function createPlayerCardDOM(player, maxSquadPts, isTransferredIn = false) {
     </svg>
   `;
   
+  // Fixture / Opponent lookup for this gameweek
+  const opp = player.opponent || appData?.gameweeks?.[currentGW?.toString()]?.team_fixtures?.[player.club];
+  let fixtureSubHtml = '';
+  if (opp) {
+    const oppTooltip = player.opponent_name 
+      ? `title="${player.club} vs ${player.opponent_name}"` 
+      : `title="Fixture: ${player.club} vs ${opp}"`;
+    fixtureSubHtml = `
+      <span class="player-club-sub" ${oppTooltip}>
+        <span class="club-tag">${player.club}</span>
+        <span class="fixture-vs">v</span>
+        <span class="fixture-opp">${opp}</span>
+      </span>
+    `;
+  } else {
+    fixtureSubHtml = `
+      <span class="player-club-sub">
+        <span class="club-tag">${player.club}</span>
+      </span>
+    `;
+  }
+
   card.innerHTML = `
     <div class="player-jersey-wrapper">
       ${jerseySvg}
@@ -1342,7 +1364,7 @@ function createPlayerCardDOM(player, maxSquadPts, isTransferredIn = false) {
       ${subHtml}
     </div>
     <span class="player-name">${player.name}</span>
-    <span class="player-club-sub">${player.club}</span>
+    ${fixtureSubHtml}
   `;
   
   return card;
