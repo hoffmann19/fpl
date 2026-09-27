@@ -32,7 +32,7 @@ def fetch_json(url):
         print(f"[!] Error fetching {url}: {e}")
         return None
 
-def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks_dict, player_gw_scores, max_gw):
+def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks_dict, player_gw_scores, max_gw, all_fixtures=None, gw_live_stats=None):
     """
     Sync all live FPL data into SQLite database:
     - minileague_members (current ranks, team names, total points)
@@ -41,6 +41,10 @@ def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks
     - minileague_transfers (all player transfers, GW points, points since move, PPG)
     - player_gameweek_scores (each player's gameweek score across all played gameweeks)
     - players (updated current season total points, PPG, cost, status)
+    - premier_league_gameweek_standings (Premier League table after each gameweek)
+    - player_fixture_performances (opponent faced, venue, score, points, both teams' league ranks)
+    - premier_league_past_standings (past season final Premier League tables)
+    - minileague_past_standings (past season final Blue Square standings)
     """
     print(f"[*] Syncing all live data to SQLite database at {db_path}...")
     now_iso = datetime.now(timezone.utc).isoformat()
@@ -355,6 +359,313 @@ def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks
             el.get("red_cards", 0), el.get("saves", 0), el.get("bonus", 0), el.get("bps", 0)
         ))
 
+    # 7. premier_league_gameweek_standings
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS premier_league_gameweek_standings (
+            event INTEGER,
+            position INTEGER,
+            team_id INTEGER,
+            team_name TEXT,
+            team_short TEXT,
+            played INTEGER,
+            won INTEGER,
+            drawn INTEGER,
+            lost INTEGER,
+            goals_for INTEGER,
+            goals_against INTEGER,
+            goal_difference INTEGER,
+            points INTEGER,
+            updated_at TEXT,
+            PRIMARY KEY (event, position)
+        );
+    """)
+
+    pl_gw_ranks = {}
+    if all_fixtures:
+        for g in range(1, max_gw + 1):
+            tbl = {tid: {'id': tid, 'name': t['name'], 'short_name': t['short_name'], 'p': 0, 'w': 0, 'd': 0, 'l': 0, 'gf': 0, 'ga': 0, 'gd': 0, 'pts': 0} for tid, t in teams.items()}
+            for f in all_fixtures:
+                if f.get('finished') and f.get('event') and f['event'] <= g:
+                    h, a = f.get('team_h'), f.get('team_a')
+                    hs, as_ = f.get('team_h_score'), f.get('team_a_score')
+                    if h in tbl and a in tbl and hs is not None and as_ is not None:
+                        tbl[h]['p'] += 1
+                        tbl[a]['p'] += 1
+                        tbl[h]['gf'] += hs
+                        tbl[h]['ga'] += as_
+                        tbl[a]['gf'] += as_
+                        tbl[a]['ga'] += hs
+                        tbl[h]['gd'] = tbl[h]['gf'] - tbl[h]['ga']
+                        tbl[a]['gd'] = tbl[a]['gf'] - tbl[a]['ga']
+                        if hs > as_:
+                            tbl[h]['w'] += 1
+                            tbl[h]['pts'] += 3
+                            tbl[a]['l'] += 1
+                        elif hs < as_:
+                            tbl[a]['w'] += 1
+                            tbl[a]['pts'] += 3
+                            tbl[h]['l'] += 1
+                        else:
+                            tbl[h]['d'] += 1
+                            tbl[h]['pts'] += 1
+                            tbl[a]['d'] += 1
+                            tbl[a]['pts'] += 1
+            ranked = sorted(tbl.values(), key=lambda x: (x['pts'], x['gd'], x['gf'], x['name']), reverse=True)
+            pl_gw_ranks[g] = {}
+            for pos, r in enumerate(ranked, start=1):
+                pl_gw_ranks[g][r['id']] = pos
+                cur.execute("""
+                    INSERT INTO premier_league_gameweek_standings (
+                        event, position, team_id, team_name, team_short,
+                        played, won, drawn, lost, goals_for, goals_against,
+                        goal_difference, points, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(event, position) DO UPDATE SET
+                        team_id = excluded.team_id,
+                        team_name = excluded.team_name,
+                        team_short = excluded.team_short,
+                        played = excluded.played,
+                        won = excluded.won,
+                        drawn = excluded.drawn,
+                        lost = excluded.lost,
+                        goals_for = excluded.goals_for,
+                        goals_against = excluded.goals_against,
+                        goal_difference = excluded.goal_difference,
+                        points = excluded.points,
+                        updated_at = excluded.updated_at
+                """, (
+                    g, pos, r['id'], r['name'], r['short_name'],
+                    r['p'], r['w'], r['d'], r['l'], r['gf'], r['ga'],
+                    r['gd'], r['pts'], now_iso
+                ))
+
+    # 8. player_fixture_performances
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS player_fixture_performances (
+            element_id INTEGER,
+            web_name TEXT,
+            player_team TEXT,
+            player_team_short TEXT,
+            event INTEGER,
+            opponent_team TEXT,
+            opponent_team_short TEXT,
+            is_home INTEGER,
+            venue TEXT,
+            fixture_score TEXT,
+            result TEXT,
+            points INTEGER,
+            minutes INTEGER,
+            goals_scored INTEGER,
+            assists INTEGER,
+            clean_sheets INTEGER,
+            goals_conceded INTEGER,
+            bonus INTEGER,
+            bps INTEGER,
+            player_team_rank INTEGER,
+            opponent_team_rank INTEGER,
+            updated_at TEXT,
+            PRIMARY KEY (element_id, event)
+        );
+    """)
+
+    if all_fixtures and gw_live_stats:
+        for g in range(1, max_gw + 1):
+            gw_fixtures = [f for f in all_fixtures if f.get('event') == g]
+            team_fixture_map = {}
+            for f in gw_fixtures:
+                team_fixture_map[f.get('team_h')] = (f, True)
+                team_fixture_map[f.get('team_a')] = (f, False)
+
+            for pid, el in elements.items():
+                p_team_id = el.get("team")
+                if p_team_id not in team_fixture_map:
+                    continue
+                f, is_home = team_fixture_map[p_team_id]
+                opp_id = f.get('team_a') if is_home else f.get('team_h')
+                opp_info = teams.get(opp_id, {})
+                my_team_info = teams.get(p_team_id, {})
+
+                venue = 'H' if is_home else 'A'
+                hs, as_ = f.get('team_h_score'), f.get('team_a_score')
+                if hs is not None and as_ is not None and f.get('finished'):
+                    my_s = hs if is_home else as_
+                    opp_s = as_ if is_home else hs
+                    score_str = f"{my_s}-{opp_s}"
+                    res_letter = 'W' if my_s > opp_s else ('L' if my_s < opp_s else 'D')
+                    result_str = f"{res_letter} {my_s}-{opp_s}"
+                else:
+                    score_str = "TBD"
+                    result_str = "TBD"
+
+                stats = gw_live_stats.get(g, {}).get(pid, {})
+                cur.execute("""
+                    INSERT INTO player_fixture_performances (
+                        element_id, web_name, player_team, player_team_short, event,
+                        opponent_team, opponent_team_short, is_home, venue, fixture_score,
+                        result, points, minutes, goals_scored, assists, clean_sheets,
+                        goals_conceded, bonus, bps, player_team_rank, opponent_team_rank, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(element_id, event) DO UPDATE SET
+                        web_name = excluded.web_name,
+                        player_team = excluded.player_team,
+                        player_team_short = excluded.player_team_short,
+                        opponent_team = excluded.opponent_team,
+                        opponent_team_short = excluded.opponent_team_short,
+                        is_home = excluded.is_home,
+                        venue = excluded.venue,
+                        fixture_score = excluded.fixture_score,
+                        result = excluded.result,
+                        points = excluded.points,
+                        minutes = excluded.minutes,
+                        goals_scored = excluded.goals_scored,
+                        assists = excluded.assists,
+                        clean_sheets = excluded.clean_sheets,
+                        goals_conceded = excluded.goals_conceded,
+                        bonus = excluded.bonus,
+                        bps = excluded.bps,
+                        player_team_rank = excluded.player_team_rank,
+                        opponent_team_rank = excluded.opponent_team_rank,
+                        updated_at = excluded.updated_at
+                """, (
+                    pid, el.get('web_name'), my_team_info.get('name'), my_team_info.get('short_name'), g,
+                    opp_info.get('name'), opp_info.get('short_name'), 1 if is_home else 0, venue,
+                    score_str, result_str, stats.get('total_points', 0), stats.get('minutes', 0),
+                    stats.get('goals_scored', 0), stats.get('assists', 0), stats.get('clean_sheets', 0),
+                    stats.get('goals_conceded', 0), stats.get('bonus', 0), stats.get('bps', 0),
+                    pl_gw_ranks.get(g, {}).get(p_team_id), pl_gw_ranks.get(g, {}).get(opp_id),
+                    now_iso
+                ))
+
+    # 9. premier_league_past_standings
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS premier_league_past_standings (
+            season TEXT,
+            position INTEGER,
+            team_name TEXT,
+            team_short TEXT,
+            played INTEGER,
+            won INTEGER,
+            drawn INTEGER,
+            lost INTEGER,
+            goal_difference INTEGER,
+            points INTEGER,
+            PRIMARY KEY (season, position)
+        );
+    """)
+
+    past_seasons_data = [
+        # 2024/25
+        ("2024/25", 1, "Liverpool", "LIV", 38, 25, 9, 4, 45, 84),
+        ("2024/25", 2, "Arsenal", "ARS", 38, 22, 8, 8, 35, 74),
+        ("2024/25", 3, "Manchester City", "MCI", 38, 21, 8, 9, 28, 71),
+        ("2024/25", 4, "Chelsea", "CHE", 38, 20, 9, 9, 21, 69),
+        ("2024/25", 5, "Newcastle United", "NEW", 38, 20, 6, 12, 21, 66),
+        ("2024/25", 6, "Aston Villa", "AVL", 38, 19, 9, 10, 7, 66),
+        ("2024/25", 7, "Nottingham Forest", "NFO", 38, 19, 8, 11, 12, 65),
+        ("2024/25", 8, "Brighton & Hove Albion", "BHA", 38, 16, 13, 9, 7, 61),
+        ("2024/25", 9, "Bournemouth", "BOU", 38, 15, 11, 12, 12, 56),
+        ("2024/25", 10, "Brentford", "BRE", 38, 16, 8, 14, 9, 56),
+        ("2024/25", 11, "Fulham", "FUL", 38, 15, 9, 14, 0, 54),
+        ("2024/25", 12, "Crystal Palace", "CRY", 38, 13, 14, 11, 0, 53),
+        ("2024/25", 13, "Everton", "EVE", 38, 12, 12, 14, -6, 48),
+        ("2024/25", 14, "West Ham United", "WHU", 38, 11, 10, 17, -13, 43),
+        ("2024/25", 15, "Manchester United", "MUN", 38, 11, 9, 18, -12, 42),
+        ("2024/25", 16, "Wolverhampton Wanderers", "WOL", 38, 12, 6, 20, -15, 42),
+        ("2024/25", 17, "Tottenham Hotspur", "TOT", 38, 10, 8, 20, -11, 38),
+        ("2024/25", 18, "Leicester City", "LEI", 38, 6, 7, 25, -45, 25),
+        ("2024/25", 19, "Ipswich Town", "IPS", 38, 4, 10, 24, -46, 22),
+        ("2024/25", 20, "Southampton", "SOU", 38, 2, 6, 30, -56, 12),
+        # 2023/24
+        ("2023/24", 1, "Manchester City", "MCI", 38, 28, 7, 3, 62, 91),
+        ("2023/24", 2, "Arsenal", "ARS", 38, 28, 5, 5, 62, 89),
+        ("2023/24", 3, "Liverpool", "LIV", 38, 24, 10, 4, 45, 82),
+        ("2023/24", 4, "Aston Villa", "AVL", 38, 20, 8, 10, 15, 68),
+        ("2023/24", 5, "Tottenham Hotspur", "TOT", 38, 20, 6, 12, 13, 66),
+        ("2023/24", 6, "Chelsea", "CHE", 38, 18, 9, 11, 14, 63),
+        ("2023/24", 7, "Newcastle United", "NEW", 38, 18, 6, 14, 23, 60),
+        ("2023/24", 8, "Manchester United", "MUN", 38, 18, 6, 14, -1, 60),
+        ("2023/24", 9, "West Ham United", "WHU", 38, 14, 10, 14, -14, 52),
+        ("2023/24", 10, "Crystal Palace", "CRY", 38, 13, 10, 15, -1, 49),
+        ("2023/24", 11, "Brighton & Hove Albion", "BHA", 38, 12, 12, 14, -7, 48),
+        ("2023/24", 12, "Bournemouth", "BOU", 38, 13, 9, 16, -13, 48),
+        ("2023/24", 13, "Fulham", "FUL", 38, 13, 8, 17, -6, 47),
+        ("2023/24", 14, "Wolverhampton Wanderers", "WOL", 38, 13, 7, 18, -15, 46),
+        ("2023/24", 15, "Everton", "EVE", 38, 13, 9, 16, -11, 40),
+        ("2023/24", 16, "Brentford", "BRE", 38, 10, 9, 19, -9, 39),
+        ("2023/24", 17, "Nottingham Forest", "NFO", 38, 9, 9, 20, -18, 32),
+        ("2023/24", 18, "Luton Town", "LUT", 38, 6, 8, 24, -33, 26),
+        ("2023/24", 19, "Burnley", "BUR", 38, 5, 9, 24, -37, 24),
+        ("2023/24", 20, "Sheffield United", "SHU", 38, 3, 7, 28, -69, 16),
+        # 2022/23
+        ("2022/23", 1, "Manchester City", "MCI", 38, 28, 5, 5, 61, 89),
+        ("2022/23", 2, "Arsenal", "ARS", 38, 26, 6, 6, 45, 84),
+        ("2022/23", 3, "Manchester United", "MUN", 38, 23, 6, 9, 15, 75),
+        ("2022/23", 4, "Newcastle United", "NEW", 38, 19, 14, 5, 35, 71),
+        ("2022/23", 5, "Liverpool", "LIV", 38, 19, 10, 9, 28, 67),
+        ("2022/23", 6, "Brighton & Hove Albion", "BHA", 38, 18, 8, 12, 19, 62),
+        ("2022/23", 7, "Aston Villa", "AVL", 38, 18, 7, 13, 5, 61),
+        ("2022/23", 8, "Tottenham Hotspur", "TOT", 38, 18, 6, 14, 7, 60),
+        ("2022/23", 9, "Brentford", "BRE", 38, 15, 14, 9, 12, 59),
+        ("2022/23", 10, "Fulham", "FUL", 38, 15, 7, 16, 2, 52),
+        ("2022/23", 11, "Crystal Palace", "CRY", 38, 11, 12, 15, -9, 45),
+        ("2022/23", 12, "Chelsea", "CHE", 38, 11, 11, 16, -10, 44),
+        ("2022/23", 13, "Wolverhampton Wanderers", "WOL", 38, 11, 8, 19, -27, 41),
+        ("2022/23", 14, "West Ham United", "WHU", 38, 11, 7, 20, -13, 40),
+        ("2022/23", 15, "Bournemouth", "BOU", 38, 11, 6, 21, -34, 39),
+        ("2022/23", 16, "Nottingham Forest", "NFO", 38, 9, 11, 18, -30, 38),
+        ("2022/23", 17, "Everton", "EVE", 38, 8, 12, 18, -23, 36),
+        ("2022/23", 18, "Leicester City", "LEI", 38, 9, 7, 22, -17, 34),
+        ("2022/23", 19, "Leeds United", "LEE", 38, 7, 10, 21, -30, 31),
+        ("2022/23", 20, "Southampton", "SOU", 38, 6, 7, 25, -37, 25),
+    ]
+
+    for row in past_seasons_data:
+        cur.execute("""
+            INSERT INTO premier_league_past_standings (
+                season, position, team_name, team_short, played, won, drawn, lost, goal_difference, points
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(season, position) DO UPDATE SET
+                team_name = excluded.team_name,
+                team_short = excluded.team_short,
+                played = excluded.played,
+                won = excluded.won,
+                drawn = excluded.drawn,
+                lost = excluded.lost,
+                goal_difference = excluded.goal_difference,
+                points = excluded.points
+        """, row)
+
+    # 10. minileague_past_standings
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS minileague_past_standings (
+            season TEXT,
+            rank INTEGER,
+            manager_name TEXT,
+            team_name TEXT,
+            total_points INTEGER,
+            PRIMARY KEY (season, rank)
+        );
+    """)
+
+    project_root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    past_json_path = os.path.join(project_root_dir, "visualizer_data_2025_26.json")
+    if os.path.exists(past_json_path):
+        try:
+            with open(past_json_path) as pf:
+                past_d = json.load(pf)
+            final_gw_standings = past_d.get("gameweeks", {}).get("38", {}).get("standings", [])
+            for s in final_gw_standings:
+                cur.execute("""
+                    INSERT INTO minileague_past_standings (season, rank, manager_name, team_name, total_points)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(season, rank) DO UPDATE SET
+                        manager_name = excluded.manager_name,
+                        team_name = excluded.team_name,
+                        total_points = excluded.total_points
+                """, ("2025/26", s.get("rank"), s.get("manager"), s.get("team"), s.get("overall_points")))
+        except Exception as e:
+            print(f"[!] Error loading past mini-league data: {e}")
+
     conn.commit()
     conn.close()
     print(f"[+] SQLite database successfully synced at {db_path}!")
@@ -423,6 +734,10 @@ def main():
         else:
             manager_transfers[mgr_name] = []
 
+    # Pre-fetch all Premier League fixtures
+    print("[*] Fetching all Premier League fixtures...")
+    all_fixtures = fetch_json("https://fantasy.premierleague.com/api/fixtures/") or []
+
     # Pre-fetch live player stats for all gameweeks 1 to max_gw
     gw_live_stats = {}
     player_gw_scores = {}
@@ -447,8 +762,10 @@ def main():
         # Use pre-fetched live player stats for this GW
         live_stats = gw_live_stats.get(gw, {})
 
-        # Fetch fixtures for this GW to calculate remaining players & remaining squad value
-        fixtures_data = fetch_json(f"https://fantasy.premierleague.com/api/fixtures/?event={gw}") or []
+        # Use pre-fetched fixtures for this GW
+        fixtures_data = [f for f in all_fixtures if f.get("event") == gw]
+        if not fixtures_data:
+            fixtures_data = fetch_json(f"https://fantasy.premierleague.com/api/fixtures/?event={gw}") or []
         team_fixture_finished = {}
         for f in fixtures_data:
             finished = f.get("finished", False) or f.get("finished_provisional", False)
@@ -710,7 +1027,7 @@ def main():
     # Sync to SQLite database
     db_path = os.path.join(project_root, "fpl_data", "fpl_2026_27.db")
     if os.path.exists(os.path.dirname(db_path)):
-        sync_sqlite(db_path, LEAGUE_ID, bootstrap, results, managers_meta, gameweeks_dict, player_gw_scores, max_gw)
+        sync_sqlite(db_path, LEAGUE_ID, bootstrap, results, managers_meta, gameweeks_dict, player_gw_scores, max_gw, all_fixtures=all_fixtures, gw_live_stats=gw_live_stats)
 
 if __name__ == "__main__":
     main()
