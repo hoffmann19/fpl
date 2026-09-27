@@ -27,7 +27,7 @@ const BUMP_MARGIN = { top: 40, right: 40, bottom: 40, left: 40 };
 const BUMP_INNER_WIDTH = SVG_WIDTH - BUMP_MARGIN.left - BUMP_MARGIN.right;
 const BUMP_INNER_HEIGHT = SVG_HEIGHT - BUMP_MARGIN.top - BUMP_MARGIN.bottom;
 const TOTAL_GWS = 38;
-const TOTAL_RANKS = 13;
+const TOTAL_RANKS = 11;
 const STEP_X = BUMP_INNER_WIDTH / (TOTAL_GWS - 1);
 const STEP_Y = BUMP_INNER_HEIGHT / (TOTAL_RANKS - 1);
 
@@ -552,8 +552,18 @@ function getBumpX(gw) {
   return BUMP_MARGIN.left + (gw - 1) * stepX;
 }
 
+function getTotalRanks() {
+  if (appData && appData.managers) {
+    const count = Object.keys(appData.managers).length;
+    if (count > 1) return count;
+  }
+  return TOTAL_RANKS;
+}
+
 function getBumpY(rank) {
-  return BUMP_MARGIN.top + (rank - 1) * STEP_Y;
+  const totalRanks = getTotalRanks();
+  const stepY = BUMP_INNER_HEIGHT / (totalRanks - 1);
+  return BUMP_MARGIN.top + (rank - 1) * stepY;
 }
 
 // ----------------------------------------------------
@@ -626,7 +636,8 @@ function renderBumpChart() {
   }
   
   // Draw rank horizontal lines
-  for (let rank = 1; rank <= TOTAL_RANKS; rank++) {
+  const totalRanks = getTotalRanks();
+  for (let rank = 1; rank <= totalRanks; rank++) {
     const y = getBumpY(rank);
     const gridLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
     gridLine.setAttribute("x1", BUMP_MARGIN.left);
