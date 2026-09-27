@@ -245,7 +245,13 @@ function onSeasonDataLoaded() {
   currentGW = getLatestGWWithData(appData);
   
   const activeGWStandings = appData.gameweeks[currentGW.toString()] ? appData.gameweeks[currentGW.toString()].standings : [];
-  const leader = activeGWStandings.find(s => s.rank === 1);
+  let leader = null;
+  if (leaderboardSortMode === 'gw') {
+    const sortedByGw = [...activeGWStandings].sort((a, b) => (b.gw_points || 0) - (a.gw_points || 0));
+    leader = sortedByGw[0];
+  } else {
+    leader = activeGWStandings.find(s => s.rank === 1);
+  }
   selectedManager = leader ? leader.manager : Object.keys(appData.managers)[0];
   
   populateTeamDropdown();
@@ -1376,7 +1382,7 @@ function updateDashboard() {
   if (elScatterSvg) updateScatterPlot();
 }
 
-let leaderboardSortMode = 'total'; // 'total' | 'gw'
+let leaderboardSortMode = 'gw'; // 'gw' | 'total'
 
 function setupLeaderboardListeners() {
   const btnSortTotal = document.getElementById('sort-total-pts');
