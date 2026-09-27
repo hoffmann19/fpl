@@ -1240,12 +1240,70 @@ body {
   color: #ffd700;
 }
 
+.lb-team-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .lb-team-title {
   font-weight: 700;
   font-size: 0.88rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.lb-chip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: 5px;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  animation: chipPulse 2.5s infinite ease-in-out;
+}
+
+.lb-chip-badge.chip-wildcard,
+.chip-badge.chip-wildcard {
+  background: linear-gradient(135deg, #ff9f1a, #ff3838);
+  box-shadow: 0 2px 8px rgba(255, 56, 56, 0.4);
+}
+
+.lb-chip-badge.chip-freehit,
+.chip-badge.chip-freehit {
+  background: linear-gradient(135deg, #17c0eb, #7158e2);
+  box-shadow: 0 2px 8px rgba(23, 192, 235, 0.4);
+}
+
+.lb-chip-badge.chip-bboost,
+.chip-badge.chip-bboost {
+  background: linear-gradient(135deg, #20bf6b, #0fb9b1);
+  box-shadow: 0 2px 8px rgba(32, 191, 107, 0.4);
+}
+
+.lb-chip-badge.chip-3xc,
+.chip-badge.chip-3xc {
+  background: linear-gradient(135deg, #ffd700, #ff9f1a);
+  color: #000;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+@keyframes chipPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 .lb-mgr-sub {

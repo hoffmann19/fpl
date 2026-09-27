@@ -489,11 +489,28 @@ function getBumpY(rank) {
 // ----------------------------------------------------
 
 function getChipShortName(chip) {
-  if (chip.includes("Wildcard")) return "WC";
-  if (chip.includes("Free Hit")) return "FH";
-  if (chip.includes("Bench Boost")) return "BB";
-  if (chip.includes("Triple Captain")) return "TC";
-  return chip;
+  if (!chip) return '';
+  const info = getChipInfo(chip);
+  return info ? info.short : chip;
+}
+
+function getChipInfo(chip) {
+  if (!chip || chip === 'None') return null;
+  const lower = chip.toLowerCase().replace(/[\s_0-9]+/g, '');
+  
+  if (lower.includes('wildcard') || lower === 'wc') {
+    return { name: 'Wildcard', short: 'WC', cssClass: 'wildcard', icon: 'fa-wand-magic-sparkles' };
+  }
+  if (lower.includes('freehit') || lower === 'fh') {
+    return { name: 'Free Hit', short: 'FH', cssClass: 'freehit', icon: 'fa-shuffle' };
+  }
+  if (lower.includes('bboost') || lower.includes('benchboost') || lower === 'bb') {
+    return { name: 'Bench Boost', short: 'BB', cssClass: 'bboost', icon: 'fa-couch' };
+  }
+  if (lower.includes('3xc') || lower.includes('triplecaptain') || lower === 'tc') {
+    return { name: '3x Captain', short: '3xC', cssClass: '3xc', icon: 'fa-bolt' };
+  }
+  return { name: chip, short: chip, cssClass: 'wildcard', icon: 'fa-bolt' };
 }
 
 // ----------------------------------------------------
@@ -1359,6 +1376,13 @@ function renderLeaderboard() {
       playersLeftHtml = `<span class="lb-players-left-badge" title="${mgrRecord.players_left} players left to play (£${mgrRecord.value_left}m squad value)"><i class="fa-solid fa-user-clock"></i> ${mgrRecord.players_left} left <small>(£${mgrRecord.value_left}m)</small></span>`;
     }
 
+    // Chip Active Badge (Wildcard, Free Hit, Bench Boost, 3x Captain)
+    const chipInfo = getChipInfo(mgrRecord.chip);
+    let chipBadgeHtml = '';
+    if (chipInfo) {
+      chipBadgeHtml = `<span class="lb-chip-badge chip-${chipInfo.cssClass}" title="Active Chip in GW ${currentGW}: ${chipInfo.name}"><i class="fa-solid ${chipInfo.icon}"></i> ${chipInfo.name}</span>`;
+    }
+
     const row = document.createElement('div');
     row.className = `leaderboard-row ${isSelected ? 'active' : ''}`;
     row.style.borderLeft = `4px solid ${mgrMeta.color}`;
@@ -1369,7 +1393,10 @@ function renderLeaderboard() {
         ${isWinner ? '<i class="fa-solid fa-crown"></i>' : `#${rankNum}`}
       </div>
       <div class="lb-team-info">
-        <span class="lb-team-title" style="color: ${mgrMeta.color}">${mgrMeta.team}</span>
+        <div class="lb-team-title-row">
+          <span class="lb-team-title" style="color: ${mgrMeta.color}">${mgrMeta.team}</span>
+          ${chipBadgeHtml}
+        </div>
         <div class="lb-sub-row">
           <span class="lb-mgr-sub">${mgrRecord.manager}</span>
           ${playersLeftHtml}
