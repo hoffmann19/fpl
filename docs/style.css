@@ -183,7 +183,7 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent), #3742fa);
+  background: #0f172a;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -196,12 +196,13 @@ body {
   align-items: center;
   gap: 8px;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-  box-shadow: 0 4px 15px rgba(0, 210, 211, 0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 210, 211, 0.4);
+  background: #1e293b;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:active {
@@ -1021,37 +1022,37 @@ body {
 
 .player-club-sub {
   font-size: 0.68rem;
-  color: var(--accent);
+  color: #f8fafc;
   font-weight: 700;
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.92);
   padding: 1px 6px;
   border-radius: 4px;
   white-space: nowrap;
   font-family: var(--font-mono);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   max-width: 105px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .player-club-sub .club-tag {
-  color: var(--accent);
+  color: #38bdf8;
   font-weight: 800;
 }
 
 .player-club-sub .fixture-vs {
-  color: rgba(255, 255, 255, 0.4);
+  color: #94a3b8;
   font-size: 0.58rem;
   font-weight: 600;
 }
 
 .player-club-sub .fixture-opp {
-  color: #fff;
+  color: #ffffff;
   font-weight: 700;
 }
 
