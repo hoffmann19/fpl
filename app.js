@@ -114,7 +114,7 @@ const elMetricTotalHits = document.getElementById('metric-total-hits');
 const elMetricTransferKing = document.getElementById('metric-transfer-king');
 const elMetricTransferFlop = document.getElementById('metric-transfer-flop');
 
-let transfersSubView = 'team'; // 'team' | 'gw' | 'season'
+let transfersSubView = 'gw'; // 'gw' | 'team' | 'season'
 
 // Main Pitch Elements
 const elMainPitchTeamName = document.getElementById('main-pitch-team-name');
@@ -2537,6 +2537,10 @@ function switchTransfersSubView(subView) {
   if (elTransfersGwView) elTransfersGwView.classList.toggle('hidden', subView !== 'gw');
   if (elTransfersSeasonView) elTransfersSeasonView.classList.toggle('hidden', subView !== 'season');
 
+  if (elTransfersTeamBanner) {
+    elTransfersTeamBanner.style.display = subView === 'team' ? 'flex' : 'none';
+  }
+
   renderTransfersView();
 }
 
@@ -2883,8 +2887,11 @@ function renderLeagueGwTransfers() {
       pairsHtml = `<div class="transfer-pair-row" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fa-solid fa-info-circle"></i> ${mgrRecord.transfers} transfer(s) recorded.</div>`;
     }
 
+    const movesCount = (mgrRecord.transfers && mgrRecord.transfers > 0) ? mgrRecord.transfers : (details.length > 0 ? details.length : 0);
+    const movesLabel = movesCount === 1 ? '1 transfer' : `${movesCount} transfers`;
+
     const card = document.createElement('div');
-    card.className = 'transfer-card';
+    card.className = 'transfer-card collapsible collapsed';
     card.style.borderLeft = `4px solid ${mgrMeta.color}`;
 
     card.innerHTML = `
@@ -2899,9 +2906,14 @@ function renderLeagueGwTransfers() {
           </div>
         </div>
         <div class="transfer-card-badges">
+          <span class="transfer-moves-count-badge" title="Total transfers made this Gameweek"><i class="fa-solid fa-arrow-right-arrow-left"></i> ${movesLabel}</span>
           ${chipBadgeHtml}
           ${hitBadgeHtml}
           <span class="transfer-delta-pill ${deltaClass}" title="Total GW Transfer Gain/Loss">${deltaText}</span>
+          <button class="btn-subtle-history" title="View ${mgrMeta.team} season timeline">
+            History <i class="fa-solid fa-clock-rotate-left"></i>
+          </button>
+          <span class="collapse-indicator" title="Click to view player transfers"><i class="fa-solid fa-chevron-down"></i></span>
         </div>
       </div>
       <div class="transfer-pairs-list">
@@ -2910,8 +2922,16 @@ function renderLeagueGwTransfers() {
     `;
 
     card.addEventListener('click', (e) => {
+      if (e.target.closest('.btn-subtle-history')) {
+        e.stopPropagation();
+        selectManager(mgrRecord.manager);
+        switchTransfersSubView('team');
+        return;
+      }
       selectManager(mgrRecord.manager);
-      switchTransfersSubView('team');
+      const isCollapsed = card.classList.contains('collapsed');
+      card.classList.toggle('collapsed', !isCollapsed);
+      card.classList.toggle('expanded', isCollapsed);
     });
 
     elTransfersCardsContainer.appendChild(card);
