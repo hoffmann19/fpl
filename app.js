@@ -2635,10 +2635,16 @@ function renderTransfersView() {
 function getPlayerStatsHelper(playerName, transferObj, isIncoming) {
   // 1. Direct transfer record properties if populated by scraper/collector
   if (isIncoming) {
+    if (transferObj.in_season_points !== undefined && transferObj.in_season_ppg !== undefined) {
+      return { totalPoints: transferObj.in_season_points, ppg: transferObj.in_season_ppg };
+    }
     if (transferObj.in_season_points !== undefined && transferObj.in_ppg !== undefined) {
       return { totalPoints: transferObj.in_season_points, ppg: transferObj.in_ppg };
     }
   } else {
+    if (transferObj.out_season_points !== undefined && transferObj.out_season_ppg !== undefined) {
+      return { totalPoints: transferObj.out_season_points, ppg: transferObj.out_season_ppg };
+    }
     if (transferObj.out_season_points !== undefined && transferObj.out_ppg !== undefined) {
       return { totalPoints: transferObj.out_season_points, ppg: transferObj.out_ppg };
     }
@@ -2739,9 +2745,19 @@ function renderTransferPairRowHtml(t, cardGw) {
   const sinceText = sinceDiff > 0 ? `+${sinceDiff} since move` : `${sinceDiff} since move`;
   const sinceTitle = `Net points since transfer (GW${transferGw} to GW${maxPlayed}): In (${inPtsSince} pts) - Out (${outPtsSince} pts)`;
 
-  const ppgDiff = Math.round((inStats.ppg - outStats.ppg) * 10) / 10;
+  // Compute PPG specifically for the period since the transfer occurred
+  const gwsSince = Math.max(1, maxPlayed - transferGw + 1);
+  const inPpgSince = (t.in_ppg_since !== undefined)
+    ? t.in_ppg_since
+    : (Math.round((inPtsSince / gwsSince) * 10) / 10);
+  const outPpgSince = (t.out_ppg_since !== undefined)
+    ? t.out_ppg_since
+    : (Math.round((outPtsSince / gwsSince) * 10) / 10);
+
+  const ppgDiff = Math.round((inPpgSince - outPpgSince) * 10) / 10;
   const ppgClass = ppgDiff > 0 ? 'positive' : (ppgDiff < 0 ? 'negative' : 'neutral');
   const ppgText = ppgDiff > 0 ? `+${ppgDiff.toFixed(1)} PPG` : `${ppgDiff.toFixed(1)} PPG`;
+  const ppgTitle = `PPG since move (GW${transferGw}–GW${maxPlayed}, ${gwsSince} GW${gwsSince === 1 ? '' : 's'}): In (${inPpgSince.toFixed(1)}) - Out (${outPpgSince.toFixed(1)}) = ${ppgText}`;
 
   const outCostStr = t.out_cost ? ` · £${t.out_cost}m` : '';
   const inCostStr = t.in_cost ? ` · £${t.in_cost}m` : '';
@@ -2754,7 +2770,7 @@ function renderTransferPairRowHtml(t, cardGw) {
           <span class="player-tag-pts">${outPts} pts</span>
         </div>
         <div class="player-tag-sub">${t.out_club || ''}${t.out_pos ? ' · ' + t.out_pos : ''}${outCostStr}</div>
-        <div class="player-ppg-sub" title="Scored ${outPtsSince} pts from GW${transferGw} to GW${maxPlayed} · Season avg ${outStats.ppg.toFixed(1)} PPG">${outPtsSince} pts since move · ${outStats.ppg.toFixed(1)} PPG</div>
+        <div class="player-ppg-sub" title="Scored ${outPtsSince} pts over ${gwsSince} GW${gwsSince === 1 ? '' : 's'} since move (GW${transferGw}–GW${maxPlayed}) · ${outPpgSince.toFixed(1)} PPG since move (Season avg ${outStats.ppg.toFixed(1)} PPG)">${outPtsSince} pts since move · ${outPpgSince.toFixed(1)} PPG</div>
       </div>
       <div class="transfer-arrow-divider"><i class="fa-solid fa-arrow-right"></i></div>
       <div class="player-tag in">
@@ -2763,12 +2779,12 @@ function renderTransferPairRowHtml(t, cardGw) {
           <span class="player-tag-pts">${inPts} pts</span>
         </div>
         <div class="player-tag-sub">${t.in_club || ''}${t.in_pos ? ' · ' + t.in_pos : ''}${inCostStr}</div>
-        <div class="player-ppg-sub" title="Scored ${inPtsSince} pts from GW${transferGw} to GW${maxPlayed} · Season avg ${inStats.ppg.toFixed(1)} PPG">${inPtsSince} pts since move · ${inStats.ppg.toFixed(1)} PPG</div>
+        <div class="player-ppg-sub" title="Scored ${inPtsSince} pts over ${gwsSince} GW${gwsSince === 1 ? '' : 's'} since move (GW${transferGw}–GW${maxPlayed}) · ${inPpgSince.toFixed(1)} PPG since move (Season avg ${inStats.ppg.toFixed(1)} PPG)">${inPtsSince} pts since move · ${inPpgSince.toFixed(1)} PPG</div>
       </div>
       <div class="pair-metrics-col">
         <div class="pair-delta-badge ${pairClass}" title="Gameweek ${transferGw} net delta: In (${inPts}) - Out (${outPts})">${pairText}</div>
         <div class="pair-metric-badge ${sinceClass}" title="${sinceTitle}">${sinceText}</div>
-        <div class="pair-metric-badge ${ppgClass}" title="Points Per Game difference: In (${inStats.ppg.toFixed(1)}) - Out (${outStats.ppg.toFixed(1)})">${ppgText}</div>
+        <div class="pair-metric-badge ${ppgClass}" title="${ppgTitle}">${ppgText}</div>
       </div>
     </div>
   `;

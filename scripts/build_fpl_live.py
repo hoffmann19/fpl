@@ -891,8 +891,12 @@ def main():
 
                 in_season_pts = in_el.get("total_points", in_pts)
                 out_season_pts = out_el.get("total_points", out_pts)
-                in_ppg = float(in_el.get("points_per_game") or 0.0)
-                out_ppg = float(out_el.get("points_per_game") or 0.0)
+                in_season_ppg = float(in_el.get("points_per_game") or 0.0)
+                out_season_ppg = float(out_el.get("points_per_game") or 0.0)
+
+                gws_since = max(1, max_gw - gw + 1)
+                in_ppg_since = round(in_pts_since / gws_since, 1)
+                out_ppg_since = round(out_pts_since / gws_since, 1)
 
                 transfers_in_names.append(in_name)
                 transfers_out_names.append(out_name)
@@ -904,7 +908,9 @@ def main():
                     "in_points": in_pts,
                     "in_season_points": in_season_pts,
                     "in_points_since": in_pts_since,
-                    "in_ppg": in_ppg,
+                    "in_ppg": in_ppg_since,
+                    "in_ppg_since": in_ppg_since,
+                    "in_season_ppg": in_season_ppg,
                     "out_name": out_name,
                     "out_club": out_club,
                     "out_pos": out_pos,
@@ -912,7 +918,9 @@ def main():
                     "out_points": out_pts,
                     "out_season_points": out_season_pts,
                     "out_points_since": out_pts_since,
-                    "out_ppg": out_ppg,
+                    "out_ppg": out_ppg_since,
+                    "out_ppg_since": out_ppg_since,
+                    "out_season_ppg": out_season_ppg,
                     "net_points": in_pts - out_pts,
                     "net_points_since": net_pts_since,
                     "transfer_gw": gw,
@@ -948,6 +956,10 @@ def main():
                             transfers_in_names.append(in_n)
                         if out_p:
                             transfers_out_names.append(out_n)
+                        gws_since = max(1, max_gw - gw + 1)
+                        in_ppg_since = round(in_pts_since / gws_since, 1)
+                        out_ppg_since = round(out_pts_since / gws_since, 1)
+
                         transfers_detail.append({
                             "in_name": in_n,
                             "in_club": in_p["club"] if in_p else "",
@@ -956,7 +968,9 @@ def main():
                             "in_points": in_p_pts,
                             "in_season_points": in_el_fb.get("total_points", in_p_pts),
                             "in_points_since": in_pts_since,
-                            "in_ppg": float(in_el_fb.get("points_per_game") or 0.0),
+                            "in_ppg": in_ppg_since,
+                            "in_ppg_since": in_ppg_since,
+                            "in_season_ppg": float(in_el_fb.get("points_per_game") or 0.0),
                             "out_name": out_n,
                             "out_club": out_p["club"] if out_p else "",
                             "out_pos": out_p["position"] if out_p else "",
@@ -964,7 +978,9 @@ def main():
                             "out_points": out_p_pts,
                             "out_season_points": out_el_fb.get("total_points", out_p_pts),
                             "out_points_since": out_pts_since,
-                            "out_ppg": float(out_el_fb.get("points_per_game") or 0.0),
+                            "out_ppg": out_ppg_since,
+                            "out_ppg_since": out_ppg_since,
+                            "out_season_ppg": float(out_el_fb.get("points_per_game") or 0.0),
                             "net_points": in_p_pts - out_p_pts,
                             "net_points_since": in_pts_since - out_pts_since,
                             "transfer_gw": gw,

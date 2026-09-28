@@ -74,18 +74,30 @@ def backfill_season(filepath):
                 in_info = player_info_map.get(in_name, {})
                 out_info = player_info_map.get(out_name, {})
 
+                gws_since = max(1, sorted_gw_nums[-1] - gw_num + 1)
+                in_ppg_since = round(in_pts / gws_since, 1)
+                out_ppg_since = round(out_pts / gws_since, 1)
+
                 transfers_detail.append({
                     "in_name": in_name,
                     "in_club": in_p.get("club", in_info.get("club", "")),
                     "in_pos": in_p.get("position", in_info.get("position", "")),
                     "in_cost": in_p.get("cost", 0.0),
                     "in_points": in_pts,
+                    "in_points_since": in_pts,
+                    "in_ppg": in_ppg_since,
+                    "in_ppg_since": in_ppg_since,
                     "out_name": out_name,
                     "out_club": out_p.get("club", out_info.get("club", "")),
                     "out_pos": out_p.get("position", out_info.get("position", "")),
                     "out_cost": out_p.get("cost", 0.0),
                     "out_points": out_pts,
+                    "out_points_since": out_pts,
+                    "out_ppg": out_ppg_since,
+                    "out_ppg_since": out_ppg_since,
                     "net_points": in_pts - out_pts,
+                    "net_points_since": in_pts - out_pts,
+                    "transfer_gw": gw_num,
                     "time": None
                 })
 
