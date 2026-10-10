@@ -54,6 +54,7 @@
       <div class="top-bar-section nav-section">
         <div class="tab-pills-row">
           <button id="tab-field-roster" class="tab-pill active" title="Field &amp; Roster"><i class="fa-solid fa-futbol"></i> Pitch</button>
+          <button id="tab-activity" class="tab-pill" title="Matchday Activity Feed"><i class="fa-solid fa-bolt-lightning"></i> Activity</button>
           <button id="tab-winners" class="tab-pill" title="Gameweek Winners"><i class="fa-solid fa-trophy"></i> Winners</button>
           <button id="tab-rankings" class="tab-pill" title="Blue Square &amp; Global Rankings"><i class="fa-solid fa-chart-line"></i> Rankings</button>
           <button id="tab-transfers" class="tab-pill" title="Transfers In &amp; Out"><i class="fa-solid fa-arrow-right-arrow-left"></i> Transfers</button>
@@ -82,6 +83,7 @@
                   <span class="pitch-stat-badge" id="main-pitch-gw-pts"><i class="fa-solid fa-bolt"></i> 0 GW Pts</span>
                   <span class="pitch-stat-badge highlight" id="main-pitch-total-pts"><i class="fa-solid fa-trophy"></i> 0 Total Pts</span>
                   <span class="pitch-stat-badge" id="main-pitch-rank">#1</span>
+                  <span class="pitch-stat-badge" title="Player Stats: FORM = Official FPL Form (PPG) | N1, N3, N5 = Upcoming Fixture Difficulty League Rank (1 = Easiest in Premier League)"><i class="fa-solid fa-chart-line"></i> Form & Fixtures</span>
                 </div>
               </div>
 
@@ -106,6 +108,95 @@
             </div>
           </div>
 
+          <!-- Matchday Activity Feed Panel -->
+          <div id="panel-activity" class="panel">
+            <div class="activity-container">
+              <!-- Header Row -->
+              <div class="activity-header-row">
+                <div class="activity-header-title">
+                  <i class="fa-solid fa-bolt-lightning"></i>
+                  <span id="activity-header-title-text">Gameweek Matchday Activity</span>
+                  <span class="activity-live-badge" id="activity-live-tag"><i class="fa-solid fa-circle"></i> Live Matchday</span>
+                </div>
+              </div>
+
+              <!-- Matchday Highlights Strip -->
+              <div class="activity-metrics-grid">
+                <div class="metric-card">
+                  <div class="metric-icon goal"><i class="fa-solid fa-futbol"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Goals Scored</span>
+                    <span class="metric-value highlight" id="feed-stat-goals">0</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon assist"><i class="fa-solid fa-shoe-prints"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Assists</span>
+                    <span class="metric-value" id="feed-stat-assists">0</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon cs"><i class="fa-solid fa-shield-halved"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Clean Sheets</span>
+                    <span class="metric-value" id="feed-stat-cs">0</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon bonus"><i class="fa-solid fa-star"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Bonus Points</span>
+                    <span class="metric-value highlight" id="feed-stat-bonus">0</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon saves"><i class="fa-solid fa-hand"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">GK Saves</span>
+                    <span class="metric-value" id="feed-stat-saves">0</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon cards"><i class="fa-solid fa-square"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Cards</span>
+                    <span class="metric-value" id="feed-stat-cards">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Filter Bar -->
+              <div class="activity-filter-bar glass">
+                <div class="activity-filter-pills" id="activity-type-filters">
+                  <button class="activity-filter-pill active" data-filter="all"><i class="fa-solid fa-layer-group"></i> All Events</button>
+                  <button class="activity-filter-pill" data-filter="goal"><i class="fa-solid fa-futbol"></i> Goals</button>
+                  <button class="activity-filter-pill" data-filter="assist"><i class="fa-solid fa-shoe-prints"></i> Assists</button>
+                  <button class="activity-filter-pill" data-filter="bonus"><i class="fa-solid fa-star"></i> Bonus</button>
+                  <button class="activity-filter-pill" data-filter="defense"><i class="fa-solid fa-shield-halved"></i> Clean Sheets &amp; Saves</button>
+                  <button class="activity-filter-pill" data-filter="cards"><i class="fa-solid fa-square"></i> Cards</button>
+                </div>
+                <div class="activity-filter-controls">
+                  <div class="select-compact-wrapper">
+                    <i class="fa-solid fa-user select-icon"></i>
+                    <select id="select-activity-manager" class="select-sm">
+                      <option value="">-- All Mini-League Managers --</option>
+                    </select>
+                  </div>
+                  <label class="activity-toggle-label" title="Only show events for players in starting XI (ignoring benched players)">
+                    <input type="checkbox" id="toggle-activity-starters-only">
+                    <span>Starters Only</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Activity Feed Stream List -->
+              <div class="activity-feed-list" id="activity-feed-container">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+
           <!-- Gameweek Winners Panel -->
           <div id="panel-winners" class="panel">
             <div class="winners-container">
@@ -124,19 +215,19 @@
               <!-- Sleek Minimalist Summary Strip -->
               <div class="winners-summary-bar glass">
                 <div class="winners-summary-item">
-                  <i class="fa-solid fa-crown" style="color: #ffd700;"></i>
+                  <i class="fa-solid fa-crown"></i>
                   <span class="summary-label">Leader:</span>
-                  <span class="summary-val highlight-gold" id="metric-most-wins">-</span>
+                  <span class="summary-val" id="metric-most-wins">-</span>
                 </div>
                 <div class="winners-summary-divider"></div>
                 <div class="winners-summary-item">
-                  <i class="fa-solid fa-fire" style="color: #ff4757;"></i>
+                  <i class="fa-solid fa-fire"></i>
                   <span class="summary-label">Season High:</span>
                   <span class="summary-val" id="metric-high-score">0 pts</span>
                 </div>
                 <div class="winners-summary-divider"></div>
                 <div class="winners-summary-item">
-                  <i class="fa-solid fa-chart-line" style="color: #38bdf8;"></i>
+                  <i class="fa-solid fa-chart-line"></i>
                   <span class="summary-label">Avg Winner:</span>
                   <span class="summary-val" id="metric-avg-winning-score">0 pts</span>
                 </div>
@@ -197,7 +288,7 @@
                 </div>
                 <div class="transfers-view-toggle">
                   <button id="btn-view-league-rank" class="subview-pill active" title="Show Blue Square Mini-League Rank Trajectory">
-                    <i class="fa-solid fa-square" style="color: #38bdf8;"></i> Blue Square Rank
+                    <i class="fa-solid fa-square"></i> Blue Square Rank
                   </button>
                   <button id="btn-view-global-rank" class="subview-pill" title="Show Overall Global Rank Trajectory">
                     <i class="fa-solid fa-globe"></i> Global Rank

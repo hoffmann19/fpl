@@ -12,9 +12,9 @@ PORT = 8000
 
 def get_color_palette():
     return [
-        "#ff4757", "#2ed573", "#1e90ff", "#ffa502", "#ff47ff",
-        "#3742fa", "#20bf6b", "#00d2d3", "#a55eea", "#ff7f50",
-        "#eccc68", "#ff9f1a", "#10ac84"
+        "#475569", "#2563eb", "#0d9488", "#be123c", "#7c3aed",
+        "#d97706", "#059669", "#4f46e5", "#0284c7", "#78716c",
+        "#9333ea"
     ]
 
 def compile_data():

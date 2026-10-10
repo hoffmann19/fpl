@@ -36,6 +36,20 @@ const SCATTER_MARGIN = { top: 50, right: 60, bottom: 60, left: 70 };
 const SCATTER_INNER_WIDTH = SVG_WIDTH - SCATTER_MARGIN.left - SCATTER_MARGIN.right;
 const SCATTER_INNER_HEIGHT = SVG_HEIGHT - SCATTER_MARGIN.top - SCATTER_MARGIN.bottom;
 
+// Harmonious, calm color palette for multi-line charts and identifiers
+const CALM_COLOR_PALETTE = [
+  '#475569', // slate
+  '#2563eb', // royal blue
+  '#0d9488', // teal
+  '#be123c', // deep rose
+  '#7c3aed', // violet
+  '#d97706', // amber
+  '#059669', // emerald
+  '#4f46e5', // indigo
+  '#0284c7', // sky blue
+  '#78716c', // warm stone
+  '#9333ea'  // plum
+];
 
 // DOM Elements
 const elBtnPlayPause = document.getElementById('btn-play-pause');
@@ -51,16 +65,35 @@ const elSelectGw = document.getElementById('select-gw');
 
 // Tab Panels
 const elTabFieldRoster = document.getElementById('tab-field-roster');
+const elTabActivity = document.getElementById('tab-activity');
 const elTabWinners = document.getElementById('tab-winners');
 const elTabRankings = document.getElementById('tab-rankings');
 const elTabScatterPlot = document.getElementById('tab-scatter-plot');
 const elTabTransfers = document.getElementById('tab-transfers');
 
 const elPanelFieldRoster = document.getElementById('panel-field-roster');
+const elPanelActivity = document.getElementById('panel-activity');
 const elPanelWinners = document.getElementById('panel-winners');
 const elPanelRankings = document.getElementById('panel-rankings');
 const elPanelScatterPlot = document.getElementById('panel-scatter-plot');
 const elPanelTransfers = document.getElementById('panel-transfers');
+
+// Activity Feed Elements
+const elSelectActivityManager = document.getElementById('select-activity-manager');
+const elToggleActivityStartersOnly = document.getElementById('toggle-activity-starters-only');
+const elActivityFeedContainer = document.getElementById('activity-feed-container');
+const elActivityLiveTag = document.getElementById('activity-live-tag');
+const elActivityHeaderTitleText = document.getElementById('activity-header-title-text');
+const elFeedStatGoals = document.getElementById('feed-stat-goals');
+const elFeedStatAssists = document.getElementById('feed-stat-assists');
+const elFeedStatCs = document.getElementById('feed-stat-cs');
+const elFeedStatBonus = document.getElementById('feed-stat-bonus');
+const elFeedStatSaves = document.getElementById('feed-stat-saves');
+const elFeedStatCards = document.getElementById('feed-stat-cards');
+let activityEventFilter = 'all'; // 'all' | 'goal' | 'assist' | 'bonus' | 'defense' | 'cards'
+let activityManagerFilter = '';
+let activityStartersOnly = false;
+
 
 // Rankings Elements (Consolidated League & Global)
 const elBtnViewLeagueRank = document.getElementById('btn-view-league-rank');
@@ -232,17 +265,31 @@ function loadSeasonData(seasonKey) {
 
 function getLatestGWWithData(data) {
   if (!data || !data.gameweeks) return 1;
+  // If backend provided current_gw, trust it as the active / latest gameweek
+  if (data.current_gw && data.gameweeks[data.current_gw.toString()]) {
+    return Number(data.current_gw);
+  }
   const gws = Object.keys(data.gameweeks).map(Number).sort((a, b) => b - a);
   for (const gw of gws) {
     const gwStr = gw.toString();
-    const standings = data.gameweeks[gwStr] ? data.gameweeks[gwStr].standings : [];
-    const hasData = standings.some(s => (s.gw_points && s.gw_points > 0) || (s.transfers && s.transfers > 0) || (s.gw_hits && s.gw_hits !== 0));
-    if (hasData) return gw;
+    const gwObj = data.gameweeks[gwStr];
+    if (!gwObj) continue;
+    const standings = gwObj.standings || [];
+    const hasData = standings.some(s => (s.gw_points && s.gw_points > 0) || (s.transfers && s.transfers > 0) || (s.gw_hits && s.gw_hits !== 0) || (s.players_left && s.players_left > 0) || (s.players_played && s.players_played > 0));
+    const hasLineups = gwObj.lineups && Object.keys(gwObj.lineups).length > 0;
+    if (hasData || hasLineups) return gw;
   }
   return 1;
 }
 
 function onSeasonDataLoaded() {
+  if (appData && appData.managers) {
+    const sortedMgrKeys = Object.keys(appData.managers).sort();
+    sortedMgrKeys.forEach((mgr, idx) => {
+      appData.managers[mgr].color = CALM_COLOR_PALETTE[idx % CALM_COLOR_PALETTE.length];
+    });
+  }
+
   currentGW = getLatestGWWithData(appData);
   
   const activeGWStandings = appData.gameweeks[currentGW.toString()] ? appData.gameweeks[currentGW.toString()].standings : [];
@@ -369,10 +416,38 @@ function setupEventListeners() {
   
   // Tabs
   if (elTabFieldRoster) elTabFieldRoster.addEventListener('click', () => switchTab('field-roster'));
+  if (elTabActivity) elTabActivity.addEventListener('click', () => switchTab('activity'));
   if (elTabWinners) elTabWinners.addEventListener('click', () => switchTab('winners'));
   if (elTabRankings) elTabRankings.addEventListener('click', () => switchTab('rankings'));
   if (elTabScatterPlot) elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
   if (elTabTransfers) elTabTransfers.addEventListener('click', () => switchTab('transfers'));
+
+  // Activity Feed Filter Listeners
+  const filterPillsContainer = document.getElementById('activity-type-filters');
+  if (filterPillsContainer) {
+    filterPillsContainer.querySelectorAll('.activity-filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterPillsContainer.querySelectorAll('.activity-filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        activityEventFilter = pill.getAttribute('data-filter') || 'all';
+        renderActivityFeedView();
+      });
+    });
+  }
+
+  if (elSelectActivityManager) {
+    elSelectActivityManager.addEventListener('change', (e) => {
+      activityManagerFilter = e.target.value;
+      renderActivityFeedView();
+    });
+  }
+
+  if (elToggleActivityStartersOnly) {
+    elToggleActivityStartersOnly.addEventListener('change', (e) => {
+      activityStartersOnly = !!e.target.checked;
+      renderActivityFeedView();
+    });
+  }
 
   // Rankings Subview Listeners
   if (elBtnViewLeagueRank) {
@@ -443,18 +518,26 @@ function initDashboard() {
   
   // Update view
   updateDashboard();
+
+  // Switch to initial tab if specified in URL hash
+  const hash = (window.location.hash || '').replace('#', '');
+  if (['winners', 'rankings', 'transfers', 'field-roster', 'activity'].includes(hash)) {
+    switchTab(hash);
+  }
 }
 
 function switchTab(tab) {
   activeTab = tab;
   
   if (elTabFieldRoster) elTabFieldRoster.classList.remove('active');
+  if (elTabActivity) elTabActivity.classList.remove('active');
   if (elTabWinners) elTabWinners.classList.remove('active');
   if (elTabRankings) elTabRankings.classList.remove('active');
   if (elTabScatterPlot) elTabScatterPlot.classList.remove('active');
   if (elTabTransfers) elTabTransfers.classList.remove('active');
   
   if (elPanelFieldRoster) elPanelFieldRoster.classList.remove('active');
+  if (elPanelActivity) elPanelActivity.classList.remove('active');
   if (elPanelWinners) elPanelWinners.classList.remove('active');
   if (elPanelRankings) elPanelRankings.classList.remove('active');
   if (elPanelScatterPlot) elPanelScatterPlot.classList.remove('active');
@@ -463,6 +546,10 @@ function switchTab(tab) {
   if (tab === 'field-roster') {
     if (elTabFieldRoster) elTabFieldRoster.classList.add('active');
     if (elPanelFieldRoster) elPanelFieldRoster.classList.add('active');
+  } else if (tab === 'activity') {
+    if (elTabActivity) elTabActivity.classList.add('active');
+    if (elPanelActivity) elPanelActivity.classList.add('active');
+    renderActivityFeedView();
   } else if (tab === 'winners') {
     if (elTabWinners) elTabWinners.classList.add('active');
     if (elPanelWinners) elPanelWinners.classList.add('active');
@@ -941,7 +1028,9 @@ function selectManager(managerName) {
   renderLeaderboard();
 
   // Re-render Transfers View (updates team history by gameweek for this manager)
-  renderTransfersView();
+  if (transfersSubView === 'team') {
+    renderTransfersView();
+  }
 }
 
 function updateManagerCard() {
@@ -959,21 +1048,21 @@ function updateManagerCard() {
   
   // Colors and avatars
   if (elManagerAvatar) {
-    elManagerAvatar.style.backgroundColor = mgrMeta.color;
-    elManagerAvatar.style.boxShadow = `0 4px 15px ${mgrMeta.color}40`;
+    elManagerAvatar.style.backgroundColor = '#0f172a';
+    elManagerAvatar.style.boxShadow = 'none';
   }
   
   // Card top indicator border
-  if (mgrInfoCard) mgrInfoCard.style.setProperty('--accent', mgrMeta.color);
+  if (mgrInfoCard) mgrInfoCard.style.setProperty('--accent', '#0f172a');
   
   // Text details
   if (elManagerName) elManagerName.innerText = mgrMeta.team;
   if (elManagerTeam) elManagerTeam.innerText = `Leaderboard Rank #${mgrRecord.rank}`;
   if (elManagerRank) {
     elManagerRank.innerText = `#${mgrRecord.rank}`;
-    elManagerRank.style.color = mgrMeta.color;
-    elManagerRank.style.backgroundColor = `${mgrMeta.color}15`;
-    elManagerRank.style.borderColor = `${mgrMeta.color}30`;
+    elManagerRank.style.color = 'var(--text-primary)';
+    elManagerRank.style.backgroundColor = '#f1f5f9';
+    elManagerRank.style.borderColor = '#cbd5e1';
   }
   
   if (elManagerGwPts) elManagerGwPts.innerText = `${mgrRecord.gw_points} pts`;
@@ -1067,14 +1156,14 @@ function updateManagerCard() {
       elFormationPie.style.background = 'conic-gradient(var(--card-border) 0% 100%)';
       elFormationLegend.innerHTML = '<div class="transfer-none">No formation data available.</div>';
     } else {
-      // Premium color palette for formations
+      // Calm, sophisticated color palette for formations
       const formationColors = [
-        '#00d2d3', // teal/accent
-        '#3742fa', // deep royal blue
-        '#ff4757', // coral red
-        '#ffa502', // orange
-        '#2ed573', // green
-        '#a55eea'  // purple
+        '#2563eb', // royal blue
+        '#0d9488', // teal
+        '#475569', // slate
+        '#d97706', // amber
+        '#7c3aed', // violet
+        '#059669'  // emerald
       ];
       
       let gradientParts = [];
@@ -1117,7 +1206,7 @@ function updateLineupPitch() {
   const mgrRecord = standings.find(s => s.manager === selectedManager);
   const lineups = gwData.lineups || {};
   const mgrLineup = lineups[selectedManager] || [];
-  const mgrMeta = appData.managers[selectedManager] || { team: selectedManager, color: '#00d2d3' };
+  const mgrMeta = appData.managers[selectedManager] || { team: selectedManager, color: '#0f172a' };
   
   // 1. Update Main Pitch Header Stats
   if (elMainPitchTeamName) {
@@ -1126,8 +1215,8 @@ function updateLineupPitch() {
   }
   if (elMainPitchManagerName) elMainPitchManagerName.innerText = `${selectedManager} (GW ${currentGW})`;
   if (elMainPitchAvatar) {
-    elMainPitchAvatar.style.backgroundColor = mgrMeta.color;
-    elMainPitchAvatar.style.boxShadow = `0 0 15px ${mgrMeta.color}60`;
+    elMainPitchAvatar.style.backgroundColor = '#0f172a';
+    elMainPitchAvatar.style.boxShadow = 'none';
   }
   if (mgrRecord) {
     if (elMainPitchGwPts) elMainPitchGwPts.innerHTML = `<i class="fa-solid fa-bolt"></i> ${mgrRecord.gw_points} GW Pts`;
@@ -1143,7 +1232,7 @@ function updateLineupPitch() {
   // 2. Update Right Column pitch header if present
   if (elPitchManagerTeam) {
     elPitchManagerTeam.innerText = `${mgrMeta.team} (GW ${currentGW})`;
-    elPitchManagerTeam.style.color = mgrMeta.color;
+    elPitchManagerTeam.style.color = 'var(--text-primary)';
   }
   
   // Reset Rows
@@ -1263,7 +1352,157 @@ const CLUB_KITS = {
   'WOL': { bg: '#FDB913', sleeve: '#231F20', text: '#231F20', name: '#FFFFFF', collar: '#231F20' }
 };
 
-const GKP_KIT = { bg: '#00FF87', sleeve: '#00FF87', text: '#38003C', name: '#38003C', collar: '#38003C' };
+const GKP_KIT = { bg: '#10b981', sleeve: '#10b981', text: '#ffffff', name: '#ffffff', collar: '#064e3b' };
+
+// ----------------------------------------------------
+// FIELD VIEW STATS: FORM (L3 PPG) & FIXTURE DIFFICULTY RUNS
+// ----------------------------------------------------
+const fdrRankingsCache = {};
+
+function getLeagueFdrRankings(startGw) {
+  if (fdrRankingsCache[startGw]) {
+    return fdrRankingsCache[startGw];
+  }
+  if (!appData || !appData.team_fixtures_fdr) {
+    return null;
+  }
+  
+  const allTeams = Object.keys(appData.team_fixtures_fdr);
+  const teamRuns = {};
+  
+  allTeams.forEach(team => {
+    const fixes = appData.team_fixtures_fdr[team] || {};
+    
+    // 1. Next 1 Fixture
+    const f1 = fixes[startGw.toString()];
+    const fdr1 = f1 ? (f1.difficulty || 3) : 3;
+    const opp1 = f1 ? f1.opponent : '-';
+    
+    // 2. Next 3 Fixtures
+    const fdrs3 = [];
+    const opps3 = [];
+    for (let g = startGw; g < Math.min(39, startGw + 3); g++) {
+      const fg = fixes[g.toString()];
+      if (fg) {
+        fdrs3.push(fg.difficulty || 3);
+        opps3.push({ gw: g, opp: fg.opponent, fdr: fg.difficulty || 3 });
+      }
+    }
+    const avg3 = fdrs3.length > 0 ? (fdrs3.reduce((a, b) => a + b, 0) / fdrs3.length) : 3.0;
+    
+    // 3. Next 5 Fixtures
+    const fdrs5 = [];
+    const opps5 = [];
+    for (let g = startGw; g < Math.min(39, startGw + 5); g++) {
+      const fg = fixes[g.toString()];
+      if (fg) {
+        fdrs5.push(fg.difficulty || 3);
+        opps5.push({ gw: g, opp: fg.opponent, fdr: fg.difficulty || 3 });
+      }
+    }
+    const avg5 = fdrs5.length > 0 ? (fdrs5.reduce((a, b) => a + b, 0) / fdrs5.length) : 3.0;
+    
+    teamRuns[team] = {
+      team,
+      next1: { fdr: fdr1, opp: opp1 },
+      next3: { avg: Number(avg3.toFixed(2)), fdrs: fdrs3, opps: opps3 },
+      next5: { avg: Number(avg5.toFixed(2)), fdrs: fdrs5, opps: opps5 }
+    };
+  });
+  
+  // Assign rankings among all 20 Premier League teams (1 = easiest, 20 = hardest)
+  function assignRanks(metricGetter, targetKey) {
+    const sorted = [...allTeams].sort((a, b) => metricGetter(teamRuns[a]) - metricGetter(teamRuns[b]));
+    sorted.forEach((t, i) => {
+      if (i > 0 && metricGetter(teamRuns[t]) === metricGetter(teamRuns[sorted[i - 1]])) {
+        teamRuns[t][targetKey].rank = teamRuns[sorted[i - 1]][targetKey].rank;
+      } else {
+        teamRuns[t][targetKey].rank = i + 1;
+      }
+    });
+  }
+  
+  assignRanks(r => r.next1.fdr, 'next1');
+  assignRanks(r => r.next3.avg, 'next3');
+  assignRanks(r => r.next5.avg, 'next5');
+  
+  fdrRankingsCache[startGw] = teamRuns;
+  return teamRuns;
+}
+
+function getPlayerFormStats(playerOrName, atGw) {
+  if (!appData) return { form: '0.0', ppg: '0.0', totalPoints: 0, gamesCount: 0, details: [] };
+  
+  const playerName = typeof playerOrName === 'string' ? playerOrName : (playerOrName.name || '');
+  const playerObj = typeof playerOrName === 'object' ? playerOrName : null;
+  const playerCatalog = appData.players ? appData.players[playerName] : null;
+
+  // Direct check for the official 'form' column
+  const directForm = playerObj?.form !== undefined ? playerObj.form : playerCatalog?.form;
+
+  const maxPlayed = finalGW || getLatestGWWithData(appData);
+  const targetGw = atGw || currentGW;
+  
+  // Calculate up to 3 played gameweeks for breakdown and fallback
+  const endGw = Math.min(targetGw, maxPlayed);
+  const sampleGws = [];
+  for (let g = endGw; g >= 1 && sampleGws.length < 3; g--) {
+    sampleGws.unshift(g);
+  }
+  
+  let totalPts = 0;
+  const details = [];
+  sampleGws.forEach(g => {
+    let pts = null;
+    if (playerCatalog && playerCatalog.gw_points && playerCatalog.gw_points[g.toString()] !== undefined) {
+      pts = Number(playerCatalog.gw_points[g.toString()]);
+    } else {
+      const gwLineups = appData.gameweeks?.[g.toString()]?.lineups;
+      if (gwLineups) {
+        for (const m in gwLineups) {
+          const found = gwLineups[m].find(p => p.name === playerName);
+          if (found) {
+            pts = found.points;
+            break;
+          }
+        }
+      }
+    }
+    const val = pts !== null ? pts : 0;
+    totalPts += val;
+    details.push({ gw: g, points: val });
+  });
+
+  // Use official FPL 'form' column if available for current/active GW, otherwise recent games average
+  let formValue;
+  if (directForm !== undefined && directForm !== null && targetGw >= maxPlayed) {
+    formValue = Number(directForm).toFixed(1);
+  } else if (sampleGws.length > 0) {
+    formValue = (totalPts / sampleGws.length).toFixed(1);
+  } else {
+    formValue = '0.0';
+  }
+
+  return {
+    form: formValue,
+    ppg: formValue,
+    totalPoints: totalPts,
+    gamesCount: sampleGws.length,
+    details
+  };
+}
+
+// Backward compatibility alias
+function getPlayerL3Stats(playerName, atGw) {
+  return getPlayerFormStats(playerName, atGw);
+}
+
+function getFdrDiffClass(diffVal) {
+  if (diffVal <= 2.4) return 'easy';
+  if (diffVal <= 3.4) return 'med';
+  if (diffVal <= 4.2) return 'hard';
+  return 'vhard';
+}
 
 function createPlayerCardDOM(player, maxSquadPts, isTransferredIn = false) {
   const card = document.createElement('div');
@@ -1355,6 +1594,75 @@ function createPlayerCardDOM(player, maxSquadPts, isTransferredIn = false) {
     `;
   }
 
+  // 1. Player Form / PPG (uses official FPL form column with recent games breakdown)
+  const formStats = getPlayerFormStats(player, currentGW);
+  const formVal = formStats.form;
+  const formDetailsStr = formStats.details.map(d => `GW${d.gw} (${d.points} pts)`).join(' · ');
+  const formTooltip = `Form: ${formVal} PPG · Recent Games: ${formDetailsStr || 'None'}`;
+
+  // 2. Upcoming Fixture Difficulty Ratings & League Rankings (Next 1, Next 3, Next 5)
+  const maxPlayed = finalGW || getLatestGWWithData(appData);
+  const nextStartGw = (currentGW <= maxPlayed && currentGW < 38) ? currentGW + 1 : currentGW;
+  const leagueRankings = getLeagueFdrRankings(nextStartGw);
+  const teamRun = leagueRankings ? leagueRankings[clubCode] : null;
+
+  let n1Rank = '-';
+  let n1Class = 'med';
+  let n1Tooltip = 'Next Fixture data unavailable';
+
+  let n3Rank = '-';
+  let n3Class = 'med';
+  let n3Tooltip = 'Next 3 Fixtures data unavailable';
+
+  let n5Rank = '-';
+  let n5Class = 'med';
+  let n5Tooltip = 'Next 5 Fixtures data unavailable';
+
+  if (teamRun) {
+    // Next 1 Game
+    n1Rank = teamRun.next1.rank;
+    n1Class = getFdrDiffClass(teamRun.next1.fdr);
+    n1Tooltip = `Next Game (GW${nextStartGw}): vs ${teamRun.next1.opp} · FDR ${teamRun.next1.fdr} · Difficulty Rank #${n1Rank} in Premier League (1 = Easiest)`;
+
+    // Next 3 Games
+    n3Rank = teamRun.next3.rank;
+    n3Class = getFdrDiffClass(teamRun.next3.avg);
+    const n3Opps = teamRun.next3.opps.map(o => `${o.opp} [${o.fdr}]`).join(', ');
+    const n3End = Math.min(38, nextStartGw + 2);
+    n3Tooltip = `Next 3 Games (GW${nextStartGw}-${n3End}): ${n3Opps} · Avg FDR ${teamRun.next3.avg.toFixed(1)} · Difficulty Rank #${n3Rank} in Premier League (1 = Easiest)`;
+
+    // Next 5 Games
+    n5Rank = teamRun.next5.rank;
+    n5Class = getFdrDiffClass(teamRun.next5.avg);
+    const n5Opps = teamRun.next5.opps.map(o => `${o.opp} [${o.fdr}]`).join(', ');
+    const n5End = Math.min(38, nextStartGw + 4);
+    n5Tooltip = `Next 5 Games (GW${nextStartGw}-${n5End}): ${n5Opps} · Avg FDR ${teamRun.next5.avg.toFixed(1)} · Difficulty Rank #${n5Rank} in Premier League (1 = Easiest)`;
+  }
+
+  const statsBadgeHtml = `
+    <div class="player-field-stats-badge">
+      <div class="field-stat-row form-row" title="${formTooltip}">
+        <span class="field-stat-tag">FORM</span>
+        <span class="field-stat-val">${formVal}</span>
+        <span class="field-stat-unit">ppg</span>
+      </div>
+      <div class="field-stat-row fdr-row">
+        <span class="fdr-chip fdr-${n1Class}" title="${n1Tooltip}">
+          <span class="fdr-lbl">N1</span>
+          <span class="fdr-rnk">#${n1Rank}</span>
+        </span>
+        <span class="fdr-chip fdr-${n3Class}" title="${n3Tooltip}">
+          <span class="fdr-lbl">N3</span>
+          <span class="fdr-rnk">#${n3Rank}</span>
+        </span>
+        <span class="fdr-chip fdr-${n5Class}" title="${n5Tooltip}">
+          <span class="fdr-lbl">N5</span>
+          <span class="fdr-rnk">#${n5Rank}</span>
+        </span>
+      </div>
+    </div>
+  `;
+
   card.innerHTML = `
     <div class="player-jersey-wrapper">
       ${jerseySvg}
@@ -1365,6 +1673,7 @@ function createPlayerCardDOM(player, maxSquadPts, isTransferredIn = false) {
     </div>
     <span class="player-name">${player.name}</span>
     ${fixtureSubHtml}
+    ${statsBadgeHtml}
   `;
   
   return card;
@@ -1401,7 +1710,10 @@ function updateDashboard() {
   // 7. Update Transfers View
   renderTransfersView();
 
-  // 8. Update Scatter Plot
+  // 8. Update Activity Feed View
+  if (activeTab === 'activity') renderActivityFeedView();
+
+  // 9. Update Scatter Plot
   if (elScatterSvg) updateScatterPlot();
 }
 
@@ -1504,16 +1816,15 @@ function renderLeaderboard() {
 
     const row = document.createElement('div');
     row.className = `leaderboard-row ${isSelected ? 'active' : ''}`;
-    row.style.borderLeft = `4px solid ${mgrMeta.color}`;
     
     row.innerHTML = `
-      <div class="lb-row-bar-bg" style="width: ${barWidthPct}%; background: ${mgrMeta.color};"></div>
+      <div class="lb-row-bar-bg" style="width: ${barWidthPct}%;"></div>
       <div class="lb-rank-badge ${isWinner ? 'winner' : ''}">
         ${isWinner ? '<i class="fa-solid fa-crown"></i>' : `#${rankNum}`}
       </div>
       <div class="lb-team-info">
         <div class="lb-team-title-row">
-          <span class="lb-team-title" style="color: ${mgrMeta.color}">${mgrMeta.team}</span>
+          <span class="lb-team-title">${mgrMeta.team}</span>
           ${chipBadgeHtml}
         </div>
         <div class="lb-sub-row">
@@ -2317,7 +2628,7 @@ function showScatterTooltip(event, managerName, record, avgCapPts) {
   const r = getScatterRadius(record.overall_points, appData.gameweeks[finalGW.toString()].standings);
   
   elScatterTooltip.innerHTML = `
-    <span class="tooltip-title" style="color: ${mgrMeta.color}">${mgrMeta.team}</span>
+    <span class="tooltip-title">${mgrMeta.team}</span>
     <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 6px 0;">
     <span>Total Points: <strong>${record.overall_points} pts</strong></span>
     <span>Average GW Points: <strong>${avgGwPts.toFixed(2)}</strong></span>
@@ -2508,19 +2819,19 @@ function renderWinnersView() {
           <div class="table-mgr-col">
             <span class="table-mgr-badge" style="background:${winnerMeta.color}"></span>
             <div class="table-mgr-text">
-              <span class="table-mgr-team" style="color:${winnerMeta.color}">${winner.team}</span>
+              <span class="table-mgr-team">${winner.team}</span>
               <span class="table-mgr-name">${winner.manager}</span>
             </div>
           </div>
         `;
       } else {
         const tiesHtml = item.winners.map(w => {
-          const m = appData.managers[w.manager] || { color: '#ffd700' };
+          const m = appData.managers[w.manager] || { color: '#64748b' };
           return `
             <div class="table-mgr-col" style="margin-bottom: 2px;">
               <span class="table-mgr-badge" style="background:${m.color}"></span>
               <div class="table-mgr-text">
-                <span class="table-mgr-team" style="color:${m.color}">${w.team}</span>
+                <span class="table-mgr-team">${w.team}</span>
                 <span class="table-mgr-name">${w.manager}</span>
               </div>
             </div>
@@ -2577,7 +2888,7 @@ function renderWinnersView() {
           <div class="table-mgr-col">
             <span class="table-mgr-badge" style="background:${stat.color}"></span>
             <div class="table-mgr-text">
-              <span class="table-mgr-team" style="color:${stat.color}">${stat.team}</span>
+              <span class="table-mgr-team">${stat.team}</span>
               <span class="table-mgr-name">${stat.manager}</span>
             </div>
           </div>
@@ -2586,7 +2897,7 @@ function renderWinnersView() {
           <span class="trophy-wins-badge"><i class="fa-solid fa-trophy"></i> ${stat.wins} win${stat.wins === 1 ? '' : 's'}</span>
         </td>
         <td>${wonGwsStr}</td>
-        <td class="font-mono" style="color:#ffd700; font-weight:700;">${stat.highScore > 0 ? stat.highScore + ' pts' : '-'}</td>
+        <td class="font-mono" style="font-weight:700;">${stat.highScore > 0 ? stat.highScore + ' pts' : '-'}</td>
       `;
 
       row.addEventListener('click', () => {
@@ -2801,7 +3112,8 @@ function renderTeamTransfersHistory() {
 
   // Update Selected Team Banner
   if (elTransfersTeamAvatar) {
-    elTransfersTeamAvatar.style.background = mgrMeta.color;
+    elTransfersTeamAvatar.style.background = '#0f172a';
+    elTransfersTeamAvatar.style.color = '#ffffff';
     elTransfersTeamAvatar.innerText = targetManager.charAt(0).toUpperCase();
   }
   if (elTransfersTeamName) elTransfersTeamName.innerText = mgrMeta.team;
@@ -3009,7 +3321,6 @@ function renderTeamTransfersHistory() {
 
     const card = document.createElement('div');
     card.className = 'gw-history-card';
-    card.style.borderLeft = `4px solid ${mgrMeta.color}`;
 
     const movesLabel = moves > 0 ? `${moves} transfer${moves > 1 ? 's' : ''}` : 'No transfers';
 
@@ -3152,22 +3463,29 @@ function renderLeagueGwTransfers() {
       pairsHtml = `<div class="transfer-pair-row" style="color:var(--text-secondary); font-size:0.85rem;"><i class="fa-solid fa-info-circle"></i> ${mgrRecord.transfers} transfer(s) recorded.</div>`;
     }
 
+    let summaryChipsHtml = '';
+    if (details.length > 0) {
+      const summaryItems = details.map(t => {
+        return `<span class="transfer-summary-pill"><span class="sum-out"><i class="fa-solid fa-arrow-left"></i> ${t.out_name}</span><i class="fa-solid fa-arrow-right-long sum-arrow"></i><span class="sum-in">${t.in_name} <i class="fa-solid fa-arrow-right"></i></span></span>`;
+      });
+      summaryChipsHtml = `<div class="transfer-card-summary">${summaryItems.join('')}</div>`;
+    }
+
     const movesCount = (mgrRecord.transfers && mgrRecord.transfers > 0) ? mgrRecord.transfers : (details.length > 0 ? details.length : 0);
     const movesLabel = movesCount === 1 ? '1 transfer' : `${movesCount} transfers`;
 
     const card = document.createElement('div');
-    card.className = 'transfer-card collapsible collapsed';
+    card.className = 'transfer-card collapsible expanded';
     card.setAttribute('data-manager', mgrRecord.manager);
-    card.style.borderLeft = `4px solid ${mgrMeta.color}`;
 
     card.innerHTML = `
       <div class="transfer-card-header">
         <div class="transfer-mgr-info">
-          <div class="transfer-mgr-avatar" style="background:${mgrMeta.color};">
+          <div class="transfer-mgr-avatar" style="background:#0f172a; color:#fff;">
             ${mgrRecord.manager.charAt(0).toUpperCase()}
           </div>
           <div class="transfer-mgr-text">
-            <span class="transfer-mgr-team" style="color:${mgrMeta.color};">${mgrMeta.team}</span>
+            <span class="transfer-mgr-team">${mgrMeta.team}</span>
             <span class="transfer-mgr-name">${mgrRecord.manager}</span>
           </div>
         </div>
@@ -3179,9 +3497,10 @@ function renderLeagueGwTransfers() {
           <button class="btn-subtle-history" title="View ${mgrMeta.team} season timeline">
             History <i class="fa-solid fa-clock-rotate-left"></i>
           </button>
-          <span class="collapse-indicator" title="Click to view player transfers"><i class="fa-solid fa-chevron-down"></i></span>
+          <span class="collapse-indicator" title="Click to collapse / expand"><i class="fa-solid fa-chevron-down"></i></span>
         </div>
       </div>
+      ${summaryChipsHtml}
       <div class="transfer-pairs-list">
         ${pairsHtml}
       </div>
@@ -3192,6 +3511,9 @@ function renderLeagueGwTransfers() {
         e.stopPropagation();
         selectManager(mgrRecord.manager);
         switchTransfersSubView('team');
+        return;
+      }
+      if (e.target.closest('.transfer-pairs-list')) {
         return;
       }
       selectManager(mgrRecord.manager);
@@ -3277,15 +3599,15 @@ function renderSeasonTransfersLeaderboard() {
         <div class="table-mgr-col">
           <span class="table-mgr-badge" style="background:${stat.color}"></span>
           <div class="table-mgr-text">
-            <span class="table-mgr-team" style="color:${stat.color}">${stat.team}</span>
+            <span class="table-mgr-team">${stat.team}</span>
             <span class="table-mgr-name">${stat.manager}</span>
           </div>
         </div>
       </td>
       <td class="font-mono">${stat.totalMoves}</td>
-      <td class="font-mono" style="color:${stat.totalHitsCost > 0 ? '#ff4757' : 'inherit'}">-${stat.totalHitsCost} pts</td>
-      <td class="font-mono" style="color:#2ed573">${stat.totalPtsIn} pts</td>
-      <td class="font-mono" style="color:#ff6b81">${stat.totalPtsOut} pts</td>
+      <td class="font-mono" style="color:${stat.totalHitsCost > 0 ? '#dc2626' : 'inherit'}">-${stat.totalHitsCost} pts</td>
+      <td class="font-mono" style="color:#16a34a">${stat.totalPtsIn} pts</td>
+      <td class="font-mono" style="color:#dc2626">${stat.totalPtsOut} pts</td>
       <td class="font-mono ${roiClass}">${roiPrefix}${stat.netRoi} pts</td>
     `;
 
@@ -3297,4 +3619,190 @@ function renderSeasonTransfersLeaderboard() {
     elTransfersSeasonTableBody.appendChild(row);
   });
 }
+
+// ----------------------------------------------------
+// MATCHDAY ACTIVITY FEED VIEW
+// ----------------------------------------------------
+function renderActivityFeedView() {
+  if (!elActivityFeedContainer) return;
+  if (!appData || !appData.gameweeks) return;
+
+  const gwKey = currentGW.toString();
+  const gwData = appData.gameweeks[gwKey] || {};
+  const feed = gwData.activity_feed || [];
+  const summary = gwData.activity_summary || {
+    total_goals: 0,
+    total_assists: 0,
+    total_clean_sheets: 0,
+    total_bonus: 0,
+    total_cards: 0,
+    total_saves: 0
+  };
+
+  // Header and live status indicator
+  if (elActivityHeaderTitleText) {
+    elActivityHeaderTitleText.innerText = `Gameweek ${currentGW} Matchday Activity`;
+  }
+
+  const isCurrentGW = currentGW === (appData.current_gw || finalGW);
+  if (elActivityLiveTag) {
+    if (isCurrentGW) {
+      elActivityLiveTag.style.display = 'inline-flex';
+      elActivityLiveTag.innerHTML = '<i class="fa-solid fa-circle"></i> Live Matchday';
+      elActivityLiveTag.classList.remove('completed');
+    } else {
+      elActivityLiveTag.style.display = 'inline-flex';
+      elActivityLiveTag.innerHTML = '<i class="fa-solid fa-check"></i> Completed GW';
+      elActivityLiveTag.classList.add('completed');
+    }
+  }
+
+  // Populate Highlights Metric Strip
+  if (elFeedStatGoals) elFeedStatGoals.innerText = summary.total_goals || 0;
+  if (elFeedStatAssists) elFeedStatAssists.innerText = summary.total_assists || 0;
+  if (elFeedStatCs) elFeedStatCs.innerText = summary.total_clean_sheets || 0;
+  if (elFeedStatBonus) elFeedStatBonus.innerText = summary.total_bonus || 0;
+  if (elFeedStatSaves) elFeedStatSaves.innerText = summary.total_saves || 0;
+  if (elFeedStatCards) elFeedStatCards.innerText = summary.total_cards || 0;
+
+  // Populate Manager filter dropdown if needed
+  if (elSelectActivityManager && appData.managers) {
+    const currentVal = elSelectActivityManager.value;
+    const mgrNames = Object.keys(appData.managers).sort();
+    
+    // Only build options if options are just the default one
+    if (elSelectActivityManager.options.length <= 1) {
+      mgrNames.forEach(mgr => {
+        const opt = document.createElement('option');
+        opt.value = mgr;
+        opt.innerText = `${appData.managers[mgr]?.team || mgr} (${mgr})`;
+        elSelectActivityManager.appendChild(opt);
+      });
+    }
+    elSelectActivityManager.value = currentVal;
+  }
+
+  // Filter feed items
+  const filteredFeed = feed.filter(item => {
+    // 1. Filter by event category
+    if (activityEventFilter !== 'all') {
+      if (activityEventFilter === 'goal' && item.type !== 'goal') return false;
+      if (activityEventFilter === 'assist' && item.type !== 'assist') return false;
+      if (activityEventFilter === 'bonus' && item.type !== 'bonus') return false;
+      if (activityEventFilter === 'defense' && item.type !== 'clean_sheet' && item.type !== 'saves' && item.type !== 'pen_saved') return false;
+      if (activityEventFilter === 'cards' && item.type !== 'yellow_card' && item.type !== 'red_card' && item.type !== 'own_goal' && item.type !== 'pen_missed') return false;
+    }
+
+    // 2. Filter by manager
+    if (activityManagerFilter) {
+      const hasManager = item.managers && item.managers.some(m => m.manager === activityManagerFilter);
+      if (!hasManager) return false;
+    }
+
+    // 3. Filter by starters only
+    if (activityStartersOnly) {
+      if (activityManagerFilter) {
+        const mgrMatch = item.managers.find(m => m.manager === activityManagerFilter);
+        if (!mgrMatch || !mgrMatch.starting) return false;
+      } else {
+        const hasStartingManager = item.managers && item.managers.some(m => m.starting);
+        if (!hasStartingManager) return false;
+      }
+    }
+
+    return true;
+  });
+
+  // Render cards
+  elActivityFeedContainer.innerHTML = '';
+
+  if (filteredFeed.length === 0) {
+    elActivityFeedContainer.innerHTML = `
+      <div class="empty-state">
+        <i class="fa-solid fa-bell-slash"></i>
+        <h3>No activity events found for Gameweek ${currentGW}</h3>
+        <p>No matching goals, assists, bonus points, or key events recorded with the active filters.</p>
+      </div>
+    `;
+    return;
+  }
+
+  filteredFeed.forEach(event => {
+    const card = document.createElement('div');
+    card.className = 'activity-card glass';
+
+    // Event icon type class
+    let iconClass = 'goal';
+    if (event.type === 'assist') iconClass = 'assist';
+    else if (event.type === 'clean_sheet') iconClass = 'clean_sheet';
+    else if (event.type === 'saves') iconClass = 'saves';
+    else if (event.type === 'bonus') iconClass = 'bonus';
+    else if (event.type === 'yellow_card' || event.type === 'red_card' || event.type === 'own_goal' || event.type === 'pen_missed') iconClass = 'cards';
+
+    // Position class
+    const posClass = `pos-${(event.position || 'mid').toLowerCase()}`;
+
+    // Managers badges HTML
+    const managersHtml = (event.managers || []).map(m => {
+      const mgrMeta = appData.managers?.[m.manager] || { team: m.manager, color: '#3b82f6' };
+      const teamName = mgrMeta.team || m.manager;
+      
+      let roleClass = 'starter';
+      let roleLabel = 'Started';
+      let icon = '<i class="fa-solid fa-check"></i>';
+
+      if (m.captain) {
+        roleClass = 'starter captain';
+        roleLabel = 'Captain (2x)';
+        icon = '<i class="fa-solid fa-crown"></i>';
+      } else if (!m.starting) {
+        roleClass = 'benched';
+        roleLabel = 'Benched';
+        icon = '<i class="fa-solid fa-couch"></i>';
+      }
+
+      const ptsText = m.points_gained > 0 ? `+${m.points_gained} pts` : (m.points_gained < 0 ? `${m.points_gained} pts` : '0 pts');
+
+      return `
+        <div class="activity-owner-chip ${roleClass}" title="${m.manager} (${roleLabel}): ${ptsText}">
+          <span class="owner-color-dot" style="background:${mgrMeta.color}"></span>
+          <span class="owner-team-name">${teamName}</span>
+          <span class="owner-role-tag">${icon} ${roleLabel}</span>
+          <span class="owner-pts-gain">${ptsText}</span>
+        </div>
+      `;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="activity-event-icon ${iconClass}">
+        <i class="${event.icon || 'fa-solid fa-bolt'}"></i>
+      </div>
+      <div class="activity-card-body">
+        <div class="activity-card-top">
+          <div class="activity-player-info">
+            <span class="activity-player-name">${event.player_name}</span>
+            <span class="activity-player-club">${event.club}</span>
+            <span class="activity-player-pos ${posClass}">${event.position}</span>
+            ${event.opponent ? `<span class="activity-opponent-tag">vs ${event.opponent}</span>` : ''}
+          </div>
+          <div class="activity-event-badge ${iconClass}">
+            <span>${event.label}</span>
+            <span class="pts-badge">+${event.total_points} FPL ${event.total_points === 1 ? 'pt' : 'pts'}</span>
+          </div>
+        </div>
+        <div class="activity-card-owners">
+          <div class="activity-owners-title">
+            <i class="fa-solid fa-shield"></i> League Owners:
+          </div>
+          <div class="activity-owners-list">
+            ${managersHtml}
+          </div>
+        </div>
+      </div>
+    `;
+
+    elActivityFeedContainer.appendChild(card);
+  });
+}
+
 

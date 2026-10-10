@@ -2,12 +2,12 @@ name: Auto Update Live FPL Data
 
 on:
   schedule:
-    # Weekend Matchdays (Saturday & Sunday): Every 5 minutes from 10:00 to 23:55 UTC
-    - cron: '*/5 10-23 * * 0,6'
-    # Friday & Monday Night Football: Every 5 minutes from 18:00 to 23:55 UTC
-    - cron: '*/5 18-23 * * 1,5'
-    # Midweek Matchdays (Tuesday, Wednesday, Thursday): Every 10 minutes from 18:00 to 23:55 UTC
-    - cron: '*/10 18-23 * * 2,3,4'
+    # Weekend Matchdays (Saturday & Sunday): Every 15 minutes from 11:00 to 22:59 UTC
+    - cron: '*/15 11-22 * * 0,6'
+    # Friday & Monday Night Football: Every 15 minutes from 19:00 to 22:59 UTC
+    - cron: '*/15 19-22 * * 1,5'
+    # Midweek Matchdays (Tuesday & Wednesday): Once an hour in the evening (19:00-22:00 UTC)
+    - cron: '0 19-22 * * 2,3'
   workflow_dispatch: # Allows manual one-click trigger anytime from GitHub Actions UI
 
 permissions:

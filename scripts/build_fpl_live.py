@@ -15,9 +15,9 @@ from datetime import datetime, timezone
 LEAGUE_ID = 352792
 
 COLOR_PALETTE = [
-    "#ff4757", "#2ed573", "#1e90ff", "#ffa502", "#ff47ff",
-    "#00d2d3", "#20bf6b", "#a55eea", "#ff7f50", "#eccc68",
-    "#ff9f1a"
+    "#475569", "#2563eb", "#0d9488", "#be123c", "#7c3aed",
+    "#d97706", "#059669", "#4f46e5", "#0284c7", "#78716c",
+    "#9333ea"
 ]
 
 def fetch_json(url):
@@ -304,6 +304,11 @@ def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks
             """, (pid, wname, tname, pos, g, pts, now_iso))
 
     # 6. Update players table
+    cur.execute("PRAGMA table_info(players)")
+    p_cols = [c[1] for c in cur.fetchall()]
+    if "form" not in p_cols:
+        cur.execute("ALTER TABLE players ADD COLUMN form REAL DEFAULT 0.0")
+
     for pid, el in elements.items():
         tname = teams.get(el.get("team"), {}).get("name", "")
         tshort = teams.get(el.get("team"), {}).get("short_name", "")
@@ -312,10 +317,10 @@ def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks
             INSERT INTO players (
                 scraped_at, is_latest, id, web_name, first_name, second_name, full_name,
                 team, team_short, position, cost_m, now_cost, selected_by_percent,
-                status, news, total_points, points_per_game, minutes, goals_scored,
+                status, news, total_points, points_per_game, form, minutes, goals_scored,
                 assists, clean_sheets, goals_conceded, own_goals, penalties_saved,
                 penalties_missed, yellow_cards, red_cards, saves, bonus, bps
-            ) VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(id) DO UPDATE SET
                 scraped_at = excluded.scraped_at,
                 is_latest = 1,
@@ -333,6 +338,7 @@ def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks
                 news = excluded.news,
                 total_points = excluded.total_points,
                 points_per_game = excluded.points_per_game,
+                form = excluded.form,
                 minutes = excluded.minutes,
                 goals_scored = excluded.goals_scored,
                 assists = excluded.assists,
@@ -353,6 +359,7 @@ def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks
             round(el.get("now_cost", 0) / 10.0, 1), el.get("now_cost", 0),
             float(el.get("selected_by_percent") or 0.0), el.get("status"), el.get("news"),
             el.get("total_points", 0), float(el.get("points_per_game") or 0.0),
+            float(el.get("form") or 0.0),
             el.get("minutes", 0), el.get("goals_scored", 0), el.get("assists", 0),
             el.get("clean_sheets", 0), el.get("goals_conceded", 0), el.get("own_goals", 0),
             el.get("penalties_saved", 0), el.get("penalties_missed", 0), el.get("yellow_cards", 0),
@@ -666,9 +673,268 @@ def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks
         except Exception as e:
             print(f"[!] Error loading past mini-league data: {e}")
 
-    conn.commit()
-    conn.close()
-    print(f"[+] SQLite database successfully synced at {db_path}!")
+def generate_gw_activity_feed(lineups, live_stats, elements, teams, gw_team_fixtures):
+    """
+    Scans all players owned by managers in this gameweek and produces a chronological/impact-sorted
+    feed of key matchday events:
+    - Goals, Assists, Saves, Bonus Points, Clean Sheets, Penalties Saved/Missed, Red/Yellow Cards, Own Goals.
+    """
+    player_ownership = {}
+    for mgr_name, p_list in lineups.items():
+        for p in p_list:
+            p_name = p.get("name")
+            if not p_name:
+                continue
+            if p_name not in player_ownership:
+                player_ownership[p_name] = []
+            player_ownership[p_name].append({
+                "manager": mgr_name,
+                "starting": p.get("starting", True),
+                "captain": p.get("captain", False),
+                "vice_captain": p.get("vice_captain", False),
+                "multiplier": (2 if p.get("captain") else 1) if p.get("starting") else 0
+            })
+
+    activity_events = []
+    element_types = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
+
+    total_goals = 0
+    total_assists = 0
+    total_clean_sheets = 0
+    total_bonus = 0
+    total_cards = 0
+    total_saves = 0
+
+    name_to_el = {}
+    for pid, el in elements.items():
+        wname = el.get("web_name")
+        if wname:
+            name_to_el[wname] = el
+
+    for p_name, owners in player_ownership.items():
+        el = name_to_el.get(p_name)
+        if not el:
+            continue
+        pid = el.get("id")
+        p_team_id = el.get("team")
+        club_code = teams.get(p_team_id, {}).get("short_name", "")
+        pos_code = element_types.get(el.get("element_type"), "MID")
+        stats = live_stats.get(pid, {})
+        fix_info = gw_team_fixtures.get(p_team_id, {})
+        opp_str = fix_info.get("opponent", "")
+
+        goals = stats.get("goals_scored", 0)
+        assists = stats.get("assists", 0)
+        clean_sheets = stats.get("clean_sheets", 0)
+        saves = stats.get("saves", 0)
+        bonus = stats.get("bonus", 0)
+        yellow_cards = stats.get("yellow_cards", 0)
+        red_cards = stats.get("red_cards", 0)
+        penalties_saved = stats.get("penalties_saved", 0)
+        penalties_missed = stats.get("penalties_missed", 0)
+        own_goals = stats.get("own_goals", 0)
+
+        def build_event_managers(base_pts):
+            mgrs = []
+            for o in owners:
+                gained = base_pts * o["multiplier"]
+                mgrs.append({
+                    "manager": o["manager"],
+                    "starting": o["starting"],
+                    "captain": o["captain"],
+                    "multiplier": o["multiplier"],
+                    "points_gained": gained
+                })
+            mgrs.sort(key=lambda m: (m["starting"], m["captain"], m["points_gained"]), reverse=True)
+            return mgrs
+
+        if goals > 0:
+            total_goals += goals
+            pts_per = 4 if pos_code == "FWD" else (5 if pos_code == "MID" else 6)
+            activity_events.append({
+                "type": "goal",
+                "label": f"{goals} Goal{'s' if goals > 1 else ''}",
+                "icon": "fa-solid fa-futbol",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": goals,
+                "points_per_unit": pts_per,
+                "total_points": goals * pts_per,
+                "managers": build_event_managers(goals * pts_per)
+            })
+
+        if assists > 0:
+            total_assists += assists
+            activity_events.append({
+                "type": "assist",
+                "label": f"{assists} Assist{'s' if assists > 1 else ''}",
+                "icon": "fa-solid fa-shoe-prints",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": assists,
+                "points_per_unit": 3,
+                "total_points": assists * 3,
+                "managers": build_event_managers(assists * 3)
+            })
+
+        if clean_sheets > 0 and pos_code in ["GKP", "DEF", "MID"]:
+            total_clean_sheets += clean_sheets
+            pts_cs = 1 if pos_code == "MID" else 4
+            activity_events.append({
+                "type": "clean_sheet",
+                "label": "Clean Sheet",
+                "icon": "fa-solid fa-shield-halved",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": 1,
+                "points_per_unit": pts_cs,
+                "total_points": pts_cs,
+                "managers": build_event_managers(pts_cs)
+            })
+
+        if saves >= 3 and pos_code == "GKP":
+            total_saves += saves
+            saves_pts = saves // 3
+            activity_events.append({
+                "type": "saves",
+                "label": f"{saves} Saves",
+                "icon": "fa-solid fa-hand",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": saves,
+                "points_per_unit": 1,
+                "total_points": saves_pts,
+                "managers": build_event_managers(saves_pts)
+            })
+
+        if penalties_saved > 0:
+            activity_events.append({
+                "type": "pen_saved",
+                "label": "Penalty Saved",
+                "icon": "fa-solid fa-hand-holding-hand",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": penalties_saved,
+                "points_per_unit": 5,
+                "total_points": penalties_saved * 5,
+                "managers": build_event_managers(penalties_saved * 5)
+            })
+
+        if bonus > 0:
+            total_bonus += bonus
+            activity_events.append({
+                "type": "bonus",
+                "label": f"{bonus} Bonus Pts",
+                "icon": "fa-solid fa-star",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": bonus,
+                "points_per_unit": 1,
+                "total_points": bonus,
+                "managers": build_event_managers(bonus)
+            })
+
+        if red_cards > 0:
+            total_cards += red_cards
+            activity_events.append({
+                "type": "red_card",
+                "label": "Red Card",
+                "icon": "fa-solid fa-square",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": red_cards,
+                "points_per_unit": -3,
+                "total_points": red_cards * -3,
+                "managers": build_event_managers(red_cards * -3)
+            })
+
+        if yellow_cards > 0:
+            total_cards += yellow_cards
+            activity_events.append({
+                "type": "yellow_card",
+                "label": "Yellow Card",
+                "icon": "fa-solid fa-square",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": yellow_cards,
+                "points_per_unit": -1,
+                "total_points": yellow_cards * -1,
+                "managers": build_event_managers(yellow_cards * -1)
+            })
+
+        if penalties_missed > 0:
+            activity_events.append({
+                "type": "pen_missed",
+                "label": "Penalty Missed",
+                "icon": "fa-solid fa-circle-xmark",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": penalties_missed,
+                "points_per_unit": -2,
+                "total_points": penalties_missed * -2,
+                "managers": build_event_managers(penalties_missed * -2)
+            })
+
+        if own_goals > 0:
+            activity_events.append({
+                "type": "own_goal",
+                "label": "Own Goal",
+                "icon": "fa-solid fa-triangle-exclamation",
+                "player_id": pid,
+                "player_name": p_name,
+                "club": club_code,
+                "position": pos_code,
+                "opponent": opp_str,
+                "count": own_goals,
+                "points_per_unit": -2,
+                "total_points": own_goals * -2,
+                "managers": build_event_managers(own_goals * -2)
+            })
+
+    type_priority = {
+        "goal": 10, "assist": 9, "bonus": 8, "clean_sheet": 7,
+        "pen_saved": 6, "saves": 5, "red_card": 4, "pen_missed": 3,
+        "own_goal": 2, "yellow_card": 1
+    }
+    activity_events.sort(key=lambda ev: (type_priority.get(ev["type"], 0), abs(ev["total_points"])), reverse=True)
+
+    summary = {
+        "total_goals": total_goals,
+        "total_assists": total_assists,
+        "total_clean_sheets": total_clean_sheets,
+        "total_bonus": total_bonus,
+        "total_cards": total_cards,
+        "total_saves": total_saves
+    }
+
+    return activity_events, summary
 
 def main():
     print("[*] Fetching FPL bootstrap static data...")
@@ -861,7 +1127,8 @@ def main():
                     "vice_captain": is_vc,
                     "starting": is_start,
                     "sub_in": False,
-                    "sub_out": False
+                    "sub_out": False,
+                    "form": float(el_info.get("form") or 0.0)
                 })
 
             # Calculate transfers detail for this manager in this GW
@@ -1022,6 +1289,17 @@ def main():
 
         gameweeks_dict[str(gw)]["standings"] = gw_standings_raw
 
+        # Activity Feed for this Gameweek
+        gw_feed, gw_summary = generate_gw_activity_feed(
+            gameweeks_dict[str(gw)]["lineups"],
+            live_stats,
+            elements,
+            teams,
+            gw_team_fixtures
+        )
+        gameweeks_dict[str(gw)]["activity_feed"] = gw_feed
+        gameweeks_dict[str(gw)]["activity_summary"] = gw_summary
+
     # For unplayed GWs (max_gw+1 .. 38), populate with pre-season/latest standings
     latest_gw_key = str(max_gw)
     latest_standings = gameweeks_dict[latest_gw_key]["standings"]
@@ -1076,15 +1354,53 @@ def main():
             "position": pos_code,
             "total_points": p.get("total_points", 0),
             "points_per_game": float(p.get("points_per_game") or 0.0),
+            "form": float(p.get("form") or 0.0),
             "cost": round(p.get("now_cost", 0) / 10.0, 1),
             "gw_points": {str(g): pts for g, pts in player_gw_scores.get(pid, {}).items()}
         }
 
+    # Build season-long team fixtures with FDR rating (1-5)
+    team_fixtures_fdr = {}
+    for f in all_fixtures:
+        ev = f.get("event")
+        if not ev:
+            continue
+        th = f.get("team_h")
+        ta = f.get("team_a")
+        th_short = teams.get(th, {}).get("short_name", "")
+        ta_short = teams.get(ta, {}).get("short_name", "")
+        th_name = teams.get(th, {}).get("name", "")
+        ta_name = teams.get(ta, {}).get("name", "")
+        th_diff = f.get("team_h_difficulty", 3)
+        ta_diff = f.get("team_a_difficulty", 3)
+        if th_short:
+            if th_short not in team_fixtures_fdr:
+                team_fixtures_fdr[th_short] = {}
+            team_fixtures_fdr[th_short][str(ev)] = {
+                "opponent": f"{ta_short} (H)",
+                "opponent_short": ta_short,
+                "opponent_name": ta_name,
+                "venue": "H",
+                "difficulty": th_diff
+            }
+        if ta_short:
+            if ta_short not in team_fixtures_fdr:
+                team_fixtures_fdr[ta_short] = {}
+            team_fixtures_fdr[ta_short][str(ev)] = {
+                "opponent": f"{th_short} (A)",
+                "opponent_short": th_short,
+                "opponent_name": th_name,
+                "venue": "A",
+                "difficulty": ta_diff
+            }
+
     output_data = {
         "season": "2026/27",
+        "current_gw": max_gw,
         "managers": {m: {"team": meta["team"], "color": meta["color"]} for m, meta in managers_meta.items()},
         "players": players_catalog,
-        "gameweeks": gameweeks_dict
+        "gameweeks": gameweeks_dict,
+        "team_fixtures_fdr": team_fixtures_fdr
     }
 
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

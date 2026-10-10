@@ -72,6 +72,7 @@ def process_player_data(data, timestamp):
             "chance_of_playing_next_round": p.get("chance_of_playing_next_round"),
             "total_points": p.get("total_points", 0),
             "points_per_game": float(p.get("points_per_game", 0.0) or 0.0),
+            "form": float(p.get("form", 0.0) or 0.0),
             "minutes": p.get("minutes", 0),
             "goals_scored": p.get("goals_scored", 0),
             "assists": p.get("assists", 0),
