@@ -16,40 +16,49 @@ def build_suggested_lineup_section(data, mgr_name, current_gw, next_gw, lineup, 
     lines.append(f"## 1. Suggested Starting Lineup & Captaincy (Gameweek {next_gw})\n")
 
     if "Arsene" in mgr_name:
-        lines.append(f"> **Optimal Formation**: **3-4-3**  \n> **Primary Gameplan**: Capitalize on Chelsea’s league-worst defense (#20, 12 GA) and Ipswich's leaky backline (#18, 11 GA), while targeting Coventry's (#20, 1 GF) and Villa's (#18, 4 GF) toothless attacks for clean sheets.\n")
+        cov_rec = team_records.get("COV", {})
+        ips_rec = team_records.get("IPS", {})
+        cry_rec = team_records.get("CRY", {})
+        che_rec = team_records.get("CHE", {})
+        avl_rec = team_records.get("AVL", {})
+        nfo_rec = team_records.get("NFO", {})
+        eve_rec = team_records.get("EVE", {})
+        lee_rec = team_records.get("LEE", {})
+
+        lines.append(f"> **Optimal Formation**: **3-4-3**  \n> **Primary Gameplan**: Capitalize on leaky defenses like Ipswich (#{ips_rec.get('def_rank', 15)}, {ips_rec.get('goals_against', 12)} GA) and Chelsea (#{che_rec.get('def_rank', 18)}, {che_rec.get('goals_against', 13)} GA), while targeting weak attacks like Coventry (#{cov_rec.get('att_rank', 18)}, {cov_rec.get('goals_for', 5)} GF) and Forest (#{nfo_rec.get('att_rank', 19)}, {nfo_rec.get('goals_for', 5)} GF) for clean sheets.\n")
 
         lines.append("### 👑 Captain & Vice-Captain Picks\n")
-        lines.append("- 👑 **Captain (C)**: **Erling Haaland** (FWD, MCI) vs **IPS** (H)  \n  *Rationale*: Ipswich has conceded 11 goals in 6 matches (Def #18). Man City at the Etihad is the highest goal-expectancy fixture of Gameweek 7. Unmatched explosive ceiling.")
-        lines.append("- 🥈 **Vice-Captain (VC)**: **Pascal Groß** (MID, BHA) vs **CRY** (H)  \n  *Rationale*: Brighton boasts the #1 attack in the league (16 GF) and hosts Crystal Palace's leaky defense (Def #19, 11 GA). Groß takes set pieces/penalties and leads the squad in points (53 pts). *(Alternative VC: Cole Palmer)*.\n")
+        lines.append(f"- 👑 **Captain (C)**: **Erling Haaland** (FWD, MCI) vs **IPS** (H)  \n  *Rationale*: Ipswich has conceded {ips_rec.get('goals_against', 12)} goals in 6 matches (Def #{ips_rec.get('def_rank', 15)}). Man City at the Etihad is the highest goal-expectancy fixture of Gameweek 7. Unmatched explosive ceiling.")
+        lines.append(f"- 🥈 **Vice-Captain (VC)**: **Pascal Groß** (MID, BHA) vs **CRY** (H)  \n  *Rationale*: Brighton boasts the #1 attack in the league (18 GF) and hosts Crystal Palace's leaky defense (Def #{cry_rec.get('def_rank', 16)}, {cry_rec.get('goals_against', 12)} GA). Groß takes set pieces/penalties and leads the squad in points (53 pts). *(Alternative VC: Cole Palmer)*.\n")
 
-        lines.append("### 📋 Suggested Starting XI (GW 7)\n")
+        lines.append(f"### 📋 Suggested Starting XI (GW {next_gw})\n")
         lines.append("| Pos | Player | Club | GW 7 Matchup | Opponent Def Rank | Opponent Att Rank | FDR | Role & Tactical Reason |")
         lines.append("|:---:|:---|:---:|:---|:---:|:---:|:---:|:---|")
-        lines.append("| **GKP** | **Kinsky** | TOT | **COV** (H) | Def #17 (10 GA) | **Att #20 (1 GF)** | 2 | 🛡️ **Top Clean Sheet Target**: Coventry has scored only 1 goal all season (0.17/match). Spurs at home have highest clean sheet odds. |")
-        lines.append("| **DEF** | **Josko Gvardiol** | MCI | **IPS** (H) | Def #18 (11 GA) | Att #10 (7 GF) | 2 | ⬆️ **Lineup Promotion**: Promoted from bench! City at home against newly promoted Ipswich with immense clean sheet & attacking upside. |")
-        lines.append("| **DEF** | **Lewis Hall** | NEW | **AVL** (H) | Def #15 (9 GA) | **Att #18 (4 GF)** | 3 | 🛡️ **Defensive Anchor**: Aston Villa has scored only 4 goals in 6 matches. Strong home defensive fixture at St. James' Park. |")
-        lines.append("| **DEF** | **Riccardo Calafiori** | ARS | **NFO** (A) | Def #9 (5 GA) | **Att #17 (4 GF)** | 3 | 🛡️ **Solid Backline**: Nottingham Forest attack ranks #17 with only 4 GF; Arsenal's defense (#3, 4 GA) is elite. |")
-        lines.append("| **MID** | **Pascal Groß (VC)** | BHA | **CRY** (H) | **Def #19 (11 GA)** | Att #14 (6 GF) | 2 | 🔥 **Prime Creator**: Brighton #1 attack (16 GF) hosts leaky Palace backline (#19). High assist and bonus point potential. |")
-        lines.append("| **MID** | **Harvey Barnes** | NEW | **AVL** (H) | **Def #15 (9 GA)** | Att #18 (4 GF) | 3 | 🎯 **Home Threat**: Villa backline has conceded 9 goals. Barnes provides direct goal threat from wide areas. |")
-        lines.append("| **MID** | **Cole Palmer** | CHE | **EVE** (A) | Def #2 (3 GA) | Att #11 (6 GF) | 3 | 🎯 **Talisman / Penalties**: Chelsea's entire offense flows through Palmer; fixture-proof with elite set-piece and penalty upside. |")
-        lines.append("| **MID** | **Bryan Mbeumo** | MUN | **LEE** (A) | Def #1 (3 GA) | Att #8 (7 GF) | 3 | 🎯 **Direct Threat**: Primary attacking focal point for Manchester United on counter-attacks and set pieces. |")
-        lines.append("| **FWD** | **Erling Haaland (C)** | MCI | **IPS** (H) | **Def #18 (11 GA)** | Att #10 (7 GF) | 2 | 👑 **Captain**: Faces 18th-ranked defense (11 GA). Maximum goalscoring expectation. |")
-        lines.append("| **FWD** | **Thierno Barry** | EVE | **CHE** (H) | **Def #20 (12 GA)** | Att #4 (10 GF) | 4 | ⬆️ **Lineup Promotion**: Promoted from bench! Chelsea has conceded 12 goals (dead last #20). Prime matchup for a home striker. |")
-        lines.append("| **FWD** | **João Pedro** | CHE | **EVE** (A) | Def #2 (3 GA) | Att #11 (6 GF) | 3 | 🎯 **Proven Finisher**: 45 points this season; spearheads Chelsea attack alongside Palmer. |")
+        lines.append(f"| **GKP** | **Kinsky** | TOT | **COV** (H) | Def #{cov_rec.get('def_rank', 13)} ({cov_rec.get('goals_against', 11)} GA) | **Att #{cov_rec.get('att_rank', 18)} ({cov_rec.get('goals_for', 5)} GF)** | 2 | 🛡️ **Top Clean Sheet Target**: Coventry averages only {cov_rec.get('gf_per_game', 0.83)} goals/match (Att #{cov_rec.get('att_rank', 18)}, 5 GF in 6 games). Spurs at home have highest clean sheet odds. |")
+        lines.append(f"| **DEF** | **Josko Gvardiol** | MCI | **IPS** (H) | Def #{ips_rec.get('def_rank', 15)} ({ips_rec.get('goals_against', 12)} GA) | Att #{ips_rec.get('att_rank', 7)} ({ips_rec.get('goals_for', 9)} GF) | 2 | ⬆️ **Lineup Promotion**: Promoted from bench! City at home against newly promoted Ipswich with immense clean sheet & attacking upside. |")
+        lines.append(f"| **DEF** | **Lewis Hall** | NEW | **AVL** (H) | Def #{avl_rec.get('def_rank', 14)} ({avl_rec.get('goals_against', 11)} GA) | **Att #{avl_rec.get('att_rank', 15)} ({avl_rec.get('goals_for', 6)} GF)** | 3 | 🛡️ **Defensive Anchor**: Aston Villa has scored only {avl_rec.get('goals_for', 6)} goals in 6 matches. Strong home defensive fixture at St. James' Park. |")
+        lines.append(f"| **DEF** | **Riccardo Calafiori** | ARS | **NFO** (A) | Def #{nfo_rec.get('def_rank', 9)} ({nfo_rec.get('goals_against', 8)} GA) | **Att #{nfo_rec.get('att_rank', 19)} ({nfo_rec.get('goals_for', 5)} GF)** | 3 | 🛡️ **Solid Backline**: Nottingham Forest attack ranks #{nfo_rec.get('att_rank', 19)} with only {nfo_rec.get('goals_for', 5)} GF; Arsenal's defense (#2, 5 GA) is elite. |")
+        lines.append(f"| **MID** | **Pascal Groß (VC)** | BHA | **CRY** (H) | **Def #{cry_rec.get('def_rank', 16)} ({cry_rec.get('goals_against', 12)} GA)** | Att #{cry_rec.get('att_rank', 8)} ({cry_rec.get('goals_for', 9)} GF) | 2 | 🔥 **Prime Creator**: Brighton #1 attack (18 GF) hosts leaky Palace backline (#{cry_rec.get('def_rank', 16)}). High assist and bonus point potential. |")
+        lines.append(f"| **MID** | **Harvey Barnes** | NEW | **AVL** (H) | **Def #{avl_rec.get('def_rank', 14)} ({avl_rec.get('goals_against', 11)} GA)** | Att #{avl_rec.get('att_rank', 15)} ({avl_rec.get('goals_for', 6)} GF) | 3 | 🎯 **Home Threat**: Villa backline has conceded {avl_rec.get('goals_against', 11)} goals. Barnes provides direct goal threat from wide areas. |")
+        lines.append(f"| **MID** | **Cole Palmer** | CHE | **EVE** (A) | Def #{eve_rec.get('def_rank', 4)} ({eve_rec.get('goals_against', 5)} GA) | Att #{eve_rec.get('att_rank', 10)} ({eve_rec.get('goals_for', 8)} GF) | 3 | 🎯 **Talisman / Penalties**: Chelsea's entire offense flows through Palmer; fixture-proof with elite set-piece and penalty upside. |")
+        lines.append(f"| **MID** | **Bryan Mbeumo** | MUN | **LEE** (A) | Def #{lee_rec.get('def_rank', 5)} ({lee_rec.get('goals_against', 5)} GA) | Att #{lee_rec.get('att_rank', 11)} ({lee_rec.get('goals_for', 8)} GF) | 3 | 🎯 **Direct Threat**: Primary attacking focal point for Manchester United on counter-attacks and set pieces. |")
+        lines.append(f"| **FWD** | **Erling Haaland (C)** | MCI | **IPS** (H) | **Def #{ips_rec.get('def_rank', 15)} ({ips_rec.get('goals_against', 12)} GA)** | Att #{ips_rec.get('att_rank', 7)} ({ips_rec.get('goals_for', 9)} GF) | 2 | 👑 **Captain**: Faces 15th-ranked defense ({ips_rec.get('goals_against', 12)} GA). Maximum goalscoring expectation. |")
+        lines.append(f"| **FWD** | **Thierno Barry** | EVE | **CHE** (H) | **Def #{che_rec.get('def_rank', 18)} ({che_rec.get('goals_against', 13)} GA)** | Att #{che_rec.get('att_rank', 3)} ({che_rec.get('goals_for', 15)} GF) | 4 | ⬆️ **Lineup Promotion**: Promoted from bench! Chelsea has conceded {che_rec.get('goals_against', 13)} goals (Def #{che_rec.get('def_rank', 18)}). Prime matchup for a home striker. |")
+        lines.append(f"| **FWD** | **João Pedro** | CHE | **EVE** (A) | Def #{eve_rec.get('def_rank', 4)} ({eve_rec.get('goals_against', 5)} GA) | Att #{eve_rec.get('att_rank', 10)} ({eve_rec.get('goals_for', 8)} GF) | 3 | 🎯 **Proven Finisher**: 45 points this season; spearheads Chelsea attack alongside Palmer. |")
 
         lines.append("\n### 🪑 Substitutes Bench (Priority Order)\n")
         lines.append("| Order | Pos | Player | Club | GW 7 Matchup | FDR | Bench Rationale |")
         lines.append("|:---:|:---:|:---|:---:|:---|:---:|:---|")
-        lines.append("| **GK Sub** | GKP | **Bart Verbruggen** | BHA | **CRY** (H) | 2 | Excellent backup; Kinsky preferred solely due to Coventry's 1-goal scoring record. |")
-        lines.append("| **Sub 1** | MID | **Martin Ødegaard** | ARS | **NFO** (A) | 3 | Cold form (1.5) and facing tight Forest defense; first attacking substitute if any starter is rested. |")
-        lines.append("| **Sub 2** | DEF | **Ezri Konsa** | ARS | **NFO** (A) | 3 | Defensive cover; benched to avoid Arsenal defensive double-up away from home. |")
-        lines.append("| **Sub 3** | DEF | **Bobby Thomas** | COV | **TOT** (A) | 3 | Away at Tottenham Hotspur Stadium; lowest clean sheet probability among squad defenders. |")
+        lines.append(f"| **GK Sub** | GKP | **Bart Verbruggen** | BHA | **CRY** (H) | 2 | Excellent backup against Crystal Palace (Att #{cry_rec.get('att_rank', 8)}, {cry_rec.get('goals_for', 9)} GF); Kinsky preferred as Coventry averages only {cov_rec.get('gf_per_game', 0.83)} GF/m. |")
+        lines.append(f"| **Sub 1** | MID | **Martin Ødegaard** | ARS | **NFO** (A) | 3 | Cold form (1.5) and facing tight Forest defense; first attacking substitute if any starter is rested. |")
+        lines.append(f"| **Sub 2** | DEF | **Ezri Konsa** | ARS | **NFO** (A) | 3 | Defensive cover; benched to avoid Arsenal defensive double-up away from home. |")
+        lines.append(f"| **Sub 3** | DEF | **Bobby Thomas** | COV | **TOT** (A) | 3 | Away at Tottenham Hotspur Stadium; lowest clean sheet probability among squad defenders. |")
 
         lines.append("\n### ⚡ Key Lineup Adjustments vs GW 6\n")
-        lines.append("1. **Promote Josko Gvardiol into Starting Defense**: Gvardiol was on the bench in GW 6, but Man City hosting Ipswich (H, FDR 2) is the easiest defender fixture of the week.")
-        lines.append("2. **Promote Thierno Barry into Starting Attack (Switch to 3-4-3)**: Chelsea’s defense ranks #20 in the league with 12 goals conceded. Starting Barry gives Wenger direct exposure to Chelsea's leaky backline.")
-        lines.append("3. **Start Kinsky over Verbruggen in Goal**: While Verbruggen (CRY H) is a good option, Kinsky's Spurs host Coventry, who have scored just 1 goal in 6 games (league worst).")
-        lines.append("4. **Bench Martin Ødegaard**: With Ødegaard registering 1.5 form and 0 goals in his last 4 appearances, benching him for in-form Barry (vs Chelsea #20) maximizes expected points.\n")
+        lines.append(f"1. **Promote Josko Gvardiol into Starting Defense**: Gvardiol was on the bench in GW 6, but Man City hosting Ipswich (H, FDR 2, Def #{ips_rec.get('def_rank', 15)}) is the easiest defender fixture of the week.")
+        lines.append(f"2. **Promote Thierno Barry into Starting Attack (Switch to 3-4-3)**: Chelsea’s defense ranks #{che_rec.get('def_rank', 18)} with {che_rec.get('goals_against', 13)} goals conceded. Starting Barry gives Wenger direct exposure to Chelsea's leaky backline.")
+        lines.append(f"3. **Start Kinsky over Verbruggen in Goal**: While Verbruggen (CRY H) is a viable option, Kinsky's Spurs host Coventry, who rank #{cov_rec.get('att_rank', 18)} in attack with {cov_rec.get('goals_for', 5)} goals in 6 games ({cov_rec.get('gf_per_game', 0.83)}/match), compared to Palace's #{cry_rec.get('att_rank', 8)} attack ({cry_rec.get('goals_for', 9)} GF).")
+        lines.append(f"4. **Bench Martin Ødegaard**: With Ødegaard registering 1.5 form and 0 goals in his last 4 appearances, benching him for in-form Barry (vs Chelsea #{che_rec.get('def_rank', 18)}) maximizes expected points.\n")
     else:
         # Algorithmic evaluator for any manager
         scored = []
@@ -343,18 +352,25 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
     # Manager-specific callouts
     if "Haaland" in [p["name"] for p in player_summaries]:
         haaland_p = next(p for p in player_summaries if p["name"] == "Haaland")
-        md_lines.append(f"- **Erling Haaland Capitalization**: Faces **Ipswich (H)** in GW 7 (Def #18, 11 GA conceded), followed by **Aston Villa (A)** (Def #15, 9 GA) and **Fulham (H)** in GW 11. Average opponent GA faced is **{haaland_p['avg_ga']} GA/game** — absolute captaincy priority!")
+        ips_rec = team_records.get("IPS", {})
+        md_lines.append(f"- **Erling Haaland Capitalization**: Faces **Ipswich (H)** in GW 7 (Def #{ips_rec.get('def_rank', 15)}, {ips_rec.get('goals_against', 12)} GA conceded), followed by **Aston Villa (A)** and **Fulham (H)** in GW 11. Average opponent GA faced is **{haaland_p['avg_ga']} GA/game** — absolute captaincy priority!")
 
     if any(p["club"] == "CHE" for p in player_summaries):
         che_players = [p["name"] for p in player_summaries if p["club"] == "CHE"]
-        md_lines.append(f"- **Chelsea Assets ({', '.join(che_players)})**: Matchups feature Tottenham (H), Man Utd (H), and Sunderland (A), facing defenses with a solid 1.28 GA/game average.")
+        md_lines.append(f"- **Chelsea Assets ({', '.join(che_players)})**: Matchups feature Tottenham (H), Man Utd (H), and Sunderland (A), facing defenses with a solid average FDR.")
 
     if any(p["club"] == "ARS" for p in player_summaries):
         ars_players = [p["name"] for p in player_summaries if p["club"] == "ARS"]
-        md_lines.append(f"- **Arsenal Core ({', '.join(ars_players)})**: Facing tough defensive outfits (Everton #2, Liverpool #5, Hull #6) with an average of 1.0 GA/game. However, clean sheet prospects remain strong with opponents scoring only 1.28 GF/game.")
+        md_lines.append(f"- **Arsenal Core ({', '.join(ars_players)})**: Facing tough defensive outfits with strong clean sheet prospects.")
 
-    md_lines.append(f"- **Chelsea Defensive Leak**: Chelsea has conceded **12 goals in 5 games (2.4/match)**, ranking **#20 (dead last)** defensively in the Premier League. Target any player facing CHE (e.g. Mbeumo in GW 9).")
-    md_lines.append(f"- **Weakest Attacks for Clean Sheets**: Coventry (1 GF), Tottenham (2 GF), Aston Villa (4 GF), and Nottingham Forest (4 GF) offer prime clean sheet matchups.\n")
+    # Dynamic leaky defenses and weak attacks
+    leakiest = sorted(team_records.values(), key=lambda t: (t.get("ga_per_game", 0), t.get("goals_against", 0)), reverse=True)[:3]
+    leakiest_str = ", ".join([f"{t['team_name']} (#{t['def_rank']}, {t['goals_against']} GA)" for t in leakiest])
+    md_lines.append(f"- **Leakiest Defenses in the League**: {leakiest_str}. Target attackers with upcoming matches against these backlines.")
+
+    weakest_attacks = sorted(team_records.values(), key=lambda t: (t.get("gf_per_game", 99), t.get("goals_for", 99)))[:4]
+    weakest_str = ", ".join([f"{t['team_name']} ({t['goals_for']} GF, Att #{t['att_rank']})" for t in weakest_attacks])
+    md_lines.append(f"- **Weakest Attacks for Clean Sheets**: {weakest_str} offer prime clean sheet matchups.\n")
 
     md_lines.append("---")
     md_lines.append("## 3. Squad Next 5 Fixtures & Opponent Breakdown\n")
