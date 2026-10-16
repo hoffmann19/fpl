@@ -1,5 +1,6 @@
 fpl_data
 *.csv
+!reports/*.csv
 *.json
 *.xlsx
 *.xls
