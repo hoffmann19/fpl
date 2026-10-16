@@ -4,7 +4,52 @@
 **Generated**: October 2026  
 
 ---
-## 1. Key Tactical Takeaways
+## 1. Suggested Starting Lineup & Captaincy (Gameweek 7)
+
+> **Optimal Formation**: **3-4-3**  
+> **Primary Gameplan**: Capitalize on Chelsea’s league-worst defense (#20, 12 GA) and Ipswich's leaky backline (#18, 11 GA), while targeting Coventry's (#20, 1 GF) and Villa's (#18, 4 GF) toothless attacks for clean sheets.
+
+### 👑 Captain & Vice-Captain Picks
+
+- 👑 **Captain (C)**: **Erling Haaland** (FWD, MCI) vs **IPS** (H)  
+  *Rationale*: Ipswich has conceded 11 goals in 6 matches (Def #18). Man City at the Etihad is the highest goal-expectancy fixture of Gameweek 7. Unmatched explosive ceiling.
+- 🥈 **Vice-Captain (VC)**: **Pascal Groß** (MID, BHA) vs **CRY** (H)  
+  *Rationale*: Brighton boasts the #1 attack in the league (16 GF) and hosts Crystal Palace's leaky defense (Def #19, 11 GA). Groß takes set pieces/penalties and leads the squad in points (53 pts). *(Alternative VC: Cole Palmer)*.
+
+### 📋 Suggested Starting XI (GW 7)
+
+| Pos | Player | Club | GW 7 Matchup | Opponent Def Rank | Opponent Att Rank | FDR | Role & Tactical Reason |
+|:---:|:---|:---:|:---|:---:|:---:|:---:|:---|
+| **GKP** | **Kinsky** | TOT | **COV** (H) | Def #17 (10 GA) | **Att #20 (1 GF)** | 2 | 🛡️ **Top Clean Sheet Target**: Coventry has scored only 1 goal all season (0.17/match). Spurs at home have highest clean sheet odds. |
+| **DEF** | **Josko Gvardiol** | MCI | **IPS** (H) | Def #18 (11 GA) | Att #10 (7 GF) | 2 | ⬆️ **Lineup Promotion**: Promoted from bench! City at home against newly promoted Ipswich with immense clean sheet & attacking upside. |
+| **DEF** | **Lewis Hall** | NEW | **AVL** (H) | Def #15 (9 GA) | **Att #18 (4 GF)** | 3 | 🛡️ **Defensive Anchor**: Aston Villa has scored only 4 goals in 6 matches. Strong home defensive fixture at St. James' Park. |
+| **DEF** | **Riccardo Calafiori** | ARS | **NFO** (A) | Def #9 (5 GA) | **Att #17 (4 GF)** | 3 | 🛡️ **Solid Backline**: Nottingham Forest attack ranks #17 with only 4 GF; Arsenal's defense (#3, 4 GA) is elite. |
+| **MID** | **Pascal Groß (VC)** | BHA | **CRY** (H) | **Def #19 (11 GA)** | Att #14 (6 GF) | 2 | 🔥 **Prime Creator**: Brighton #1 attack (16 GF) hosts leaky Palace backline (#19). High assist and bonus point potential. |
+| **MID** | **Harvey Barnes** | NEW | **AVL** (H) | **Def #15 (9 GA)** | Att #18 (4 GF) | 3 | 🎯 **Home Threat**: Villa backline has conceded 9 goals. Barnes provides direct goal threat from wide areas. |
+| **MID** | **Cole Palmer** | CHE | **EVE** (A) | Def #2 (3 GA) | Att #11 (6 GF) | 3 | 🎯 **Talisman / Penalties**: Chelsea's entire offense flows through Palmer; fixture-proof with elite set-piece and penalty upside. |
+| **MID** | **Bryan Mbeumo** | MUN | **LEE** (A) | Def #1 (3 GA) | Att #8 (7 GF) | 3 | 🎯 **Direct Threat**: Primary attacking focal point for Manchester United on counter-attacks and set pieces. |
+| **FWD** | **Erling Haaland (C)** | MCI | **IPS** (H) | **Def #18 (11 GA)** | Att #10 (7 GF) | 2 | 👑 **Captain**: Faces 18th-ranked defense (11 GA). Maximum goalscoring expectation. |
+| **FWD** | **Thierno Barry** | EVE | **CHE** (H) | **Def #20 (12 GA)** | Att #4 (10 GF) | 4 | ⬆️ **Lineup Promotion**: Promoted from bench! Chelsea has conceded 12 goals (dead last #20). Prime matchup for a home striker. |
+| **FWD** | **João Pedro** | CHE | **EVE** (A) | Def #2 (3 GA) | Att #11 (6 GF) | 3 | 🎯 **Proven Finisher**: 45 points this season; spearheads Chelsea attack alongside Palmer. |
+
+### 🪑 Substitutes Bench (Priority Order)
+
+| Order | Pos | Player | Club | GW 7 Matchup | FDR | Bench Rationale |
+|:---:|:---:|:---|:---:|:---|:---:|:---|
+| **GK Sub** | GKP | **Bart Verbruggen** | BHA | **CRY** (H) | 2 | Excellent backup; Kinsky preferred solely due to Coventry's 1-goal scoring record. |
+| **Sub 1** | MID | **Martin Ødegaard** | ARS | **NFO** (A) | 3 | Cold form (1.5) and facing tight Forest defense; first attacking substitute if any starter is rested. |
+| **Sub 2** | DEF | **Ezri Konsa** | ARS | **NFO** (A) | 3 | Defensive cover; benched to avoid Arsenal defensive double-up away from home. |
+| **Sub 3** | DEF | **Bobby Thomas** | COV | **TOT** (A) | 3 | Away at Tottenham Hotspur Stadium; lowest clean sheet probability among squad defenders. |
+
+### ⚡ Key Lineup Adjustments vs GW 6
+
+1. **Promote Josko Gvardiol into Starting Defense**: Gvardiol was on the bench in GW 6, but Man City hosting Ipswich (H, FDR 2) is the easiest defender fixture of the week.
+2. **Promote Thierno Barry into Starting Attack (Switch to 3-4-3)**: Chelsea’s defense ranks #20 in the league with 12 goals conceded. Starting Barry gives Wenger direct exposure to Chelsea's leaky backline.
+3. **Start Kinsky over Verbruggen in Goal**: While Verbruggen (CRY H) is a good option, Kinsky's Spurs host Coventry, who have scored just 1 goal in 6 games (league worst).
+4. **Bench Martin Ødegaard**: With Ødegaard registering 1.5 form and 0 goals in his last 4 appearances, benching him for in-form Barry (vs Chelsea #20) maximizes expected points.
+
+---
+## 2. Key Tactical Takeaways
 
 - **Top Attacking Target Run**: **Barry** (EVE) faces opponents conceding an average of **1.56 GA/game** over the next 5 weeks.
 - **Top Clean Sheet Potential**: **Thomas** (COV) faces opponents scoring only **1.0 GF/game** over the next 5 weeks.
@@ -15,7 +60,7 @@
 - **Weakest Attacks for Clean Sheets**: Coventry (1 GF), Tottenham (2 GF), Aston Villa (4 GF), and Nottingham Forest (4 GF) offer prime clean sheet matchups.
 
 ---
-## 2. Squad Next 5 Fixtures & Opponent Breakdown
+## 3. Squad Next 5 Fixtures & Opponent Breakdown
 
 > Shows opponent defensive ranking (Def # / Goals Conceded) and goals scored ranking (Att # / Goals Scored) for every upcoming match.
 
@@ -38,7 +83,7 @@
 | **Barry** | FWD | EVE | Bench | **CHE** (H)<br><small>Def #20 (12 GA)<br>Att #4 (10 GF) · FDR 4</small> | **ARS** (A)<br><small>Def #3 (4 GA)<br>Att #6 (8 GF) · FDR 5</small> | **NEW** (A)<br><small>Def #14 (9 GA)<br>Att #5 (9 GF) · FDR 3</small> | **COV** (H)<br><small>Def #17 (10 GA)<br>Att #20 (1 GF) · FDR 2</small> | **BRE** (A)<br><small>Def #4 (4 GA)<br>Att #3 (10 GF) · FDR 3</small> | **1.56** | **1.52** | 3.4 | 🔥 Prime Goalscoring Targets (Leaky Defenses) |
 
 ---
-## 3. Attackers Ranked by Opponent Defensive Leakiness
+## 4. Attackers Ranked by Opponent Defensive Leakiness
 
 > Attackers facing high Goals Against (GA) opponents have the highest scoring potential.
 
@@ -54,7 +99,7 @@
 | **Ødegaard** | ARS | MID | **1.0** | 3.0 | ⚪ NFO (A, Def #9, 5 GA)<br>🔴 EVE (H, Def #2, 3 GA)<br>🔴 LIV (A, Def #5, 4 GA)<br>🔴 HUL (H, Def #6, 4 GA)<br>🟢 NEW (A, Def #14, 9 GA) | ⛔ Tough Fixtures (Resolute Defenses) |
 
 ---
-## 4. Defenders & Goalkeepers Ranked by Clean Sheet Potential
+## 5. Defenders & Goalkeepers Ranked by Clean Sheet Potential
 
 > Defenders facing low Goals For (GF) opponents have the highest clean sheet probability.
 
@@ -69,7 +114,7 @@
 | **Verbruggen** | BHA | GKP | **1.68** | 3.2 | ⚪ CRY (H, Att #14, 6 GF)<br>⚪ LIV (A, Att #9, 7 GF)<br>🔴 MCI (A, Att #2, 13 GF)<br>🔴 BRE (H, Att #3, 10 GF)<br>⚪ HUL (A, Att #12, 6 GF) | ⚠️ High Conceding Risk |
 
 ---
-## 5. Suggested Trades & Tactical Move Recommendations
+## 6. Suggested Trades & Tactical Move Recommendations
 
 Based on upcoming fixture difficulty (GW 7–11), opponent defensive resilience, player form, and squad roles, here are the highest-value trades and lineup adjustments for **Arsene Wenger**:
 
@@ -105,7 +150,7 @@ Based on upcoming fixture difficulty (GW 7–11), opponent defensive resilience,
 | 💡 **Budget** | Forward Trade | **Barry** | EVE | FWD | £5.7m | 6.0 | **Brobbey** | SUN | FWD | £5.7m | 8.5 | **3.0** | Same price like-for-like swap into one of the hottest forwards in the league (8.5 form). |
 
 ---
-## 6. Premier League 20-Team Defensive & Attacking Records (Through GW 6)
+## 7. Premier League 20-Team Defensive & Attacking Records (Through GW 6)
 
 | Def Rank | Team | Played | GA | GA/match | Defensive Tier | Att Rank | GF | GF/match | Attacking Tier | Table Rank | Points |
 |:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|

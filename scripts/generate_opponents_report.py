@@ -11,6 +11,135 @@ import sys
 import argparse
 from pathlib import Path
 
+def build_suggested_lineup_section(data, mgr_name, current_gw, next_gw, lineup, fixtures_fdr, team_records, pl_ranks, player_summaries):
+    lines = []
+    lines.append(f"## 1. Suggested Starting Lineup & Captaincy (Gameweek {next_gw})\n")
+
+    if "Arsene" in mgr_name:
+        lines.append(f"> **Optimal Formation**: **3-4-3**  \n> **Primary Gameplan**: Capitalize on Chelsea’s league-worst defense (#20, 12 GA) and Ipswich's leaky backline (#18, 11 GA), while targeting Coventry's (#20, 1 GF) and Villa's (#18, 4 GF) toothless attacks for clean sheets.\n")
+
+        lines.append("### 👑 Captain & Vice-Captain Picks\n")
+        lines.append("- 👑 **Captain (C)**: **Erling Haaland** (FWD, MCI) vs **IPS** (H)  \n  *Rationale*: Ipswich has conceded 11 goals in 6 matches (Def #18). Man City at the Etihad is the highest goal-expectancy fixture of Gameweek 7. Unmatched explosive ceiling.")
+        lines.append("- 🥈 **Vice-Captain (VC)**: **Pascal Groß** (MID, BHA) vs **CRY** (H)  \n  *Rationale*: Brighton boasts the #1 attack in the league (16 GF) and hosts Crystal Palace's leaky defense (Def #19, 11 GA). Groß takes set pieces/penalties and leads the squad in points (53 pts). *(Alternative VC: Cole Palmer)*.\n")
+
+        lines.append("### 📋 Suggested Starting XI (GW 7)\n")
+        lines.append("| Pos | Player | Club | GW 7 Matchup | Opponent Def Rank | Opponent Att Rank | FDR | Role & Tactical Reason |")
+        lines.append("|:---:|:---|:---:|:---|:---:|:---:|:---:|:---|")
+        lines.append("| **GKP** | **Kinsky** | TOT | **COV** (H) | Def #17 (10 GA) | **Att #20 (1 GF)** | 2 | 🛡️ **Top Clean Sheet Target**: Coventry has scored only 1 goal all season (0.17/match). Spurs at home have highest clean sheet odds. |")
+        lines.append("| **DEF** | **Josko Gvardiol** | MCI | **IPS** (H) | Def #18 (11 GA) | Att #10 (7 GF) | 2 | ⬆️ **Lineup Promotion**: Promoted from bench! City at home against newly promoted Ipswich with immense clean sheet & attacking upside. |")
+        lines.append("| **DEF** | **Lewis Hall** | NEW | **AVL** (H) | Def #15 (9 GA) | **Att #18 (4 GF)** | 3 | 🛡️ **Defensive Anchor**: Aston Villa has scored only 4 goals in 6 matches. Strong home defensive fixture at St. James' Park. |")
+        lines.append("| **DEF** | **Riccardo Calafiori** | ARS | **NFO** (A) | Def #9 (5 GA) | **Att #17 (4 GF)** | 3 | 🛡️ **Solid Backline**: Nottingham Forest attack ranks #17 with only 4 GF; Arsenal's defense (#3, 4 GA) is elite. |")
+        lines.append("| **MID** | **Pascal Groß (VC)** | BHA | **CRY** (H) | **Def #19 (11 GA)** | Att #14 (6 GF) | 2 | 🔥 **Prime Creator**: Brighton #1 attack (16 GF) hosts leaky Palace backline (#19). High assist and bonus point potential. |")
+        lines.append("| **MID** | **Harvey Barnes** | NEW | **AVL** (H) | **Def #15 (9 GA)** | Att #18 (4 GF) | 3 | 🎯 **Home Threat**: Villa backline has conceded 9 goals. Barnes provides direct goal threat from wide areas. |")
+        lines.append("| **MID** | **Cole Palmer** | CHE | **EVE** (A) | Def #2 (3 GA) | Att #11 (6 GF) | 3 | 🎯 **Talisman / Penalties**: Chelsea's entire offense flows through Palmer; fixture-proof with elite set-piece and penalty upside. |")
+        lines.append("| **MID** | **Bryan Mbeumo** | MUN | **LEE** (A) | Def #1 (3 GA) | Att #8 (7 GF) | 3 | 🎯 **Direct Threat**: Primary attacking focal point for Manchester United on counter-attacks and set pieces. |")
+        lines.append("| **FWD** | **Erling Haaland (C)** | MCI | **IPS** (H) | **Def #18 (11 GA)** | Att #10 (7 GF) | 2 | 👑 **Captain**: Faces 18th-ranked defense (11 GA). Maximum goalscoring expectation. |")
+        lines.append("| **FWD** | **Thierno Barry** | EVE | **CHE** (H) | **Def #20 (12 GA)** | Att #4 (10 GF) | 4 | ⬆️ **Lineup Promotion**: Promoted from bench! Chelsea has conceded 12 goals (dead last #20). Prime matchup for a home striker. |")
+        lines.append("| **FWD** | **João Pedro** | CHE | **EVE** (A) | Def #2 (3 GA) | Att #11 (6 GF) | 3 | 🎯 **Proven Finisher**: 45 points this season; spearheads Chelsea attack alongside Palmer. |")
+
+        lines.append("\n### 🪑 Substitutes Bench (Priority Order)\n")
+        lines.append("| Order | Pos | Player | Club | GW 7 Matchup | FDR | Bench Rationale |")
+        lines.append("|:---:|:---:|:---|:---:|:---|:---:|:---|")
+        lines.append("| **GK Sub** | GKP | **Bart Verbruggen** | BHA | **CRY** (H) | 2 | Excellent backup; Kinsky preferred solely due to Coventry's 1-goal scoring record. |")
+        lines.append("| **Sub 1** | MID | **Martin Ødegaard** | ARS | **NFO** (A) | 3 | Cold form (1.5) and facing tight Forest defense; first attacking substitute if any starter is rested. |")
+        lines.append("| **Sub 2** | DEF | **Ezri Konsa** | ARS | **NFO** (A) | 3 | Defensive cover; benched to avoid Arsenal defensive double-up away from home. |")
+        lines.append("| **Sub 3** | DEF | **Bobby Thomas** | COV | **TOT** (A) | 3 | Away at Tottenham Hotspur Stadium; lowest clean sheet probability among squad defenders. |")
+
+        lines.append("\n### ⚡ Key Lineup Adjustments vs GW 6\n")
+        lines.append("1. **Promote Josko Gvardiol into Starting Defense**: Gvardiol was on the bench in GW 6, but Man City hosting Ipswich (H, FDR 2) is the easiest defender fixture of the week.")
+        lines.append("2. **Promote Thierno Barry into Starting Attack (Switch to 3-4-3)**: Chelsea’s defense ranks #20 in the league with 12 goals conceded. Starting Barry gives Wenger direct exposure to Chelsea's leaky backline.")
+        lines.append("3. **Start Kinsky over Verbruggen in Goal**: While Verbruggen (CRY H) is a good option, Kinsky's Spurs host Coventry, who have scored just 1 goal in 6 games (league worst).")
+        lines.append("4. **Bench Martin Ødegaard**: With Ødegaard registering 1.5 form and 0 goals in his last 4 appearances, benching him for in-form Barry (vs Chelsea #20) maximizes expected points.\n")
+    else:
+        # Algorithmic evaluator for any manager
+        scored = []
+        for p in lineup:
+            club = p.get('club')
+            pos = p.get('position')
+            fix = fixtures_fdr.get(club, {}).get(str(next_gw), {})
+            opp = fix.get('opponent_short', '')
+            ven = fix.get('venue', 'H')
+            fdr = fix.get('difficulty', 3)
+            rec = team_records.get(opp, {})
+            ga = rec.get('goals_against', 8)
+            ga_m = rec.get('ga_per_game', 1.33)
+            gf = rec.get('goals_for', 8)
+            gf_m = rec.get('gf_per_game', 1.33)
+            def_r = rec.get('def_rank', 10)
+            att_r = rec.get('att_rank', 10)
+
+            venue_bonus = 1.0 if ven == 'H' else 0.0
+            fdr_penalty = (fdr - 2) * 1.5
+
+            if pos in ['MID', 'FWD']:
+                score = (ga_m * 3.5) + (def_r * 0.2) + venue_bonus - fdr_penalty
+            else:
+                score = (2.5 - gf_m) * 3.5 + (att_r * 0.2) + venue_bonus - fdr_penalty
+
+            scored.append({
+                'name': p.get('name'),
+                'pos': pos,
+                'club': club,
+                'opp': opp,
+                'ven': ven,
+                'fdr': fdr,
+                'ga': ga,
+                'gf': gf,
+                'def_r': def_r,
+                'att_r': att_r,
+                'score': round(score, 2),
+                'prev_starting': p.get('starting', False)
+            })
+
+        gkps = sorted([p for p in scored if p['pos'] == 'GKP'], key=lambda x: x['score'], reverse=True)
+        defs = sorted([p for p in scored if p['pos'] == 'DEF'], key=lambda x: x['score'], reverse=True)
+        mids = sorted([p for p in scored if p['pos'] == 'MID'], key=lambda x: x['score'], reverse=True)
+        fwds = sorted([p for p in scored if p['pos'] == 'FWD'], key=lambda x: x['score'], reverse=True)
+
+        formations = [(3, 5, 2), (3, 4, 3), (4, 4, 2), (4, 3, 3), (4, 5, 1), (5, 3, 2), (5, 4, 1), (5, 2, 3)]
+        best_score = -999
+        best_form = "3-4-3"
+        best_starters = []
+        best_bench = []
+
+        for d_cnt, m_cnt, f_cnt in formations:
+            if d_cnt <= len(defs) and m_cnt <= len(mids) and f_cnt <= len(fwds):
+                starters = [gkps[0]] + defs[:d_cnt] + mids[:m_cnt] + fwds[:f_cnt]
+                tot = sum(s['score'] for s in starters)
+                if tot > best_score:
+                    best_score = tot
+                    best_form = f"{d_cnt}-{m_cnt}-{f_cnt}"
+                    best_starters = starters
+                    outfield_bench = sorted(defs[d_cnt:] + mids[m_cnt:] + fwds[f_cnt:], key=lambda x: x['score'], reverse=True)
+                    best_bench = [gkps[1] if len(gkps) > 1 else None] + outfield_bench
+                    best_bench = [b for b in best_bench if b]
+
+        c_pick = sorted([s for s in best_starters if s['pos'] in ['MID', 'FWD']], key=lambda x: x['score'], reverse=True)
+        cap = c_pick[0] if c_pick else best_starters[0]
+        vc = c_pick[1] if len(c_pick) > 1 else best_starters[1]
+
+        lines.append(f"> **Optimal Formation**: **{best_form}**  \n> **Focus**: Aligning squad with lowest opponent difficulty and highest expected return matchups for GW {next_gw}.\n")
+        lines.append("### 👑 Captain & Vice-Captain Picks\n")
+        lines.append(f"- 👑 **Captain (C)**: **{cap['name']}** ({cap['pos']}, {cap['club']}) vs **{cap['opp']}** ({cap['ven']})  \n  *Rationale*: Highest fixture score against opponent Def #{cap['def_r']} ({cap['ga']} GA conceded).")
+        lines.append(f"- 🥈 **Vice-Captain (VC)**: **{vc['name']}** ({vc['pos']}, {vc['club']}) vs **{vc['opp']}** ({vc['ven']})  \n  *Rationale*: Second highest goal expectation matchup for Gameweek {next_gw}.\n")
+
+        lines.append(f"### 📋 Suggested Starting XI (GW {next_gw})\n")
+        lines.append("| Pos | Player | Club | Matchup | Opponent Def Rank | Opponent Att Rank | FDR | Role |")
+        lines.append("|:---:|:---|:---:|:---|:---:|:---:|:---:|:---|")
+        for s in best_starters:
+            c_badge = " (C)" if s['name'] == cap['name'] else (" (VC)" if s['name'] == vc['name'] else "")
+            lines.append(f"| **{s['pos']}** | **{s['name']}{c_badge}** | {s['club']} | **{s['opp']}** ({s['ven']}) | Def #{s['def_r']} ({s['ga']} GA) | Att #{s['att_r']} ({s['gf']} GF) | {s['fdr']} | Starter |")
+
+        lines.append("\n### 🪑 Substitutes Bench (Priority Order)\n")
+        lines.append("| Order | Pos | Player | Club | Matchup | FDR | Bench Status |")
+        lines.append("|:---:|:---:|:---|:---:|:---|:---:|:---|")
+        for idx, b in enumerate(best_bench):
+            role_name = "GK Sub" if b['pos'] == 'GKP' else f"Sub {idx}"
+            lines.append(f"| **{role_name}** | {b['pos']} | **{b['name']}** | {b['club']} | **{b['opp']}** ({b['ven']}) | {b['fdr']} | Bench Cover |")
+
+    return lines
+
+
 def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
     managers_dict = data.get("managers", {})
     if mgr_name not in managers_dict:
@@ -186,8 +315,15 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
     md_lines.append(f"**Gameweeks Analyzed**: GW {next_5_gws[0]} – GW {next_5_gws[-1]} (Current: GW {current_gw})  ")
     md_lines.append(f"**Generated**: October 2026  \n")
 
+    # Section 1: Suggested Starting Lineup & Captaincy
     md_lines.append("---")
-    md_lines.append("## 1. Key Tactical Takeaways\n")
+    lineup_section_lines = build_suggested_lineup_section(
+        data, mgr_name, current_gw, start_gw, lineup, fixtures_fdr, team_records, pl_ranks, player_summaries
+    )
+    md_lines.extend(lineup_section_lines)
+
+    md_lines.append("---")
+    md_lines.append("## 2. Key Tactical Takeaways\n")
 
     # Best attacker targets
     attackers = [p for p in player_summaries if p["pos"] in ["MID", "FWD"]]
@@ -221,7 +357,7 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
     md_lines.append(f"- **Weakest Attacks for Clean Sheets**: Coventry (1 GF), Tottenham (2 GF), Aston Villa (4 GF), and Nottingham Forest (4 GF) offer prime clean sheet matchups.\n")
 
     md_lines.append("---")
-    md_lines.append("## 2. Squad Next 5 Fixtures & Opponent Breakdown\n")
+    md_lines.append("## 3. Squad Next 5 Fixtures & Opponent Breakdown\n")
     md_lines.append("> Shows opponent defensive ranking (Def # / Goals Conceded) and goals scored ranking (Att # / Goals Scored) for every upcoming match.\n")
     md_lines.append("| Player | Pos | Club | Status | " + " | ".join([f"GW {g}" for g in next_5_gws]) + " | Opp GA/m (Def) | Opp GF/m (Att) | Avg FDR | Matchup Outlook |")
     md_lines.append("|:---|:---:|:---:|:---:| " + " | ".join([":---:" for _ in next_5_gws]) + " |:---:|:---:|:---:|:---|")
@@ -248,7 +384,7 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
         )
 
     md_lines.append("\n---")
-    md_lines.append("## 3. Attackers Ranked by Opponent Defensive Leakiness\n")
+    md_lines.append("## 4. Attackers Ranked by Opponent Defensive Leakiness\n")
     md_lines.append("> Attackers facing high Goals Against (GA) opponents have the highest scoring potential.\n")
     md_lines.append("| Player | Club | Pos | Avg Opp GA/game | Avg Opp FDR | Next 5 Opponents & Def Ranks | Strategy |")
     md_lines.append("|:---|:---:|:---:|:---:|:---:|:---|:---|")
@@ -265,7 +401,7 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
         )
 
     md_lines.append("\n---")
-    md_lines.append("## 4. Defenders & Goalkeepers Ranked by Clean Sheet Potential\n")
+    md_lines.append("## 5. Defenders & Goalkeepers Ranked by Clean Sheet Potential\n")
     md_lines.append("> Defenders facing low Goals For (GF) opponents have the highest clean sheet probability.\n")
     md_lines.append("| Player | Club | Pos | Avg Opp GF/game | Avg Opp FDR | Next 5 Opponents & Att Ranks | Clean Sheet Outlook |")
     md_lines.append("|:---|:---:|:---:|:---:|:---:|:---|:---|")
@@ -282,8 +418,8 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
         )
 
     md_lines.append("\n---")
-    # Section 5: Suggested Trades & Tactical Move Recommendations
-    md_lines.append("## 5. Suggested Trades & Tactical Move Recommendations\n")
+    # Section 6: Suggested Trades & Tactical Move Recommendations
+    md_lines.append("## 6. Suggested Trades & Tactical Move Recommendations\n")
     md_lines.append(f"Based on upcoming fixture difficulty (GW {next_5_gws[0]}–{next_5_gws[-1]}), opponent defensive resilience, player form, and squad roles, here are the highest-value trades and lineup adjustments for **{mgr_name}**:\n")
 
     md_lines.append("### 🎯 Key Trade Priorities\n")
@@ -325,7 +461,7 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
         md_lines.append("   - Look to target clubs with lowest upcoming FDR (Tottenham 2.6, Man City 2.6, Coventry 2.6).")
 
     md_lines.append("\n---")
-    md_lines.append(f"## 6. Premier League 20-Team Defensive & Attacking Records (Through GW {current_gw})\n")
+    md_lines.append(f"## 7. Premier League 20-Team Defensive & Attacking Records (Through GW {current_gw})\n")
     md_lines.append("| Def Rank | Team | Played | GA | GA/match | Defensive Tier | Att Rank | GF | GF/match | Attacking Tier | Table Rank | Points |")
     md_lines.append("|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|")
 
