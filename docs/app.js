@@ -80,27 +80,27 @@ const elPanelTransfers = document.getElementById('panel-transfers');
 const elTabOpponents = document.getElementById('tab-opponents');
 const elPanelOpponents = document.getElementById('panel-opponents');
 
-// Opponents Panel Elements & State
+// Official FPL FDR Matrix Panel Elements & State
 const elSelectOpponentsManager = document.getElementById('select-opponents-manager');
 const elBtnOpponentsMyTeam = document.getElementById('btn-opponents-my-team');
-const elOpponentsTableHead = document.getElementById('opponents-table-head');
-const elOpponentsTableBody = document.getElementById('opponents-table-body');
+const elFdrMatrixHead = document.getElementById('fdr-matrix-head');
+const elFdrMatrixBody = document.getElementById('fdr-matrix-body');
 const elOpponentsGwRangeBadge = document.getElementById('opponents-gw-range-badge');
 const elOpponentsHeaderTitleText = document.getElementById('opponents-header-title-text');
 const elSelectOppSort = document.getElementById('select-opp-sort');
-const elBtnOppModeBoth = document.getElementById('btn-opp-mode-both');
-const elBtnOppModeDefense = document.getElementById('btn-opp-mode-defense');
-const elBtnOppModeRank = document.getElementById('btn-opp-mode-rank');
-const elBtnOppModeFdr = document.getElementById('btn-opp-mode-fdr');
 
-const elOppMetricAvgRank = document.getElementById('opp-metric-avg-rank');
+const elFdrMetricCoverage = document.getElementById('fdr-metric-coverage');
+const elFdrMetricCoverageSub = document.getElementById('fdr-metric-coverage-sub');
 const elOppMetricAvgFdr = document.getElementById('opp-metric-avg-fdr');
+const elOppMetricFdrSub = document.getElementById('opp-metric-fdr-sub');
 const elOppMetricAttackersDef = document.getElementById('opp-metric-attackers-def');
 const elOppMetricAttackersTarget = document.getElementById('opp-metric-attackers-target');
 const elOppMetricDefendersAtt = document.getElementById('opp-metric-defenders-att');
 const elOppMetricDefendersTarget = document.getElementById('opp-metric-defenders-target');
 const elOppMetricEasiestPlayer = document.getElementById('opp-metric-easiest-player');
+const elFdrMetricEasiestSub = document.getElementById('fdr-metric-easiest-sub');
 const elOppMetricToughestPlayer = document.getElementById('opp-metric-toughest-player');
+const elFdrMetricToughestSub = document.getElementById('fdr-metric-toughest-sub');
 
 const elBtnTogglePlRecords = document.getElementById('btn-toggle-pl-records');
 const elIconTogglePlRecords = document.getElementById('icon-toggle-pl-records');
@@ -110,15 +110,14 @@ const elBtnSortPlDef = document.getElementById('btn-sort-pl-def');
 const elBtnSortPlLeaky = document.getElementById('btn-sort-pl-leaky');
 const elBtnSortPlAtt = document.getElementById('btn-sort-pl-att');
 
-const elOppCountAll = document.getElementById('opp-count-all');
-const elOppCountStarters = document.getElementById('opp-count-starters');
-const elOppCountBench = document.getElementById('opp-count-bench');
+const elFdrCountSquad = document.getElementById('fdr-count-squad');
+const elFdrCountStarters = document.getElementById('fdr-count-starters');
 
 const MY_MANAGER_NAME = 'Michael Hoffmann';
 let opponentsManager = MY_MANAGER_NAME;
-let opponentsPosFilter = 'all'; // 'all' | 'starters' | 'bench' | 'GKP' | 'DEF' | 'MID' | 'FWD'
-let opponentsViewMode = 'both'; // 'both' | 'defense' | 'rank' | 'fdr'
-let opponentsSortMode = 'squad'; // 'squad' | 'opp-ga-high' | 'opp-ga-low' | 'opp-gf-low' | 'easiest' | 'hardest' | 'opp-rank-high' | 'opp-rank-low' | 'form' | 'points'
+let fdrClubFilter = 'all'; // 'all' | 'squad' | 'starters'
+let fdrHorizonGws = 5; // 5 | 8 | 10
+let opponentsSortMode = 'squad-first'; // 'squad-first' | 'easiest' | 'hardest' | 'table-rank' | 'alpha'
 let plRecordsSortMode = 'def'; // 'def' | 'leaky' | 'att'
 let plRecordsDrawerOpen = false;
 
@@ -469,7 +468,7 @@ function setupEventListeners() {
   if (elTabScatterPlot) elTabScatterPlot.addEventListener('click', () => switchTab('scatter-plot'));
   if (elTabTransfers) elTabTransfers.addEventListener('click', () => switchTab('transfers'));
 
-  // Opponents Tab Listeners
+  // Official FPL FDR Matrix Listeners
   if (elSelectOpponentsManager) {
     elSelectOpponentsManager.addEventListener('change', (e) => {
       opponentsManager = e.target.value;
@@ -486,58 +485,48 @@ function setupEventListeners() {
     });
   }
 
-  const oppPosFiltersContainer = document.getElementById('opponents-position-filters');
-  if (oppPosFiltersContainer) {
-    oppPosFiltersContainer.querySelectorAll('.activity-filter-pill').forEach(pill => {
+  const fdrClubFiltersContainer = document.getElementById('fdr-club-filters');
+  if (fdrClubFiltersContainer) {
+    fdrClubFiltersContainer.querySelectorAll('.activity-filter-pill').forEach(pill => {
       pill.addEventListener('click', () => {
-        oppPosFiltersContainer.querySelectorAll('.activity-filter-pill').forEach(p => p.classList.remove('active'));
+        fdrClubFiltersContainer.querySelectorAll('.activity-filter-pill').forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
-        opponentsPosFilter = pill.getAttribute('data-pos-filter') || 'all';
+        fdrClubFilter = pill.getAttribute('data-fdr-filter') || 'all';
         renderOpponentsView();
       });
     });
   }
 
-  if (elBtnOppModeBoth) {
-    elBtnOppModeBoth.addEventListener('click', () => {
-      opponentsViewMode = 'both';
-      elBtnOppModeBoth.classList.add('active');
-      if (elBtnOppModeDefense) elBtnOppModeDefense.classList.remove('active');
-      if (elBtnOppModeRank) elBtnOppModeRank.classList.remove('active');
-      if (elBtnOppModeFdr) elBtnOppModeFdr.classList.remove('active');
+  const btnHorizon5 = document.getElementById('btn-fdr-horizon-5');
+  const btnHorizon8 = document.getElementById('btn-fdr-horizon-8');
+  const btnHorizon10 = document.getElementById('btn-fdr-horizon-10');
+
+  if (btnHorizon5) {
+    btnHorizon5.addEventListener('click', () => {
+      fdrHorizonGws = 5;
+      btnHorizon5.classList.add('active');
+      if (btnHorizon8) btnHorizon8.classList.remove('active');
+      if (btnHorizon10) btnHorizon10.classList.remove('active');
       renderOpponentsView();
     });
   }
 
-  if (elBtnOppModeDefense) {
-    elBtnOppModeDefense.addEventListener('click', () => {
-      opponentsViewMode = 'defense';
-      elBtnOppModeDefense.classList.add('active');
-      if (elBtnOppModeBoth) elBtnOppModeBoth.classList.remove('active');
-      if (elBtnOppModeRank) elBtnOppModeRank.classList.remove('active');
-      if (elBtnOppModeFdr) elBtnOppModeFdr.classList.remove('active');
+  if (btnHorizon8) {
+    btnHorizon8.addEventListener('click', () => {
+      fdrHorizonGws = 8;
+      btnHorizon8.classList.add('active');
+      if (btnHorizon5) btnHorizon5.classList.remove('active');
+      if (btnHorizon10) btnHorizon10.classList.remove('active');
       renderOpponentsView();
     });
   }
 
-  if (elBtnOppModeRank) {
-    elBtnOppModeRank.addEventListener('click', () => {
-      opponentsViewMode = 'rank';
-      elBtnOppModeRank.classList.add('active');
-      if (elBtnOppModeBoth) elBtnOppModeBoth.classList.remove('active');
-      if (elBtnOppModeDefense) elBtnOppModeDefense.classList.remove('active');
-      if (elBtnOppModeFdr) elBtnOppModeFdr.classList.remove('active');
-      renderOpponentsView();
-    });
-  }
-
-  if (elBtnOppModeFdr) {
-    elBtnOppModeFdr.addEventListener('click', () => {
-      opponentsViewMode = 'fdr';
-      elBtnOppModeFdr.classList.add('active');
-      if (elBtnOppModeBoth) elBtnOppModeBoth.classList.remove('active');
-      if (elBtnOppModeDefense) elBtnOppModeDefense.classList.remove('active');
-      if (elBtnOppModeRank) elBtnOppModeRank.classList.remove('active');
+  if (btnHorizon10) {
+    btnHorizon10.addEventListener('click', () => {
+      fdrHorizonGws = 10;
+      btnHorizon10.classList.add('active');
+      if (btnHorizon5) btnHorizon5.classList.remove('active');
+      if (btnHorizon8) btnHorizon8.classList.remove('active');
       renderOpponentsView();
     });
   }
@@ -4099,18 +4088,40 @@ function populateOpponentsManagerDropdown() {
   });
 }
 
+const ALL_PL_CLUBS = [
+  { short: 'ARS', name: 'Arsenal' },
+  { short: 'AVL', name: 'Aston Villa' },
+  { short: 'BOU', name: 'Bournemouth' },
+  { short: 'BRE', name: 'Brentford' },
+  { short: 'BHA', name: 'Brighton' },
+  { short: 'CHE', name: 'Chelsea' },
+  { short: 'COV', name: 'Coventry City' },
+  { short: 'CRY', name: 'Crystal Palace' },
+  { short: 'EVE', name: 'Everton' },
+  { short: 'FUL', name: 'Fulham' },
+  { short: 'HUL', name: 'Hull City' },
+  { short: 'IPS', name: 'Ipswich Town' },
+  { short: 'LEE', name: 'Leeds' },
+  { short: 'LIV', name: 'Liverpool' },
+  { short: 'MCI', name: 'Man City' },
+  { short: 'MUN', name: 'Man Utd' },
+  { short: 'NEW', name: 'Newcastle' },
+  { short: 'NFO', name: "Nott'm Forest" },
+  { short: 'SUN', name: 'Sunderland' },
+  { short: 'TOT', name: 'Spurs' }
+];
+
 function renderOpponentsView() {
   if (!appData || !appData.gameweeks) return;
 
-  // Check if team_fixtures_fdr exists
   if (!appData.team_fixtures_fdr) {
-    if (elOpponentsTableBody) {
-      elOpponentsTableBody.innerHTML = `
+    if (elFdrMatrixBody) {
+      elFdrMatrixBody.innerHTML = `
         <tr>
-          <td colspan="7" style="padding: 40px 20px; text-align: center; color: var(--text-secondary);">
+          <td colspan="8" style="padding: 40px 20px; text-align: center; color: var(--text-secondary);">
             <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.8rem; color: #d97706; margin-bottom: 8px;"></i>
             <p style="font-weight: 700; margin-bottom: 4px;">Fixture Difficulty Data Unavailable</p>
-            <p style="font-size: 0.85rem;">Upcoming fixture opponent rankings are available for the active 2026/27 season.</p>
+            <p style="font-size: 0.85rem;">Official FPL FDR matrix is available for the 2026/27 season.</p>
           </td>
         </tr>
       `;
@@ -4118,24 +4129,26 @@ function renderOpponentsView() {
     return;
   }
 
-  // Ensure active manager defaults to Michael Hoffmann (Bruno's Boys) if available
+  // Ensure active manager defaults to Michael Hoffmann (Bruno's Boys)
   if (!opponentsManager || !appData.managers[opponentsManager]) {
     opponentsManager = appData.managers[MY_MANAGER_NAME] ? MY_MANAGER_NAME : (selectedManager || Object.keys(appData.managers)[0]);
   }
 
   if (elSelectOpponentsManager) elSelectOpponentsManager.value = opponentsManager;
   if (elBtnOpponentsMyTeam) elBtnOpponentsMyTeam.classList.toggle('active', opponentsManager === MY_MANAGER_NAME);
+
+  const isMe = (opponentsManager === MY_MANAGER_NAME);
+  const teamTitle = appData.managers[opponentsManager]?.team || opponentsManager;
   if (elOpponentsHeaderTitleText) {
-    const isMe = (opponentsManager === MY_MANAGER_NAME);
-    const teamTitle = appData.managers[opponentsManager]?.team || opponentsManager;
-    elOpponentsHeaderTitleText.innerText = isMe ? "My Players & Next 5 Opponents" : `${teamTitle}'s Players & Next 5 Opponents`;
+    elOpponentsHeaderTitleText.innerText = isMe ? "Fixture Difficulty Rating (FDR) · My Squad Highlighted" : `Fixture Difficulty Rating (FDR) · ${teamTitle} Highlighted`;
   }
 
-  // Determine Start GW & Next 5 Gameweeks
+  // Determine active start GW & horizon
   const maxPlayed = finalGW || getLatestGWWithData(appData);
   const startGw = (currentGW <= maxPlayed && currentGW < 38) ? currentGW + 1 : currentGW;
+  const numGws = fdrHorizonGws || 5;
   const gwList = [];
-  for (let g = startGw; g < Math.min(39, startGw + 5); g++) {
+  for (let g = startGw; g < Math.min(39, startGw + numGws); g++) {
     gwList.push(g);
   }
   const endGw = gwList[gwList.length - 1] || startGw;
@@ -4144,71 +4157,52 @@ function renderOpponentsView() {
     elOpponentsGwRangeBadge.innerHTML = `<i class="fa-solid fa-calendar-check"></i> GW ${startGw} – GW ${endGw}`;
   }
 
-  // Get lineup
+  // Get active lineup for selected manager
   const gwData = appData.gameweeks[currentGW.toString()] || appData.gameweeks[maxPlayed.toString()];
   const lineup = gwData?.lineups?.[opponentsManager] || [];
 
-  // Update counts
-  const startersCount = lineup.filter(p => p.starting).length;
-  const benchCount = lineup.filter(p => !p.starting).length;
-  if (elOppCountAll) elOppCountAll.innerText = lineup.length;
-  if (elOppCountStarters) elOppCountStarters.innerText = startersCount;
-  if (elOppCountBench) elOppCountBench.innerText = benchCount;
-
-  // Global League FDR runs for startGw
-  const leagueRankings = getLeagueFdrRankings(startGw);
-
-  // Process data for all players in squad
-  const playerRunData = lineup.map(p => {
+  // Group squad players by club
+  const squadClubsMap = {};
+  const startersClubMap = {};
+  lineup.forEach(p => {
     const club = p.club;
-    const fixes = appData.team_fixtures_fdr[club] || {};
+    if (!squadClubsMap[club]) squadClubsMap[club] = [];
+    squadClubsMap[club].push(p);
+    if (p.starting) {
+      if (!startersClubMap[club]) startersClubMap[club] = [];
+      startersClubMap[club].push(p);
+    }
+  });
+
+  const squadClubsCount = Object.keys(squadClubsMap).length;
+  const startersClubsCount = Object.keys(startersClubMap).length;
+
+  if (elFdrCountSquad) elFdrCountSquad.innerText = squadClubsCount;
+  if (elFdrCountStarters) elFdrCountStarters.innerText = startersClubsCount;
+
+  // Process all 20 Premier League clubs
+  const clubRowsData = ALL_PL_CLUBS.map(c => {
+    const clubShort = c.short;
+    const clubName = c.name;
+    const fixes = appData.team_fixtures_fdr[clubShort] || {};
+    const myPlayers = squadClubsMap[clubShort] || [];
+    const myStarters = startersClubMap[clubShort] || [];
+    const inSquad = myPlayers.length > 0;
+    const inStarters = myStarters.length > 0;
+
     const fixtureList = [];
-    let sumRank = 0;
-    let rankCount = 0;
     let sumFdr = 0;
-    let fdrCount = 0;
-    let sumGA = 0;
-    let gaCount = 0;
-    let sumDefRank = 0;
-    let sumGF = 0;
-    let gfCount = 0;
-    let sumAttRank = 0;
+    let validCount = 0;
 
     gwList.forEach(g => {
       const f = fixes[g.toString()];
       if (f) {
         const oppShort = f.opponent_short;
         const oppRank = getOpponentPlRank(oppShort, currentGW);
-        const oppStats = getOpponentStats(oppShort, currentGW) || {
-          goals_against: 0,
-          goals_for: 0,
-          ga_per_game: 1.0,
-          gf_per_game: 1.0,
-          def_rank: 10,
-          att_rank: 10,
-          def_tier: 'average',
-          def_label: 'Average Defense',
-          att_tier: 'average',
-          att_label: 'Average Attack',
-          played: 5
-        };
+        const oppStats = getOpponentStats(oppShort, currentGW);
         const fdr = f.difficulty || 3;
-        
-        if (typeof oppRank === 'number') {
-          sumRank += oppRank;
-          rankCount++;
-        }
         sumFdr += fdr;
-        fdrCount++;
-
-        if (oppStats) {
-          sumGA += oppStats.ga_per_game;
-          sumDefRank += oppStats.def_rank;
-          gaCount++;
-          sumGF += oppStats.gf_per_game;
-          sumAttRank += oppStats.att_rank;
-          gfCount++;
-        }
+        validCount++;
 
         fixtureList.push({
           gw: g,
@@ -4228,358 +4222,246 @@ function renderOpponentsView() {
       }
     });
 
-    const avgOppRank = rankCount > 0 ? Number((sumRank / rankCount).toFixed(1)) : null;
-    const avgFdr = fdrCount > 0 ? Number((sumFdr / fdrCount).toFixed(2)) : 3.0;
-    const avgOppGA = gaCount > 0 ? Number((sumGA / gaCount).toFixed(2)) : 1.2;
-    const avgOppDefRank = gaCount > 0 ? Number((sumDefRank / gaCount).toFixed(1)) : 10.0;
-    const avgOppGF = gfCount > 0 ? Number((sumGF / gfCount).toFixed(2)) : 1.2;
-    const avgOppAttRank = gfCount > 0 ? Number((sumAttRank / gfCount).toFixed(1)) : 10.0;
-
-    const runRank = leagueRankings?.[club]?.next5?.rank || '-';
-    const formStats = getPlayerFormStats(p, currentGW);
-
-    // Catalog lookup
-    const catalog = appData.players?.[p.name] || {};
-    const cost = catalog.cost !== undefined ? catalog.cost : (p.cost || '-');
-    const totalPts = catalog.total_points !== undefined ? catalog.total_points : (p.points || 0);
+    const avgFdr = validCount > 0 ? Number((sumFdr / validCount).toFixed(2)) : 3.0;
+    const plRank = getOpponentPlRank(clubShort, currentGW) || 20;
 
     return {
-      player: p,
-      name: p.name,
-      club: club,
-      position: p.position,
-      starting: p.starting,
-      cost: cost,
-      totalPts: totalPts,
-      form: formStats.form,
+      clubShort: clubShort,
+      clubName: clubName,
       fixtures: fixtureList,
-      avgOppRank: avgOppRank,
       avgFdr: avgFdr,
-      avgOppGA: avgOppGA,
-      avgOppDefRank: avgOppDefRank,
-      avgOppGF: avgOppGF,
-      avgOppAttRank: avgOppAttRank,
-      runRank: runRank
+      plRank: plRank,
+      inSquad: inSquad,
+      inStarters: inStarters,
+      players: myPlayers,
+      starters: myStarters
     };
   });
 
-  // Calculate High-level Highlights
-  const startingPlayers = playerRunData.filter(d => d.starting);
-  let overallSumRank = 0;
-  let overallRankCount = 0;
-  let overallSumFdr = 0;
-  let overallFdrCount = 0;
+  // Calculate Metrics
+  if (elFdrMetricCoverage) {
+    elFdrMetricCoverage.innerText = `${squadClubsCount} / 20 Clubs`;
+  }
+  if (elFdrMetricCoverageSub) {
+    elFdrMetricCoverageSub.innerText = `${lineup.length} squad players (${startersClubsCount} XI clubs)`;
+  }
 
-  startingPlayers.forEach(d => {
-    if (d.avgOppRank !== null) {
-      overallSumRank += d.avgOppRank;
-      overallRankCount++;
-    }
-    overallSumFdr += d.avgFdr;
-    overallFdrCount++;
+  // Squad weighted avg FDR
+  let squadSumFdr = 0;
+  let squadFdrCount = 0;
+  clubRowsData.filter(c => c.inSquad).forEach(c => {
+    squadSumFdr += c.avgFdr * c.players.length;
+    squadFdrCount += c.players.length;
   });
+  const squadAvgFdrVal = squadFdrCount > 0 ? (squadSumFdr / squadFdrCount).toFixed(2) : '-';
+  if (elOppMetricAvgFdr) {
+    elOppMetricAvgFdr.innerText = squadAvgFdrVal;
+  }
+  if (elOppMetricFdrSub) {
+    const val = Number(squadAvgFdrVal);
+    const label = val <= 2.8 ? 'Favorable Schedule' : (val >= 3.3 ? 'Tough Schedule' : 'Moderate Schedule');
+    elOppMetricFdrSub.innerText = label;
+  }
 
-  const avgOppRankXI = overallRankCount > 0 ? (overallSumRank / overallRankCount).toFixed(1) : '-';
-  const avgFdrXI = overallFdrCount > 0 ? (overallSumFdr / overallFdrCount).toFixed(1) : '-';
+  // Find easiest and toughest club runs
+  const sortedByFdr = [...clubRowsData].sort((a, b) => a.avgFdr - b.avgFdr);
+  const easiestClub = sortedByFdr[0];
+  const toughestClub = sortedByFdr[sortedByFdr.length - 1];
 
-  // Defensive & Attacking Matchup Summary across Squad
-  const attackers = playerRunData.filter(d => d.position === 'MID' || d.position === 'FWD');
-  let attTotGA = 0;
-  let attCount = 0;
+  if (elOppMetricEasiestPlayer) {
+    elOppMetricEasiestPlayer.innerText = easiestClub ? `${easiestClub.clubName} (${easiestClub.avgFdr})` : '-';
+  }
+  if (elFdrMetricEasiestSub) {
+    const hasMine = easiestClub?.inSquad ? `⭐ You own ${easiestClub.players.map(p => p.name).join(', ')}` : '0 players in squad';
+    elFdrMetricEasiestSub.innerText = hasMine;
+  }
+
+  if (elOppMetricToughestPlayer) {
+    elOppMetricToughestPlayer.innerText = toughestClub ? `${toughestClub.clubName} (${toughestClub.avgFdr})` : '-';
+  }
+  if (elFdrMetricToughestSub) {
+    const hasMine = toughestClub?.inSquad ? `⚠️ You own ${toughestClub.players.map(p => p.name).join(', ')}` : '0 players in squad';
+    elFdrMetricToughestSub.innerText = hasMine;
+  }
+
+  // Attackers vs Defenses
+  const attackers = lineup.filter(p => p.position === 'MID' || p.position === 'FWD');
   let bestAttTarget = null;
-
-  attackers.forEach(d => {
-    attTotGA += d.avgOppGA;
-    attCount++;
-    d.fixtures.forEach(f => {
-      if (!f.blank && f.oppStats) {
-        if (!bestAttTarget || f.oppStats.ga_per_game > bestAttTarget.ga_m) {
+  attackers.forEach(p => {
+    const clubFixes = appData.team_fixtures_fdr[p.club] || {};
+    gwList.forEach(g => {
+      const f = clubFixes[g.toString()];
+      if (f && f.opponent_short) {
+        const stats = getOpponentStats(f.opponent_short, currentGW);
+        if (stats && (!bestAttTarget || stats.ga_per_game > bestAttTarget.ga_m)) {
           bestAttTarget = {
-            player: d.name,
-            club: d.club,
-            oppShort: f.oppShort,
-            oppName: f.oppName,
-            venue: f.venue,
-            ga: f.oppStats.goals_against,
-            ga_m: f.oppStats.ga_per_game,
-            def_rank: f.oppStats.def_rank,
-            def_label: f.oppStats.def_label
+            player: p.name,
+            club: p.club,
+            oppShort: f.opponent_short,
+            ga: stats.goals_against,
+            ga_m: stats.ga_per_game,
+            def_rank: stats.def_rank
           };
         }
       }
     });
   });
-
-  const avgAttOppGA = attCount > 0 ? (attTotGA / attCount) : 1.2;
-  const attDefVerdict = (avgAttOppGA >= 1.5) 
-    ? 'Leaky Defenses (Prime Goals)' 
-    : ((avgAttOppGA <= 1.05) ? 'Resolute Defenses (Tough)' : 'Moderate Defenses');
 
   if (elOppMetricAttackersDef) {
-    const verdictColor = avgAttOppGA >= 1.5 ? '#16a34a' : (avgAttOppGA <= 1.05 ? '#dc2626' : '#d97706');
-    elOppMetricAttackersDef.innerHTML = `${avgAttOppGA.toFixed(2)} GA/m <small style="font-size: 0.72rem; font-weight: 700; color: ${verdictColor};">(${attDefVerdict})</small>`;
+    elOppMetricAttackersDef.innerText = bestAttTarget ? `${bestAttTarget.player} vs ${bestAttTarget.oppShort}` : '-';
   }
   if (elOppMetricAttackersTarget) {
-    if (bestAttTarget) {
-      elOppMetricAttackersTarget.innerText = `Top Goal Target: ${bestAttTarget.player} vs ${bestAttTarget.oppShort} (${bestAttTarget.ga} Conceded · #${bestAttTarget.def_rank} Defense)`;
-      elOppMetricAttackersTarget.title = `${bestAttTarget.player} (${bestAttTarget.club}) vs ${bestAttTarget.oppName} (${bestAttTarget.venue}): Opponent conceded ${bestAttTarget.ga} goals (${bestAttTarget.ga_m}/m), ranking #${bestAttTarget.def_rank} in the Premier League.`;
-    } else {
-      elOppMetricAttackersTarget.innerText = '-';
-    }
+    elOppMetricAttackersTarget.innerText = bestAttTarget ? `Def #${bestAttTarget.def_rank} in PL (${bestAttTarget.ga} GA · ${bestAttTarget.ga_m}/m)` : '-';
   }
 
-  // Defenders & Goalkeepers clean sheet potential
-  const defenders = playerRunData.filter(d => d.position === 'GKP' || d.position === 'DEF');
-  let defTotGF = 0;
-  let defCount = 0;
-  let bestDefTarget = null;
-
-  defenders.forEach(d => {
-    defTotGF += d.avgOppGF;
-    defCount++;
-    d.fixtures.forEach(f => {
-      if (!f.blank && f.oppStats) {
-        if (!bestDefTarget || f.oppStats.gf_per_game < bestDefTarget.gf_m) {
-          bestDefTarget = {
-            player: d.name,
-            club: d.club,
-            oppShort: f.oppShort,
-            oppName: f.oppName,
-            venue: f.venue,
-            gf: f.oppStats.goals_for,
-            gf_m: f.oppStats.gf_per_game,
-            att_rank: f.oppStats.att_rank,
-            att_label: f.oppStats.att_label
+  // Defenders clean sheet odds
+  const defenders = lineup.filter(p => p.position === 'GKP' || p.position === 'DEF');
+  let bestCsTarget = null;
+  defenders.forEach(p => {
+    const clubFixes = appData.team_fixtures_fdr[p.club] || {};
+    gwList.forEach(g => {
+      const f = clubFixes[g.toString()];
+      if (f && f.opponent_short) {
+        const stats = getOpponentStats(f.opponent_short, currentGW);
+        if (stats && (!bestCsTarget || stats.gf_per_game < bestCsTarget.gf_m)) {
+          bestCsTarget = {
+            player: p.name,
+            club: p.club,
+            oppShort: f.opponent_short,
+            gf: stats.goals_for,
+            gf_m: stats.gf_per_game,
+            att_rank: stats.att_rank
           };
         }
       }
     });
   });
 
-  const avgDefOppGF = defCount > 0 ? (defTotGF / defCount) : 1.3;
-  const defAttVerdict = (avgDefOppGF <= 1.1) 
-    ? 'High CS Potential' 
-    : ((avgDefOppGF >= 1.7) ? 'High Conceding Threat' : 'Moderate CS Odds');
-
   if (elOppMetricDefendersAtt) {
-    const csColor = avgDefOppGF <= 1.1 ? '#16a34a' : (avgDefOppGF >= 1.7 ? '#dc2626' : '#d97706');
-    elOppMetricDefendersAtt.innerHTML = `${avgDefOppGF.toFixed(2)} GF/m <small style="font-size: 0.72rem; font-weight: 700; color: ${csColor};">(${defAttVerdict})</small>`;
+    elOppMetricDefendersAtt.innerText = bestCsTarget ? `${bestCsTarget.player} vs ${bestCsTarget.oppShort}` : '-';
   }
   if (elOppMetricDefendersTarget) {
-    if (bestDefTarget) {
-      elOppMetricDefendersTarget.innerText = `Top CS Target: ${bestDefTarget.player} vs ${bestDefTarget.oppShort} (${bestDefTarget.gf} Scored · #${bestDefTarget.att_rank} Attack)`;
-      elOppMetricDefendersTarget.title = `${bestDefTarget.player} (${bestDefTarget.club}) vs ${bestDefTarget.oppName} (${bestDefTarget.venue}): Opponent scored only ${bestDefTarget.gf} goals (${bestDefTarget.gf_m}/m), ranking #${bestDefTarget.att_rank} in the Premier League.`;
-    } else {
-      elOppMetricDefendersTarget.innerText = '-';
-    }
+    elOppMetricDefendersTarget.innerText = bestCsTarget ? `Att #${bestCsTarget.att_rank} in PL (${bestCsTarget.gf} GF · ${bestCsTarget.gf_m}/m)` : '-';
   }
 
-  // Find easiest and toughest player runs
-  let easiestPlayer = null;
-  let toughestPlayer = null;
-
-  playerRunData.forEach(d => {
-    if (!easiestPlayer || d.avgFdr < easiestPlayer.avgFdr || (d.avgFdr === easiestPlayer.avgFdr && (d.avgOppRank || 0) > (easiestPlayer.avgOppRank || 0))) {
-      easiestPlayer = d;
-    }
-    if (!toughestPlayer || d.avgFdr > toughestPlayer.avgFdr || (d.avgFdr === toughestPlayer.avgFdr && (d.avgOppRank || 20) < (toughestPlayer.avgOppRank || 20))) {
-      toughestPlayer = d;
-    }
+  // Filter clubs
+  let filteredClubs = clubRowsData.filter(c => {
+    if (fdrClubFilter === 'squad') return c.inSquad;
+    if (fdrClubFilter === 'starters') return c.inStarters;
+    return true;
   });
 
-  if (elOppMetricAvgRank) elOppMetricAvgRank.innerText = avgOppRankXI !== '-' ? `#${avgOppRankXI}` : '-';
-  if (elOppMetricAvgFdr) {
-    const fdrClass = getFdrDiffClass(Number(avgFdrXI) || 3.0);
-    const label = (Number(avgFdrXI) <= 2.8) ? 'Favorable' : ((Number(avgFdrXI) >= 3.3) ? 'Tough' : 'Moderate');
-    elOppMetricAvgFdr.innerHTML = `${avgFdrXI} <small style="font-size: 0.72rem; font-weight: 600; color: var(--text-secondary);">(${label})</small>`;
-  }
-  if (elOppMetricEasiestPlayer) {
-    if (easiestPlayer) {
-      const oppRankStr = easiestPlayer.avgOppRank ? ` · Avg #${easiestPlayer.avgOppRank}` : '';
-      elOppMetricEasiestPlayer.innerText = `${easiestPlayer.name} (${easiestPlayer.club})${oppRankStr}`;
-      elOppMetricEasiestPlayer.title = `${easiestPlayer.name} (${easiestPlayer.club}): Avg FDR ${easiestPlayer.avgFdr} · Next 5 Fixtures Rank #${easiestPlayer.runRank} in PL`;
-    } else {
-      elOppMetricEasiestPlayer.innerText = '-';
-    }
-  }
-  if (elOppMetricToughestPlayer) {
-    if (toughestPlayer) {
-      const oppRankStr = toughestPlayer.avgOppRank ? ` · Avg #${toughestPlayer.avgOppRank}` : '';
-      elOppMetricToughestPlayer.innerText = `${toughestPlayer.name} (${toughestPlayer.club})${oppRankStr}`;
-      elOppMetricToughestPlayer.title = `${toughestPlayer.name} (${toughestPlayer.club}): Avg FDR ${toughestPlayer.avgFdr} · Next 5 Fixtures Rank #${toughestPlayer.runRank} in PL`;
-    } else {
-      elOppMetricToughestPlayer.innerText = '-';
-    }
-  }
-
-  // Filter players
-  let filtered = playerRunData.filter(d => {
-    if (opponentsPosFilter === 'all') return true;
-    if (opponentsPosFilter === 'starters') return d.starting;
-    if (opponentsPosFilter === 'bench') return !d.starting;
-    return d.position === opponentsPosFilter;
-  });
-
-  // Sort players
-  const POS_ORDER = { 'GKP': 1, 'DEF': 2, 'MID': 3, 'FWD': 4 };
-  filtered.sort((a, b) => {
-    if (opponentsSortMode === 'squad') {
-      if (a.starting !== b.starting) return a.starting ? -1 : 1;
-      if (POS_ORDER[a.position] !== POS_ORDER[b.position]) return POS_ORDER[a.position] - POS_ORDER[b.position];
-      return a.name.localeCompare(b.name);
-    }
-    if (opponentsSortMode === 'opp-ga-high') {
-      return b.avgOppGA - a.avgOppGA;
-    }
-    if (opponentsSortMode === 'opp-ga-low') {
-      return a.avgOppGA - b.avgOppGA;
-    }
-    if (opponentsSortMode === 'opp-gf-low') {
-      return a.avgOppGF - b.avgOppGF;
+  // Sort clubs
+  filteredClubs.sort((a, b) => {
+    if (opponentsSortMode === 'squad-first') {
+      if (a.inSquad !== b.inSquad) return a.inSquad ? -1 : 1;
+      if (a.inSquad && b.inSquad) {
+        if (a.players.length !== b.players.length) return b.players.length - a.players.length;
+        return a.avgFdr - b.avgFdr;
+      }
+      return a.clubName.localeCompare(b.clubName);
     }
     if (opponentsSortMode === 'easiest') {
-      if (a.avgFdr !== b.avgFdr) return a.avgFdr - b.avgFdr;
-      return (b.avgOppRank || 0) - (a.avgOppRank || 0);
+      return a.avgFdr - b.avgFdr;
     }
     if (opponentsSortMode === 'hardest') {
-      if (a.avgFdr !== b.avgFdr) return b.avgFdr - a.avgFdr;
-      return (a.avgOppRank || 20) - (b.avgOppRank || 20);
+      return b.avgFdr - a.avgFdr;
     }
-    if (opponentsSortMode === 'opp-rank-high') {
-      return (b.avgOppRank || 0) - (a.avgOppRank || 0);
+    if (opponentsSortMode === 'table-rank') {
+      return a.plRank - b.plRank;
     }
-    if (opponentsSortMode === 'opp-rank-low') {
-      return (a.avgOppRank || 20) - (b.avgOppRank || 20);
-    }
-    if (opponentsSortMode === 'form') {
-      return Number(b.form || 0) - Number(a.form || 0);
-    }
-    if (opponentsSortMode === 'points') {
-      return Number(b.totalPts || 0) - Number(a.totalPts || 0);
+    if (opponentsSortMode === 'alpha') {
+      return a.clubName.localeCompare(b.clubName);
     }
     return 0;
   });
 
   // Render Table Header
-  if (elOpponentsTableHead) {
+  if (elFdrMatrixHead) {
     let thGwCols = gwList.map(g => `<th class="col-gw">GW ${g}</th>`).join('');
-    const summaryColTitle = (opponentsViewMode === 'defense') ? 'Opponent Def &amp; Att Record' : 'Next 5 Difficulty';
-    elOpponentsTableHead.innerHTML = `
+    elFdrMatrixHead.innerHTML = `
       <tr>
-        <th class="col-player">Player</th>
+        <th class="col-club">Premier League Club</th>
         ${thGwCols}
-        <th class="col-summary">${summaryColTitle}</th>
+        <th class="col-summary">Avg FDR</th>
       </tr>
     `;
   }
 
   // Render Table Body
-  if (elOpponentsTableBody) {
-    elOpponentsTableBody.innerHTML = '';
-    
-    if (filtered.length === 0) {
-      elOpponentsTableBody.innerHTML = `
+  if (elFdrMatrixBody) {
+    elFdrMatrixBody.innerHTML = '';
+
+    if (filteredClubs.length === 0) {
+      elFdrMatrixBody.innerHTML = `
         <tr>
           <td colspan="${gwList.length + 2}" style="padding: 30px; text-align: center; color: var(--text-secondary);">
-            No players match the selected filter.
+            No clubs match the selected filter.
           </td>
         </tr>
       `;
       return;
     }
 
-    filtered.forEach(d => {
+    filteredClubs.forEach(c => {
       const tr = document.createElement('tr');
-      tr.className = d.starting ? 'starter-row' : 'bench-row';
+      tr.className = c.inSquad ? 'fdr-row in-squad' : 'fdr-row';
 
-      // 1. Player Info Cell
-      const playerTd = document.createElement('td');
-      playerTd.className = 'player-cell';
-      playerTd.innerHTML = `
-        <div class="opp-player-wrapper">
-          <span class="pos-badge pos-${d.position}">${d.position}</span>
-          <div class="opp-player-info">
-            <div class="opp-player-name-row">
-              <span class="opp-player-name">${d.name}</span>
-              <span class="squad-badge ${d.starting ? 'starter' : 'bench'}">${d.starting ? 'XI' : 'SUB'}</span>
-            </div>
-            <div class="opp-player-meta">
-              <span class="club-tag">${d.club}</span>
-              <span>· £${d.cost}m</span>
-              <span>· ${d.form} form</span>
-              <span>· ${d.totalPts} pts</span>
-            </div>
+      // 1. Club Cell
+      const clubTd = document.createElement('td');
+      clubTd.className = 'fdr-club-cell';
+
+      let squadBadgeHtml = '';
+      let sublistHtml = '';
+
+      if (c.inSquad) {
+        const starCount = c.players.length;
+        squadBadgeHtml = `<span class="fdr-squad-badge" title="You own ${starCount} players from ${c.clubName}"><i class="fa-solid fa-star"></i> ${starCount} ${starCount === 1 ? 'Player' : 'Players'}</span>`;
+        const playerNames = c.players.map(p => {
+          return `<span class="sublist-player">${p.name}</span> <span class="sublist-pos">(${p.position}${p.starting ? '·XI' : '·SUB'})</span>`;
+        }).join(' · ');
+        sublistHtml = `<div class="fdr-player-sublist" title="${c.players.map(p => `${p.name} (${p.position})`).join(', ')}">${playerNames}</div>`;
+      } else {
+        sublistHtml = `<div class="fdr-club-no-players">0 squad players</div>`;
+      }
+
+      clubTd.innerHTML = `
+        <div class="fdr-club-info-wrapper">
+          <div class="fdr-club-title-row">
+            <span class="fdr-club-name">${c.clubName}</span>
+            <span class="fdr-club-short-badge">${c.clubShort}</span>
+            ${squadBadgeHtml}
           </div>
+          ${sublistHtml}
         </div>
       `;
-      tr.appendChild(playerTd);
+      tr.appendChild(clubTd);
 
-      // 2. Five Fixture Cells
-      d.fixtures.forEach(f => {
+      // 2. Gameweek Fixture Cells
+      c.fixtures.forEach(f => {
         const fixTd = document.createElement('td');
-        fixTd.className = 'fixture-cell';
+        fixTd.className = 'fdr-fixture-cell';
 
         if (f.blank) {
-          fixTd.innerHTML = `
-            <div class="opp-fixture-box blank" title="Blank Gameweek: No Premier League match scheduled">
-              <span>BLANK</span>
-            </div>
-          `;
+          fixTd.innerHTML = `<div class="fdr-block fdr-diff-blank" title="Blank Gameweek: No match scheduled">-</div>`;
         } else {
-          const diffClass = getFdrDiffClass(f.difficulty);
-          const rankTierClass = getOppRankTierClass(f.oppRank);
-          const venueClass = f.venue === 'H' ? 'venue-h' : 'venue-a';
-          const venueText = f.venue === 'H' ? 'Home' : 'Away';
-          const oppRankDisplay = (f.oppRank !== null) ? `#${f.oppRank}` : '-';
+          const diffClass = `fdr-diff-${f.difficulty}`;
+          const oppRankStr = f.oppRank ? `#${f.oppRank}` : '-';
+          const defStr = f.oppStats ? `Def #${f.oppStats.def_rank} (${f.oppStats.goals_against} GA, ${f.oppStats.ga_per_game}/m)` : '-';
+          const attStr = f.oppStats ? `Att #${f.oppStats.att_rank} (${f.oppStats.goals_for} GF, ${f.oppStats.gf_per_game}/m)` : '-';
+          const squadNote = c.inSquad ? `
+⭐ Your Players: ${c.players.map(p => p.name).join(', ')}` : '';
 
-          const defRankStr = f.oppStats ? `#${f.oppStats.def_rank}` : '-';
-          const gaStr = f.oppStats ? `${f.oppStats.goals_against} GA (${f.oppStats.ga_per_game}/m)` : '-';
-          const attRankStr = f.oppStats ? `#${f.oppStats.att_rank}` : '-';
-          const gfStr = f.oppStats ? `${f.oppStats.goals_for} GF (${f.oppStats.gf_per_game}/m)` : '-';
-          const defLabel = f.oppStats ? f.oppStats.def_label : 'Defense';
-
-          const tooltip = `GW${f.gw}: ${d.club} vs ${f.oppName} (${venueText}) · PL Table Rank: ${oppRankDisplay} · Defense: Rank ${defRankStr} in PL (${gaStr} - ${defLabel}) · Attack: Rank ${attRankStr} (${gfStr}) · FPL Difficulty: FDR ${f.difficulty}`;
-
-          let bottomHtml = '';
-          if (opponentsViewMode === 'defense') {
-            const defBadgeClass = f.oppStats ? f.oppStats.def_tier : 'def-avg';
-            const attBadgeClass = f.oppStats ? f.oppStats.att_tier : 'att-avg';
-            bottomHtml = `
-              <span class="opp-def-badge ${defBadgeClass}" title="Opponent Defense: ${gaStr} · Rank ${defRankStr} in PL">
-                ${f.oppStats ? f.oppStats.goals_against : '-'} GA (Def ${defRankStr})
-              </span>
-              <span class="opp-att-badge ${attBadgeClass}" title="Opponent Attack: ${gfStr} · Rank ${attRankStr} in PL">
-                ${f.oppStats ? f.oppStats.goals_for : '-'} GF (Att ${attRankStr})
-              </span>
-            `;
-          } else if (opponentsViewMode === 'both') {
-            bottomHtml = `
-              <span class="opp-rank-badge ${rankTierClass}" title="Opponent PL Standings Rank: ${oppRankDisplay}">Rank ${oppRankDisplay}</span>
-              <span class="opp-fdr-badge fdr-${diffClass}" title="FPL Difficulty: ${f.difficulty}">FDR ${f.difficulty}</span>
-            `;
-          } else if (opponentsViewMode === 'rank') {
-            bottomHtml = `
-              <span class="opp-rank-badge ${rankTierClass}" title="Opponent PL Standings Rank: ${oppRankDisplay}" style="font-size: 0.72rem; padding: 2px 6px;">
-                <i class="fa-solid fa-list-ol" style="font-size: 0.58rem; margin-right: 2px;"></i> Rank ${oppRankDisplay}
-              </span>
-            `;
-          } else { // 'fdr'
-            bottomHtml = `
-              <span class="opp-fdr-badge fdr-${diffClass}" title="FPL Difficulty: ${f.difficulty}" style="font-size: 0.72rem; padding: 2px 6px;">
-                <i class="fa-solid fa-gauge-high" style="font-size: 0.58rem; margin-right: 2px;"></i> FDR ${f.difficulty}
-              </span>
-            `;
-          }
+          const tooltip = `GW${f.gw}: ${c.clubName} vs ${f.oppName} (${f.venue === 'H' ? 'Home' : 'Away'})
+FPL Difficulty: FDR ${f.difficulty}
+Opponent PL Rank: ${oppRankStr}
+Opponent Defense: ${defStr}
+Opponent Attack: ${attStr}${squadNote}`;
 
           fixTd.innerHTML = `
-            <div class="opp-fixture-box" title="${tooltip}">
-              <div class="opp-fixture-top">
-                <span class="opp-short">${f.oppShort}</span>
-                <span class="opp-venue ${venueClass}">(${f.venue})</span>
-              </div>
-              <div class="opp-fixture-bottom">
-                ${bottomHtml}
-              </div>
+            <div class="fdr-block ${diffClass}" title="${tooltip}">
+              <span class="fdr-opp-name">${f.oppShort}</span>
+              <span class="fdr-opp-venue">(${f.venue.toLowerCase()})</span>
             </div>
           `;
         }
@@ -4589,68 +4471,16 @@ function renderOpponentsView() {
 
       // 3. Summary Cell
       const summaryTd = document.createElement('td');
-      summaryTd.className = 'summary-cell';
-      const avgDiffClass = getFdrDiffClass(d.avgFdr);
-      const avgRankDisplay = d.avgOppRank !== null ? `#${d.avgOppRank}` : '-';
-      const runRankDisplay = d.runRank !== '-' ? `#${d.runRank}` : '-';
-
-      const isAttacker = (d.position === 'MID' || d.position === 'FWD');
-      const defQualityClass = d.avgOppDefRank >= 14 ? 'def-leaky' : (d.avgOppDefRank <= 6 ? 'def-solid' : 'def-avg');
-      const defQualityLabel = d.avgOppDefRank >= 14 ? 'Leaky Defenses (Prime Goals)' : (d.avgOppDefRank <= 6 ? 'Solid Defenses (Tough)' : 'Moderate Defenses');
-
-      const attQualityClass = d.avgOppAttRank >= 15 ? 'att-weak' : (d.avgOppAttRank <= 6 ? 'att-potent' : 'att-avg');
-      const attQualityLabel = d.avgOppAttRank >= 15 ? 'High CS Potential' : (d.avgOppAttRank <= 6 ? 'Tough Clean Sheet Run' : 'Moderate CS Odds');
-
-      let summaryHtml = '';
-      if (opponentsViewMode === 'defense') {
-        if (isAttacker) {
-          summaryHtml = `
-            <div class="opp-summary-wrapper" title="${d.name} faces opponents conceding an average of ${d.avgOppGA.toFixed(2)} goals/match (Average defensive rank #${d.avgOppDefRank.toFixed(1)} in PL)">
-              <div class="opp-summary-avg-rank">Opp Def: ${d.avgOppGA.toFixed(2)} GA/m</div>
-              <div class="opp-summary-sub">
-                <span class="opp-def-badge ${defQualityClass}">${defQualityLabel}</span>
-              </div>
-            </div>
-          `;
-        } else {
-          summaryHtml = `
-            <div class="opp-summary-wrapper" title="${d.name} faces opponents scoring an average of ${d.avgOppGF.toFixed(2)} goals/match (Average attack rank #${d.avgOppAttRank.toFixed(1)} in PL)">
-              <div class="opp-summary-avg-rank">Opp Att: ${d.avgOppGF.toFixed(2)} GF/m</div>
-              <div class="opp-summary-sub">
-                <span class="opp-att-badge ${attQualityClass}">${attQualityLabel}</span>
-              </div>
-            </div>
-          `;
-        }
-      } else {
-        summaryHtml = `
-          <div class="opp-summary-wrapper" title="${d.club} Next 5 fixtures avg difficulty: ${d.avgFdr.toFixed(1)} · League FDR rank: #${d.runRank} in PL · Opp Def: ${d.avgOppGA.toFixed(2)} GA/m (Def #${d.avgOppDefRank.toFixed(1)})">
-            <div class="opp-summary-avg-rank">Avg Opp Rank: ${avgRankDisplay}</div>
-            <div class="opp-summary-sub">
-              <span>Avg FDR: <strong>${d.avgFdr.toFixed(1)}</strong></span>
-              <span class="opp-summary-league-rank fdr-${avgDiffClass}" title="Upcoming 5 fixture difficulty rank across all 20 Premier League clubs">
-                Run ${runRankDisplay}
-              </span>
-            </div>
-            <div style="margin-top: 1px;">
-              ${isAttacker 
-                ? `<span class="opp-def-badge ${defQualityClass}" style="font-size: 0.60rem; padding: 0.5px 3.5px;">${d.avgOppGA.toFixed(1)} GA/m · Def #${d.avgOppDefRank.toFixed(0)}</span>`
-                : `<span class="opp-att-badge ${attQualityClass}" style="font-size: 0.60rem; padding: 0.5px 3.5px;">${d.avgOppGF.toFixed(1)} GF/m · Att #${d.avgOppAttRank.toFixed(0)}</span>`}
-            </div>
-          </div>
-        `;
-      }
-
-      summaryTd.innerHTML = summaryHtml;
+      summaryTd.className = 'fdr-summary-cell';
+      const avgDiffClass = getFdrDiffClass(c.avgFdr);
+      summaryTd.innerHTML = `
+        <span class="fdr-summary-score fdr-${avgDiffClass}" title="${c.clubName} average fixture difficulty over next ${gwList.length} matches: ${c.avgFdr}">
+          ${c.avgFdr}
+        </span>
+      `;
       tr.appendChild(summaryTd);
 
-      tr.addEventListener('click', () => {
-        const currentActive = elOpponentsTableBody.querySelector('tr.active-row');
-        if (currentActive) currentActive.classList.remove('active-row');
-        tr.classList.add('active-row');
-      });
-
-      elOpponentsTableBody.appendChild(tr);
+      elFdrMatrixBody.appendChild(tr);
     });
   }
 

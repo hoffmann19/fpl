@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="style.css?v=20261016_defensive_records">
+  <link rel="stylesheet" href="style.css?v=20261016_fdr_matrix">
 </head>
 <body>
   <div class="app-container">
@@ -54,7 +54,7 @@
       <div class="top-bar-section nav-section">
         <div class="tab-pills-row">
           <button id="tab-field-roster" class="tab-pill active" title="Field &amp; Roster"><i class="fa-solid fa-futbol"></i> Pitch</button>
-          <button id="tab-opponents" class="tab-pill" title="My Players &amp; Next 5 Opponents Difficulty Rankings"><i class="fa-solid fa-calendar-days"></i> Opponents</button>
+          <button id="tab-opponents" class="tab-pill" title="Official Fixture Difficulty Rating (FDR) Grid with My Squad Highlighted"><i class="fa-solid fa-calendar-days"></i> FDR Grid</button>
           <button id="tab-activity" class="tab-pill" title="Matchday Activity Feed"><i class="fa-solid fa-bolt-lightning"></i> Activity</button>
           <button id="tab-winners" class="tab-pill" title="Gameweek Winners"><i class="fa-solid fa-trophy"></i> Winners</button>
           <button id="tab-rankings" class="tab-pill" title="Blue Square &amp; Global Rankings"><i class="fa-solid fa-chart-line"></i> Rankings</button>
@@ -435,15 +435,15 @@
             </div>
           </div>
 
-          <!-- Next 5 Opponents & Fixture Rankings Panel -->
+          <!-- Official Premier League Fixture Difficulty Rating (FDR) Grid Panel -->
           <div id="panel-opponents" class="panel">
             <div class="opponents-container">
-              <!-- Sub-header Row with Title, GW Badge & Squad Switcher -->
+              <!-- Sub-header Row with Title, Official Legend & Squad Switcher -->
               <div class="opponents-header-row">
                 <div class="opponents-header-left">
                   <div class="opponents-header-title">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    <span id="opponents-header-title-text">My Players &amp; Next 5 Opponents</span>
+                    <i class="fa-solid fa-table-cells"></i>
+                    <span id="opponents-header-title-text">Fixture Difficulty Rating (FDR)</span>
                   </div>
                   <span class="activity-live-badge" id="opponents-gw-range-badge">
                     <i class="fa-solid fa-calendar-check"></i> GW 7 – GW 11
@@ -453,36 +453,57 @@
                 <div class="opponents-header-controls">
                   <div class="select-compact-wrapper">
                     <i class="fa-solid fa-shirt select-icon"></i>
-                    <select id="select-opponents-manager" class="select-sm" title="Select Squad to Analyze">
+                    <select id="select-opponents-manager" class="select-sm" title="Select Squad to Highlight on FDR Grid">
                       <!-- Populated in JS with managers -->
                     </select>
                   </div>
                   <button id="btn-opponents-my-team" class="subview-pill active" title="Reset to My Squad (Michael Hoffmann)">
                     <i class="fa-solid fa-star"></i> My Squad
                   </button>
+                  <a href="reports/squad_opponents_analysis.md" target="_blank" class="subview-pill" title="View Full Markdown Analysis Report">
+                    <i class="fa-solid fa-file-lines"></i> Open Report
+                  </a>
                 </div>
               </div>
 
-              <!-- Top Highlights & Summary Metric Strip -->
+              <!-- Official FPL FDR Rating Legend Strip -->
+              <div class="fdr-official-legend-strip glass">
+                <div class="fdr-legend-label">
+                  <i class="fa-solid fa-circle-info"></i> Official FPL Difficulty Scale:
+                </div>
+                <div class="fdr-legend-items">
+                  <div class="fdr-legend-chip fdr-chip-2"><span class="chip-num">2</span> Easy</div>
+                  <div class="fdr-legend-chip fdr-chip-3"><span class="chip-num">3</span> Medium</div>
+                  <div class="fdr-legend-chip fdr-chip-4"><span class="chip-num">4</span> Hard</div>
+                  <div class="fdr-legend-chip fdr-chip-5"><span class="chip-num">5</span> Very Hard</div>
+                </div>
+                <div class="fdr-legend-squad-tag">
+                  <span class="squad-star-pill"><i class="fa-solid fa-star"></i> Highlighted Clubs</span> = Clubs with players from your squad
+                </div>
+              </div>
+
+              <!-- Top Summary Metrics Grid -->
               <div class="opponents-metrics-grid">
                 <div class="metric-card">
-                  <div class="metric-icon rank"><i class="fa-solid fa-list-ol"></i></div>
+                  <div class="metric-icon best"><i class="fa-solid fa-users"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Avg Opponent PL Rank</span>
-                    <span class="metric-value highlight" id="opp-metric-avg-rank">-</span>
+                    <span class="metric-label">Squad Club Coverage</span>
+                    <span class="metric-value highlight" id="fdr-metric-coverage">11 / 20 Clubs</span>
+                    <span class="metric-sub-label" id="fdr-metric-coverage-sub">15 players across 11 teams</span>
                   </div>
                 </div>
                 <div class="metric-card">
                   <div class="metric-icon fdr"><i class="fa-solid fa-shield-halved"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Avg Fixture Difficulty</span>
+                    <span class="metric-label">Squad Upcoming Avg FDR</span>
                     <span class="metric-value" id="opp-metric-avg-fdr">-</span>
+                    <span class="metric-sub-label" id="opp-metric-fdr-sub">Weighted run difficulty</span>
                   </div>
                 </div>
                 <div class="metric-card">
                   <div class="metric-icon def-matchup"><i class="fa-solid fa-crosshairs"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Attackers vs Opponent Defenses</span>
+                    <span class="metric-label">Attackers vs Defenses</span>
                     <span class="metric-value" id="opp-metric-attackers-def">-</span>
                     <span class="metric-sub-label" id="opp-metric-attackers-target">-</span>
                   </div>
@@ -490,112 +511,73 @@
                 <div class="metric-card">
                   <div class="metric-icon att-matchup"><i class="fa-solid fa-shield-heart"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Defenders Clean Sheet Outlook</span>
+                    <span class="metric-label">Defenders Clean Sheet Odds</span>
                     <span class="metric-value" id="opp-metric-defenders-att">-</span>
                     <span class="metric-sub-label" id="opp-metric-defenders-target">-</span>
                   </div>
                 </div>
                 <div class="metric-card">
-                  <div class="metric-icon best"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                  <div class="metric-icon rank"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Favorable Fixture Run</span>
+                    <span class="metric-label">Easiest Club Run</span>
                     <span class="metric-value best-txt" id="opp-metric-easiest-player">-</span>
+                    <span class="metric-sub-label" id="fdr-metric-easiest-sub">-</span>
                   </div>
                 </div>
                 <div class="metric-card">
                   <div class="metric-icon tough"><i class="fa-solid fa-triangle-exclamation"></i></div>
                   <div class="metric-info">
-                    <span class="metric-label">Toughest Fixture Run</span>
+                    <span class="metric-label">Toughest Club Run</span>
                     <span class="metric-value tough-txt" id="opp-metric-toughest-player">-</span>
+                    <span class="metric-sub-label" id="fdr-metric-toughest-sub">-</span>
                   </div>
                 </div>
               </div>
 
               <!-- Filter & View Controls Bar -->
               <div class="opponents-filter-bar glass">
-                <div class="opponents-filter-pills" id="opponents-position-filters">
-                  <button class="activity-filter-pill active" data-pos-filter="all"><i class="fa-solid fa-users"></i> All (<span id="opp-count-all">15</span>)</button>
-                  <button class="activity-filter-pill" data-pos-filter="starters"><i class="fa-solid fa-futbol"></i> Starters (<span id="opp-count-starters">11</span>)</button>
-                  <button class="activity-filter-pill" data-pos-filter="bench"><i class="fa-solid fa-couch"></i> Bench (<span id="opp-count-bench">4</span>)</button>
-                  <button class="activity-filter-pill" data-pos-filter="GKP">GKP</button>
-                  <button class="activity-filter-pill" data-pos-filter="DEF">DEF</button>
-                  <button class="activity-filter-pill" data-pos-filter="MID">MID</button>
-                  <button class="activity-filter-pill" data-pos-filter="FWD">FWD</button>
+                <div class="opponents-filter-pills" id="fdr-club-filters">
+                  <button class="activity-filter-pill active" data-fdr-filter="all"><i class="fa-solid fa-futbol"></i> All 20 Premier League Teams</button>
+                  <button class="activity-filter-pill" data-fdr-filter="squad"><i class="fa-solid fa-star"></i> My Squad Clubs (<span id="fdr-count-squad">11</span>)</button>
+                  <button class="activity-filter-pill" data-fdr-filter="starters"><i class="fa-solid fa-user-check"></i> XI Starters' Clubs (<span id="fdr-count-starters">7</span>)</button>
                 </div>
                 <div class="opponents-view-controls">
-                  <!-- Mode: Combined / Defensive Records / Table Rank / FDR -->
+                  <!-- Horizon: 5 GWs, 8 GWs, 10 GWs -->
                   <div class="transfers-view-toggle">
-                    <button id="btn-opp-mode-both" class="subview-pill active" title="Show both Premier League Standings Rank and FDR badge">
-                      <i class="fa-solid fa-table-cells"></i> Rank &amp; FDR
-                    </button>
-                    <button id="btn-opp-mode-defense" class="subview-pill" title="Show Opponent Defensive Records (Goals Conceded &amp; Def Rank)">
-                      <i class="fa-solid fa-shield-halved"></i> Defense &amp; Goals
-                    </button>
-                    <button id="btn-opp-mode-rank" class="subview-pill" title="Show Opponent Premier League Standings Rank">
-                      <i class="fa-solid fa-list-ol"></i> PL Rank
-                    </button>
-                    <button id="btn-opp-mode-fdr" class="subview-pill" title="Show FPL Fixture Difficulty Rating">
-                      <i class="fa-solid fa-gauge-high"></i> FDR
-                    </button>
+                    <button id="btn-fdr-horizon-5" class="subview-pill active" title="Show Next 5 Gameweeks">5 GWs</button>
+                    <button id="btn-fdr-horizon-8" class="subview-pill" title="Show Next 8 Gameweeks">8 GWs</button>
+                    <button id="btn-fdr-horizon-10" class="subview-pill" title="Show Next 10 Gameweeks">10 GWs</button>
                   </div>
                   <!-- Sort Selector -->
                   <div class="select-compact-wrapper">
                     <i class="fa-solid fa-arrow-down-short-wide select-icon"></i>
                     <select id="select-opp-sort" class="select-sm">
-                      <option value="squad">Sort: Squad Order (GKP → FWD)</option>
-                      <option value="opp-ga-high">Sort: Leakiest Opponent Defenses (Best for Goals)</option>
-                      <option value="opp-ga-low">Sort: Toughest Opponent Defenses (Hard to Score)</option>
-                      <option value="opp-gf-low">Sort: Weakest Opponent Attacks (Best for Clean Sheets)</option>
-                      <option value="easiest">Sort: Easiest Next 5 Fixtures (FDR)</option>
-                      <option value="hardest">Sort: Toughest Next 5 Fixtures (FDR)</option>
-                      <option value="opp-rank-high">Sort: Weakest Opponents (Higher PL #)</option>
-                      <option value="opp-rank-low">Sort: Strongest Opponents (Lower PL #)</option>
-                      <option value="form">Sort: Player Form (PPG)</option>
-                      <option value="points">Sort: Total Points</option>
+                      <option value="squad-first">Sort: ⭐ My Squad First</option>
+                      <option value="easiest">Sort: Easiest Fixtures (Lowest FDR)</option>
+                      <option value="hardest">Sort: Toughest Fixtures (Highest FDR)</option>
+                      <option value="table-rank">Sort: Premier League Standings Rank</option>
+                      <option value="alpha">Sort: Team Name (A – Z)</option>
                     </select>
                   </div>
                 </div>
               </div>
 
-              <!-- Opponents & Fixtures Schedule Table Container -->
-              <div class="opponents-table-wrapper glass">
-                <table class="opponents-table" id="opponents-table">
-                  <thead id="opponents-table-head">
-                    <!-- Dynamic header with GW columns injected via JS -->
+              <!-- 20-Team Official FDR Grid Table Container -->
+              <div class="fdr-table-wrapper glass">
+                <table class="fdr-matrix-table" id="fdr-matrix-table">
+                  <thead id="fdr-matrix-head">
+                    <!-- Dynamic header with Club & GW columns injected via JS -->
                   </thead>
-                  <tbody id="opponents-table-body">
-                    <!-- Dynamic player rows injected via JS -->
+                  <tbody id="fdr-matrix-body">
+                    <!-- Dynamic 20 club rows injected via JS -->
                   </tbody>
                 </table>
-              </div>
-
-              <!-- Explanatory Legend Footer -->
-              <div class="opponents-legend-strip glass">
-                <div class="legend-group">
-                  <span class="legend-title"><i class="fa-solid fa-shield-halved"></i> Defense Record:</span>
-                  <span class="legend-badge def-badge-solid" title="Fewest goals conceded per match">Solid Defense (GA/m ≤ 0.85)</span>
-                  <span class="legend-badge def-badge-avg">Average Defense</span>
-                  <span class="legend-badge def-badge-leaky" title="Most goals conceded per match - Great for Attackers!">Leaky / Bad Defense (GA/m ≥ 1.80)</span>
-                </div>
-                <div class="legend-group">
-                  <span class="legend-title"><i class="fa-solid fa-list-ol"></i> PL Table Rank:</span>
-                  <span class="legend-badge rank-top4">#1 - #4 (Top 4 / UCL)</span>
-                  <span class="legend-badge rank-mid">#5 - #14 (Mid-Table)</span>
-                  <span class="legend-badge rank-relegation">#15 - #20 (Bottom 6)</span>
-                </div>
-                <div class="legend-group">
-                  <span class="legend-title"><i class="fa-solid fa-gauge-high"></i> FDR Difficulty:</span>
-                  <span class="legend-chip fdr-diff-2">FDR 2 (Easy)</span>
-                  <span class="legend-chip fdr-diff-3">FDR 3 (Medium)</span>
-                  <span class="legend-chip fdr-diff-4">FDR 4 (Hard)</span>
-                  <span class="legend-chip fdr-diff-5">FDR 5 (Tough)</span>
-                </div>
               </div>
 
               <!-- Collapsible All 20 Clubs Defensive & Attacking Records Standings Drawer -->
               <div class="opponents-pl-drawer-toggle-row">
                 <button id="btn-toggle-pl-records" class="subview-pill pl-records-toggle-btn" title="Toggle Premier League Defensive &amp; Attacking Records Table">
-                  <i class="fa-solid fa-shield-halved"></i> <span>View Premier League Defensive &amp; Attacking Records (All 20 Clubs)</span> <i class="fa-solid fa-chevron-down" id="icon-toggle-pl-records"></i>
+                  <i class="fa-solid fa-shield-halved"></i> <span>View Premier League Defensive &amp; Attacking Records Standings</span> <i class="fa-solid fa-chevron-down" id="icon-toggle-pl-records"></i>
                 </button>
               </div>
 
@@ -665,6 +647,6 @@
     </footer>
   </div>
 
-  <script src="app.js?v=20261016_defensive_records"></script>
+  <script src="app.js?v=20261016_fdr_matrix"></script>
 </body>
 </html>
