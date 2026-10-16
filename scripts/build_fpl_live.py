@@ -1521,5 +1521,11 @@ def main():
     if os.path.exists(os.path.dirname(db_path)):
         sync_sqlite(db_path, LEAGUE_ID, bootstrap, results, managers_meta, gameweeks_dict, player_gw_scores, max_gw, all_fixtures=all_fixtures, gw_live_stats=gw_live_stats)
 
+    try:
+        from generate_opponents_report import main as generate_report
+        generate_report()
+    except Exception as e:
+        pass
+
 if __name__ == "__main__":
     main()
