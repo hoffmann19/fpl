@@ -222,8 +222,9 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
 
     md_lines.append("---")
     md_lines.append("## 2. Squad Next 5 Fixtures & Opponent Breakdown\n")
-    md_lines.append("| Player | Pos | Club | Status | " + " | ".join([f"GW {g}" for g in next_5_gws]) + " | Avg Opp GA/m | Avg FDR | Matchup Outlook |")
-    md_lines.append("|:---|:---:|:---:|:---:| " + " | ".join([":---:" for _ in next_5_gws]) + " |:---:|:---:|:---|")
+    md_lines.append("> Shows opponent defensive ranking (Def # / Goals Conceded) and goals scored ranking (Att # / Goals Scored) for every upcoming match.\n")
+    md_lines.append("| Player | Pos | Club | Status | " + " | ".join([f"GW {g}" for g in next_5_gws]) + " | Opp GA/m (Def) | Opp GF/m (Att) | Avg FDR | Matchup Outlook |")
+    md_lines.append("|:---|:---:|:---:|:---:| " + " | ".join([":---:" for _ in next_5_gws]) + " |:---:|:---:|:---:|:---|")
 
     for p in player_summaries:
         fix_cols = []
@@ -235,13 +236,15 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
                 ven = f["venue"]
                 def_r = f["def_rank"]
                 ga = f["ga"]
+                att_r = f["att_rank"]
+                gf = f["gf"]
                 fdr = f["fdr"]
-                fix_cols.append(f"**{opp}** ({ven})<br><small>Def #{def_r} ({ga} GA) · FDR {fdr}</small>")
+                fix_cols.append(f"**{opp}** ({ven})<br><small>Def #{def_r} ({ga} GA)<br>Att #{att_r} ({gf} GF) · FDR {fdr}</small>")
 
         md_lines.append(
             f"| **{p['name']}** | {p['pos']} | {p['club']} | {p['status']} | "
             + " | ".join(fix_cols)
-            + f" | **{p['avg_ga']}** | {p['avg_fdr']} | {p['verdict']} |"
+            + f" | **{p['avg_ga']}** | **{p['avg_gf']}** | {p['avg_fdr']} | {p['verdict']} |"
         )
 
     md_lines.append("\n---")
