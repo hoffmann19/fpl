@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="style.css?v=20261016_opponents">
+  <link rel="stylesheet" href="style.css?v=20261016_defensive_records">
 </head>
 <body>
   <div class="app-container">
@@ -480,6 +480,22 @@
                   </div>
                 </div>
                 <div class="metric-card">
+                  <div class="metric-icon def-matchup"><i class="fa-solid fa-crosshairs"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Attackers vs Opponent Defenses</span>
+                    <span class="metric-value" id="opp-metric-attackers-def">-</span>
+                    <span class="metric-sub-label" id="opp-metric-attackers-target">-</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon att-matchup"><i class="fa-solid fa-shield-heart"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Defenders Clean Sheet Outlook</span>
+                    <span class="metric-value" id="opp-metric-defenders-att">-</span>
+                    <span class="metric-sub-label" id="opp-metric-defenders-target">-</span>
+                  </div>
+                </div>
+                <div class="metric-card">
                   <div class="metric-icon best"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                   <div class="metric-info">
                     <span class="metric-label">Favorable Fixture Run</span>
@@ -507,10 +523,13 @@
                   <button class="activity-filter-pill" data-pos-filter="FWD">FWD</button>
                 </div>
                 <div class="opponents-view-controls">
-                  <!-- Mode: Combined / Table Rank / FDR -->
+                  <!-- Mode: Combined / Defensive Records / Table Rank / FDR -->
                   <div class="transfers-view-toggle">
                     <button id="btn-opp-mode-both" class="subview-pill active" title="Show both Premier League Standings Rank and FDR badge">
                       <i class="fa-solid fa-table-cells"></i> Rank &amp; FDR
+                    </button>
+                    <button id="btn-opp-mode-defense" class="subview-pill" title="Show Opponent Defensive Records (Goals Conceded &amp; Def Rank)">
+                      <i class="fa-solid fa-shield-halved"></i> Defense &amp; Goals
                     </button>
                     <button id="btn-opp-mode-rank" class="subview-pill" title="Show Opponent Premier League Standings Rank">
                       <i class="fa-solid fa-list-ol"></i> PL Rank
@@ -524,8 +543,11 @@
                     <i class="fa-solid fa-arrow-down-short-wide select-icon"></i>
                     <select id="select-opp-sort" class="select-sm">
                       <option value="squad">Sort: Squad Order (GKP → FWD)</option>
-                      <option value="easiest">Sort: Easiest Next 5 Fixtures</option>
-                      <option value="hardest">Sort: Toughest Next 5 Fixtures</option>
+                      <option value="opp-ga-high">Sort: Leakiest Opponent Defenses (Best for Goals)</option>
+                      <option value="opp-ga-low">Sort: Toughest Opponent Defenses (Hard to Score)</option>
+                      <option value="opp-gf-low">Sort: Weakest Opponent Attacks (Best for Clean Sheets)</option>
+                      <option value="easiest">Sort: Easiest Next 5 Fixtures (FDR)</option>
+                      <option value="hardest">Sort: Toughest Next 5 Fixtures (FDR)</option>
                       <option value="opp-rank-high">Sort: Weakest Opponents (Higher PL #)</option>
                       <option value="opp-rank-low">Sort: Strongest Opponents (Lower PL #)</option>
                       <option value="form">Sort: Player Form (PPG)</option>
@@ -550,17 +572,64 @@
               <!-- Explanatory Legend Footer -->
               <div class="opponents-legend-strip glass">
                 <div class="legend-group">
+                  <span class="legend-title"><i class="fa-solid fa-shield-halved"></i> Defense Record:</span>
+                  <span class="legend-badge def-badge-solid" title="Fewest goals conceded per match">Solid Defense (GA/m ≤ 0.85)</span>
+                  <span class="legend-badge def-badge-avg">Average Defense</span>
+                  <span class="legend-badge def-badge-leaky" title="Most goals conceded per match - Great for Attackers!">Leaky / Bad Defense (GA/m ≥ 1.80)</span>
+                </div>
+                <div class="legend-group">
                   <span class="legend-title"><i class="fa-solid fa-list-ol"></i> PL Table Rank:</span>
                   <span class="legend-badge rank-top4">#1 - #4 (Top 4 / UCL)</span>
                   <span class="legend-badge rank-mid">#5 - #14 (Mid-Table)</span>
-                  <span class="legend-badge rank-relegation">#15 - #20 (Bottom 6 / Favorable)</span>
+                  <span class="legend-badge rank-relegation">#15 - #20 (Bottom 6)</span>
                 </div>
                 <div class="legend-group">
-                  <span class="legend-title"><i class="fa-solid fa-shield-halved"></i> FDR Difficulty:</span>
+                  <span class="legend-title"><i class="fa-solid fa-gauge-high"></i> FDR Difficulty:</span>
                   <span class="legend-chip fdr-diff-2">FDR 2 (Easy)</span>
                   <span class="legend-chip fdr-diff-3">FDR 3 (Medium)</span>
                   <span class="legend-chip fdr-diff-4">FDR 4 (Hard)</span>
-                  <span class="legend-chip fdr-diff-5">FDR 5 (Very Hard)</span>
+                  <span class="legend-chip fdr-diff-5">FDR 5 (Tough)</span>
+                </div>
+              </div>
+
+              <!-- Collapsible All 20 Clubs Defensive & Attacking Records Standings Drawer -->
+              <div class="opponents-pl-drawer-toggle-row">
+                <button id="btn-toggle-pl-records" class="subview-pill pl-records-toggle-btn" title="Toggle Premier League Defensive &amp; Attacking Records Table">
+                  <i class="fa-solid fa-shield-halved"></i> <span>View Premier League Defensive &amp; Attacking Records (All 20 Clubs)</span> <i class="fa-solid fa-chevron-down" id="icon-toggle-pl-records"></i>
+                </button>
+              </div>
+
+              <div id="opponents-pl-records-drawer" class="opponents-pl-records-container glass hidden">
+                <div class="pl-records-header">
+                  <div class="pl-records-title">
+                    <i class="fa-solid fa-shield-halved"></i> <span>Premier League Defensive &amp; Attacking Records Standings</span>
+                  </div>
+                  <div class="pl-records-sort-pills">
+                    <button class="subview-pill active" id="btn-sort-pl-def" title="Sort by fewest goals conceded"><i class="fa-solid fa-shield-halved"></i> Fewest Conceded (Best Defense)</button>
+                    <button class="subview-pill" id="btn-sort-pl-leaky" title="Sort by most goals conceded"><i class="fa-solid fa-bullseye"></i> Most Conceded (Leakiest Defense)</button>
+                    <button class="subview-pill" id="btn-sort-pl-att" title="Sort by most goals scored"><i class="fa-solid fa-futbol"></i> Most Scored (Best Attack)</button>
+                  </div>
+                </div>
+                <div class="transfers-table-wrapper">
+                  <table class="transfers-season-table pl-records-table">
+                    <thead>
+                      <tr>
+                        <th>Def Rank</th>
+                        <th>Club</th>
+                        <th>Played</th>
+                        <th>Goals Conceded (GA)</th>
+                        <th>GA / Match</th>
+                        <th>Defensive Record</th>
+                        <th>Goals Scored (GF)</th>
+                        <th>GF / Match</th>
+                        <th>Attacking Record</th>
+                        <th>PL Table Pos</th>
+                      </tr>
+                    </thead>
+                    <tbody id="pl-records-table-body">
+                      <!-- Injected via JavaScript -->
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -596,6 +665,6 @@
     </footer>
   </div>
 
-  <script src="app.js?v=20261016_opponents"></script>
+  <script src="app.js?v=20261016_defensive_records"></script>
 </body>
 </html>

@@ -1446,6 +1446,47 @@ def main():
                 })
                 pl_ranks_by_gw[g_str][r['short_name']] = pos
 
+    # Precalculate team defensive & attacking records by gameweek
+    team_records_by_gw = {}
+    for gw, standings in pl_standings_by_gw.items():
+        by_def = sorted(standings, key=lambda x: (x['goals_against'] / max(1, x['played']), x['goals_against']))
+        by_att = sorted(standings, key=lambda x: (x['goals_for'] / max(1, x['played']), x['goals_for']), reverse=True)
+        def_ranks = {t['team_short']: i for i, t in enumerate(by_def, 1)}
+        att_ranks = {t['team_short']: i for i, t in enumerate(by_att, 1)}
+        gw_records = {}
+        for t in standings:
+            short = t['team_short']
+            p = max(1, t['played'])
+            ga = t['goals_against']
+            gf = t['goals_for']
+            dr = def_ranks[short]
+            ar = att_ranks[short]
+            ga_m = round(ga / p, 2)
+            gf_m = round(gf / p, 2)
+            def_tier = 'leaky' if (dr >= 15 or ga_m >= 1.8) else ('solid' if (dr <= 6 or ga_m <= 0.85) else 'average')
+            def_label = 'Bad Defense' if def_tier == 'leaky' else ('Good Defense' if def_tier == 'solid' else 'Average Defense')
+            att_tier = 'potent' if (ar <= 5 or gf_m >= 1.8) else ('weak' if (ar >= 16 or gf_m <= 0.85) else 'average')
+            att_label = 'Strong Attack' if att_tier == 'potent' else ('Weak Attack' if att_tier == 'weak' else 'Average Attack')
+            gw_records[short] = {
+                'team_name': t['team_name'],
+                'team_short': short,
+                'played': t['played'],
+                'goals_against': ga,
+                'goals_for': gf,
+                'ga_per_game': ga_m,
+                'gf_per_game': gf_m,
+                'def_rank': dr,
+                'att_rank': ar,
+                'def_tier': def_tier,
+                'def_label': def_label,
+                'att_tier': att_tier,
+                'att_label': att_label,
+                'table_rank': t['position'],
+                'points': t['points'],
+                'goal_difference': t['goal_difference']
+            }
+        team_records_by_gw[gw] = gw_records
+
     output_data = {
         "season": "2026/27",
         "current_gw": max_gw,
@@ -1456,7 +1497,9 @@ def main():
         "premier_league_standings": {
             "by_gw": pl_standings_by_gw,
             "ranks_by_gw": pl_ranks_by_gw,
-            "latest_ranks": pl_ranks_by_gw.get(str(max_gw), {})
+            "latest_ranks": pl_ranks_by_gw.get(str(max_gw), {}),
+            "team_records_by_gw": team_records_by_gw,
+            "latest_records": team_records_by_gw.get(str(max_gw), {})
         }
     }
 
