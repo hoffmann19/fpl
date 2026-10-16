@@ -1394,13 +1394,70 @@ def main():
                 "difficulty": ta_diff
             }
 
+    # Build Premier League standings and rankings by gameweek
+    pl_standings_by_gw = {}
+    pl_ranks_by_gw = {}
+    if all_fixtures:
+        for g in range(1, max_gw + 1):
+            tbl = {tid: {'id': tid, 'name': t['name'], 'short_name': t['short_name'], 'p': 0, 'w': 0, 'd': 0, 'l': 0, 'gf': 0, 'ga': 0, 'gd': 0, 'pts': 0} for tid, t in teams.items()}
+            for f in all_fixtures:
+                if f.get('finished') and f.get('event') and f['event'] <= g:
+                    h, a = f.get('team_h'), f.get('team_a')
+                    hs, as_ = f.get('team_h_score'), f.get('team_a_score')
+                    if h in tbl and a in tbl and hs is not None and as_ is not None:
+                        tbl[h]['p'] += 1
+                        tbl[a]['p'] += 1
+                        tbl[h]['gf'] += hs
+                        tbl[h]['ga'] += as_
+                        tbl[a]['gf'] += as_
+                        tbl[a]['ga'] += hs
+                        tbl[h]['gd'] = tbl[h]['gf'] - tbl[h]['ga']
+                        tbl[a]['gd'] = tbl[a]['gf'] - tbl[a]['ga']
+                        if hs > as_:
+                            tbl[h]['w'] += 1
+                            tbl[h]['pts'] += 3
+                            tbl[a]['l'] += 1
+                        elif hs < as_:
+                            tbl[a]['w'] += 1
+                            tbl[a]['pts'] += 3
+                            tbl[h]['l'] += 1
+                        else:
+                            tbl[h]['d'] += 1
+                            tbl[h]['pts'] += 1
+                            tbl[a]['d'] += 1
+                            tbl[a]['pts'] += 1
+            ranked = sorted(tbl.values(), key=lambda x: (x['pts'], x['gd'], x['gf'], x['name']), reverse=True)
+            g_str = str(g)
+            pl_standings_by_gw[g_str] = []
+            pl_ranks_by_gw[g_str] = {}
+            for pos, r in enumerate(ranked, start=1):
+                pl_standings_by_gw[g_str].append({
+                    'position': pos,
+                    'team_name': r['name'],
+                    'team_short': r['short_name'],
+                    'played': r['p'],
+                    'won': r['w'],
+                    'drawn': r['d'],
+                    'lost': r['l'],
+                    'goals_for': r['gf'],
+                    'goals_against': r['ga'],
+                    'goal_difference': r['gd'],
+                    'points': r['pts']
+                })
+                pl_ranks_by_gw[g_str][r['short_name']] = pos
+
     output_data = {
         "season": "2026/27",
         "current_gw": max_gw,
         "managers": {m: {"team": meta["team"], "color": meta["color"]} for m, meta in managers_meta.items()},
         "players": players_catalog,
         "gameweeks": gameweeks_dict,
-        "team_fixtures_fdr": team_fixtures_fdr
+        "team_fixtures_fdr": team_fixtures_fdr,
+        "premier_league_standings": {
+            "by_gw": pl_standings_by_gw,
+            "ranks_by_gw": pl_ranks_by_gw,
+            "latest_ranks": pl_ranks_by_gw.get(str(max_gw), {})
+        }
     }
 
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

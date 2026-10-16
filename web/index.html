@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="style.css?v=20260921_transfers">
+  <link rel="stylesheet" href="style.css?v=20261016_opponents">
 </head>
 <body>
   <div class="app-container">
@@ -54,6 +54,7 @@
       <div class="top-bar-section nav-section">
         <div class="tab-pills-row">
           <button id="tab-field-roster" class="tab-pill active" title="Field &amp; Roster"><i class="fa-solid fa-futbol"></i> Pitch</button>
+          <button id="tab-opponents" class="tab-pill" title="My Players &amp; Next 5 Opponents Difficulty Rankings"><i class="fa-solid fa-calendar-days"></i> Opponents</button>
           <button id="tab-activity" class="tab-pill" title="Matchday Activity Feed"><i class="fa-solid fa-bolt-lightning"></i> Activity</button>
           <button id="tab-winners" class="tab-pill" title="Gameweek Winners"><i class="fa-solid fa-trophy"></i> Winners</button>
           <button id="tab-rankings" class="tab-pill" title="Blue Square &amp; Global Rankings"><i class="fa-solid fa-chart-line"></i> Rankings</button>
@@ -433,6 +434,137 @@
               </div>
             </div>
           </div>
+
+          <!-- Next 5 Opponents & Fixture Rankings Panel -->
+          <div id="panel-opponents" class="panel">
+            <div class="opponents-container">
+              <!-- Sub-header Row with Title, GW Badge & Squad Switcher -->
+              <div class="opponents-header-row">
+                <div class="opponents-header-left">
+                  <div class="opponents-header-title">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span id="opponents-header-title-text">My Players &amp; Next 5 Opponents</span>
+                  </div>
+                  <span class="activity-live-badge" id="opponents-gw-range-badge">
+                    <i class="fa-solid fa-calendar-check"></i> GW 7 – GW 11
+                  </span>
+                </div>
+                
+                <div class="opponents-header-controls">
+                  <div class="select-compact-wrapper">
+                    <i class="fa-solid fa-shirt select-icon"></i>
+                    <select id="select-opponents-manager" class="select-sm" title="Select Squad to Analyze">
+                      <!-- Populated in JS with managers -->
+                    </select>
+                  </div>
+                  <button id="btn-opponents-my-team" class="subview-pill active" title="Reset to My Squad (Michael Hoffmann)">
+                    <i class="fa-solid fa-star"></i> My Squad
+                  </button>
+                </div>
+              </div>
+
+              <!-- Top Highlights & Summary Metric Strip -->
+              <div class="opponents-metrics-grid">
+                <div class="metric-card">
+                  <div class="metric-icon rank"><i class="fa-solid fa-list-ol"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Avg Opponent PL Rank</span>
+                    <span class="metric-value highlight" id="opp-metric-avg-rank">-</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon fdr"><i class="fa-solid fa-shield-halved"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Avg Fixture Difficulty</span>
+                    <span class="metric-value" id="opp-metric-avg-fdr">-</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon best"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Favorable Fixture Run</span>
+                    <span class="metric-value best-txt" id="opp-metric-easiest-player">-</span>
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon tough"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                  <div class="metric-info">
+                    <span class="metric-label">Toughest Fixture Run</span>
+                    <span class="metric-value tough-txt" id="opp-metric-toughest-player">-</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Filter & View Controls Bar -->
+              <div class="opponents-filter-bar glass">
+                <div class="opponents-filter-pills" id="opponents-position-filters">
+                  <button class="activity-filter-pill active" data-pos-filter="all"><i class="fa-solid fa-users"></i> All (<span id="opp-count-all">15</span>)</button>
+                  <button class="activity-filter-pill" data-pos-filter="starters"><i class="fa-solid fa-futbol"></i> Starters (<span id="opp-count-starters">11</span>)</button>
+                  <button class="activity-filter-pill" data-pos-filter="bench"><i class="fa-solid fa-couch"></i> Bench (<span id="opp-count-bench">4</span>)</button>
+                  <button class="activity-filter-pill" data-pos-filter="GKP">GKP</button>
+                  <button class="activity-filter-pill" data-pos-filter="DEF">DEF</button>
+                  <button class="activity-filter-pill" data-pos-filter="MID">MID</button>
+                  <button class="activity-filter-pill" data-pos-filter="FWD">FWD</button>
+                </div>
+                <div class="opponents-view-controls">
+                  <!-- Mode: Combined / Table Rank / FDR -->
+                  <div class="transfers-view-toggle">
+                    <button id="btn-opp-mode-both" class="subview-pill active" title="Show both Premier League Standings Rank and FDR badge">
+                      <i class="fa-solid fa-table-cells"></i> Rank &amp; FDR
+                    </button>
+                    <button id="btn-opp-mode-rank" class="subview-pill" title="Show Opponent Premier League Standings Rank">
+                      <i class="fa-solid fa-list-ol"></i> PL Rank
+                    </button>
+                    <button id="btn-opp-mode-fdr" class="subview-pill" title="Show FPL Fixture Difficulty Rating">
+                      <i class="fa-solid fa-gauge-high"></i> FDR
+                    </button>
+                  </div>
+                  <!-- Sort Selector -->
+                  <div class="select-compact-wrapper">
+                    <i class="fa-solid fa-arrow-down-short-wide select-icon"></i>
+                    <select id="select-opp-sort" class="select-sm">
+                      <option value="squad">Sort: Squad Order (GKP → FWD)</option>
+                      <option value="easiest">Sort: Easiest Next 5 Fixtures</option>
+                      <option value="hardest">Sort: Toughest Next 5 Fixtures</option>
+                      <option value="opp-rank-high">Sort: Weakest Opponents (Higher PL #)</option>
+                      <option value="opp-rank-low">Sort: Strongest Opponents (Lower PL #)</option>
+                      <option value="form">Sort: Player Form (PPG)</option>
+                      <option value="points">Sort: Total Points</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Opponents & Fixtures Schedule Table Container -->
+              <div class="opponents-table-wrapper glass">
+                <table class="opponents-table" id="opponents-table">
+                  <thead id="opponents-table-head">
+                    <!-- Dynamic header with GW columns injected via JS -->
+                  </thead>
+                  <tbody id="opponents-table-body">
+                    <!-- Dynamic player rows injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Explanatory Legend Footer -->
+              <div class="opponents-legend-strip glass">
+                <div class="legend-group">
+                  <span class="legend-title"><i class="fa-solid fa-list-ol"></i> PL Table Rank:</span>
+                  <span class="legend-badge rank-top4">#1 - #4 (Top 4 / UCL)</span>
+                  <span class="legend-badge rank-mid">#5 - #14 (Mid-Table)</span>
+                  <span class="legend-badge rank-relegation">#15 - #20 (Bottom 6 / Favorable)</span>
+                </div>
+                <div class="legend-group">
+                  <span class="legend-title"><i class="fa-solid fa-shield-halved"></i> FDR Difficulty:</span>
+                  <span class="legend-chip fdr-diff-2">FDR 2 (Easy)</span>
+                  <span class="legend-chip fdr-diff-3">FDR 3 (Medium)</span>
+                  <span class="legend-chip fdr-diff-4">FDR 4 (Hard)</span>
+                  <span class="legend-chip fdr-diff-5">FDR 5 (Very Hard)</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -464,6 +596,6 @@
     </footer>
   </div>
 
-  <script src="app.js?v=20260921_transfers"></script>
+  <script src="app.js?v=20261016_opponents"></script>
 </body>
 </html>

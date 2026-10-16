@@ -3670,6 +3670,562 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   NEXT 5 OPPONENTS & FIXTURES RANKINGS VIEW
+   ═══════════════════════════════════════════════════════════════════════════ */
+.opponents-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.opponents-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 2px;
+}
+
+.opponents-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.opponents-header-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+}
+
+.opponents-header-title i {
+  color: #2563eb;
+}
+
+.opponents-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Metrics Grid for Opponents View */
+.opponents-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.metric-icon.rank {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.metric-icon.fdr {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.metric-icon.best {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.metric-icon.tough {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.metric-value.best-txt {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #16a34a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metric-value.tough-txt {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #dc2626;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Filter & Controls Bar */
+.opponents-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+}
+
+.opponents-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.opponents-view-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Table Wrapper & Table */
+.opponents-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.opponents-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+.opponents-table th {
+  background: #f8fafc;
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 0.73rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--card-border);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.opponents-table th.col-player {
+  text-align: left;
+  min-width: 180px;
+  position: sticky;
+  left: 0;
+  background: #f8fafc;
+  z-index: 2;
+}
+
+.opponents-table th.col-gw {
+  min-width: 96px;
+}
+
+.opponents-table th.col-summary {
+  min-width: 145px;
+  text-align: center;
+}
+
+.opponents-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.opponents-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.opponents-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.opponents-table tbody tr.bench-row {
+  background: #fafbfc;
+}
+
+.opponents-table tbody tr.bench-row:hover {
+  background: #f1f5f9;
+}
+
+/* Player Column Cell */
+.opponents-table td.player-cell {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  background: inherit;
+  z-index: 1;
+}
+
+.opponents-table tbody tr:hover td.player-cell {
+  background: #f8fafc;
+}
+
+.opp-player-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.opp-player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.opp-player-name-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.opp-player-name {
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: var(--text-primary);
+}
+
+.opp-player-meta {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.opp-player-meta .club-tag {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Position Badges */
+.pos-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  padding: 2px 5px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.pos-badge.pos-GKP {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.pos-badge.pos-DEF {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.pos-badge.pos-MID {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.pos-badge.pos-FWD {
+  background: #ffe4e6;
+  color: #be123c;
+  border: 1px solid #fecdd3;
+}
+
+.squad-badge {
+  font-size: 0.60rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1;
+}
+
+.squad-badge.starter {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.squad-badge.bench {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+/* Opponent Fixture Tile in Cell */
+.opp-fixture-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--card-border);
+  background: #ffffff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: help;
+  min-height: 48px;
+}
+
+.opp-fixture-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.opp-fixture-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-weight: 800;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  line-height: 1.1;
+}
+
+.opp-fixture-top .opp-venue.venue-h {
+  color: #0f172a;
+  font-size: 0.70rem;
+}
+
+.opp-fixture-top .opp-venue.venue-a {
+  color: #64748b;
+  font-size: 0.70rem;
+  font-weight: 600;
+}
+
+.opp-fixture-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+/* Opponent Premier League Standings Rank Badges */
+.opp-rank-badge {
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  font-weight: 800;
+  padding: 1px 4.5px;
+  border-radius: 4px;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+}
+
+.opp-rank-badge.rank-top4 {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.opp-rank-badge.rank-mid {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.opp-rank-badge.rank-relegation {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.opp-rank-badge.rank-unknown {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+}
+
+/* FPL FDR Pill inside Opponent Tile */
+.opp-fdr-badge {
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 4px;
+  line-height: 1.2;
+}
+
+.opp-fdr-badge.fdr-easy,
+.opp-fixture-box.fdr-border-easy {
+  background: #064e3b;
+  color: #6ee7b7;
+  border: 1px solid #10b981;
+}
+
+.opp-fdr-badge.fdr-med,
+.opp-fixture-box.fdr-border-med {
+  background: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #64748b;
+}
+
+.opp-fdr-badge.fdr-hard,
+.opp-fixture-box.fdr-border-hard {
+  background: #7c2d12;
+  color: #fdba74;
+  border: 1px solid #f97316;
+}
+
+.opp-fdr-badge.fdr-vhard,
+.opp-fixture-box.fdr-border-vhard {
+  background: #881337;
+  color: #fecdd3;
+  border: 1px solid #f43f5e;
+}
+
+/* Blank Gameweek Box */
+.opp-fixture-box.blank {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* Summary Column Cell */
+.opp-summary-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-family: var(--font-mono);
+}
+
+.opp-summary-avg-rank {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.opp-summary-sub {
+  font-size: 0.70rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.opp-summary-league-rank {
+  font-size: 0.66rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.opp-summary-league-rank.fdr-easy {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.opp-summary-league-rank.fdr-med {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.opp-summary-league-rank.fdr-hard {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+.opp-summary-league-rank.fdr-vhard {
+  background: #fff1f2;
+  color: #be123c;
+  border: 1px solid #fecdd3;
+}
+
+/* Legend Strip */
+.opponents-legend-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid var(--card-border);
+  font-size: 0.72rem;
+}
+
+.opponents-legend-strip .legend-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.opponents-legend-strip .legend-title {
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-right: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.opponents-legend-strip .legend-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1.5px 5px;
+  border-radius: 4px;
+}
+
+.opponents-legend-strip .legend-chip {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1.5px 5px;
+  border-radius: 4px;
+}
+
+.opponents-legend-strip .legend-chip.fdr-diff-2 {
+  background: #064e3b;
+  color: #6ee7b7;
+  border: 1px solid #10b981;
+}
+
+.opponents-legend-strip .legend-chip.fdr-diff-3 {
+  background: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #64748b;
+}
+
+.opponents-legend-strip .legend-chip.fdr-diff-4 {
+  background: #7c2d12;
+  color: #fdba74;
+  border: 1px solid #f97316;
+}
+
+.opponents-legend-strip .legend-chip.fdr-diff-5 {
+  background: #881337;
+  color: #fecdd3;
+  border: 1px solid #f43f5e;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    RESPONSIVE DESIGN & MOBILE OPTIMIZATIONS
    ═══════════════════════════════════════════════════════════════════════════ */
 
