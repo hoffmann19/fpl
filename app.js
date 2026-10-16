@@ -4443,25 +4443,29 @@ function renderOpponentsView() {
         fixTd.className = 'fdr-fixture-cell';
 
         if (f.blank) {
-          fixTd.innerHTML = `<div class="fdr-block fdr-diff-blank" title="Blank Gameweek: No match scheduled">-</div>`;
+          fixTd.innerHTML = `<div class="fdr-block fdr-diff-blank" style="background-color: #f1f5f9 !important; color: #94a3b8 !important; border: 1px dashed #cbd5e1 !important;" title="Blank Gameweek: No match scheduled">-</div>`;
         } else {
           const diffClass = `fdr-diff-${f.difficulty}`;
           const oppRankStr = f.oppRank ? `#${f.oppRank}` : '-';
           const defStr = f.oppStats ? `Def #${f.oppStats.def_rank} (${f.oppStats.goals_against} GA, ${f.oppStats.ga_per_game}/m)` : '-';
           const attStr = f.oppStats ? `Att #${f.oppStats.att_rank} (${f.oppStats.goals_for} GF, ${f.oppStats.gf_per_game}/m)` : '-';
-          const squadNote = c.inSquad ? `
-⭐ Your Players: ${c.players.map(p => p.name).join(', ')}` : '';
+          const squadNote = c.inSquad ? `\n⭐ Your Players: ${c.players.map(p => p.name).join(', ')}` : '';
 
-          const tooltip = `GW${f.gw}: ${c.clubName} vs ${f.oppName} (${f.venue === 'H' ? 'Home' : 'Away'})
-FPL Difficulty: FDR ${f.difficulty}
-Opponent PL Rank: ${oppRankStr}
-Opponent Defense: ${defStr}
-Opponent Attack: ${attStr}${squadNote}`;
+          const tooltip = `GW${f.gw}: ${c.clubName} vs ${f.oppName} (${f.venue === 'H' ? 'Home' : 'Away'})\nFPL Difficulty: FDR ${f.difficulty}\nOpponent PL Rank: ${oppRankStr}\nOpponent Defense: ${defStr}\nOpponent Attack: ${attStr}${squadNote}`;
+
+          const FDR_THEMES = {
+            1: { bg: '#00ff87', color: '#0f172a', border: '#00e676' },
+            2: { bg: '#00ff87', color: '#0f172a', border: '#00e676' },
+            3: { bg: '#e2e8f0', color: '#1e293b', border: '#cbd5e1' },
+            4: { bg: '#ff1751', color: '#ffffff', border: '#e11d48' },
+            5: { bg: '#80072d', color: '#ffffff', border: '#58041d' }
+          };
+          const theme = FDR_THEMES[f.difficulty] || FDR_THEMES[3];
 
           fixTd.innerHTML = `
-            <div class="fdr-block ${diffClass}" title="${tooltip}">
-              <span class="fdr-opp-name">${f.oppShort}</span>
-              <span class="fdr-opp-venue">(${f.venue.toLowerCase()})</span>
+            <div class="fdr-block ${diffClass}" style="background-color: ${theme.bg} !important; color: ${theme.color} !important; border: 1px solid ${theme.border} !important;" title="${tooltip}">
+              <span class="fdr-opp-name" style="color: ${theme.color} !important;">${f.oppShort}</span>
+              <span class="fdr-opp-venue" style="color: ${theme.color} !important;">(${f.venue.toLowerCase()})</span>
             </div>
           `;
         }
@@ -4473,8 +4477,16 @@ Opponent Attack: ${attStr}${squadNote}`;
       const summaryTd = document.createElement('td');
       summaryTd.className = 'fdr-summary-cell';
       const avgDiffClass = getFdrDiffClass(c.avgFdr);
+      const roundedAvg = Math.min(5, Math.max(2, Math.round(c.avgFdr)));
+      const SUMMARY_THEMES = {
+        2: { bg: '#ecfdf5', color: '#047857', border: '#a7f3d0' },
+        3: { bg: '#f1f5f9', color: '#334155', border: '#cbd5e1' },
+        4: { bg: '#fff7ed', color: '#c2410c', border: '#fed7aa' },
+        5: { bg: '#fff1f2', color: '#be123c', border: '#fecdd3' }
+      };
+      const sumTheme = SUMMARY_THEMES[roundedAvg] || SUMMARY_THEMES[3];
       summaryTd.innerHTML = `
-        <span class="fdr-summary-score fdr-${avgDiffClass}" title="${c.clubName} average fixture difficulty over next ${gwList.length} matches: ${c.avgFdr}">
+        <span class="fdr-summary-score fdr-${avgDiffClass}" style="background-color: ${sumTheme.bg} !important; color: ${sumTheme.color} !important; border: 1px solid ${sumTheme.border} !important;" title="${c.clubName} average fixture difficulty over next ${gwList.length} matches: ${c.avgFdr}">
           ${c.avgFdr}
         </span>
       `;
