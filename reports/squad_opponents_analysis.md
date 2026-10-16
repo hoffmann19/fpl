@@ -1,14 +1,17 @@
 # Squad Next 5 Opponents & Defensive Records Report
-**Manager**: Michael Hoffmann (Bruno's Boys)  
+**Manager**: Arsene Wenger (Set Piece Champions)  
 **Gameweeks Analyzed**: GW 7 – GW 11 (Current: GW 6)  
 **Generated**: October 2026  
 
 ---
 ## 1. Key Tactical Takeaways
 
-- **Top Attacking Target Run**: **Smith Rowe** (FUL) faces opponents conceding an average of **1.48 GA/game** over the next 5 weeks.
-- **Top Clean Sheet Potential**: **Dasilva** (COV) faces opponents scoring only **1.0 GF/game** over the next 5 weeks.
-- **Chelsea Defensive Leak**: Chelsea has conceded **12 goals in 5 games (2.4/match)**, ranking **#20 (dead last)** defensively in the Premier League. Target any player facing CHE.
+- **Top Attacking Target Run**: **Barry** (EVE) faces opponents conceding an average of **1.56 GA/game** over the next 5 weeks.
+- **Top Clean Sheet Potential**: **Thomas** (COV) faces opponents scoring only **1.0 GF/game** over the next 5 weeks.
+- **Erling Haaland Capitalization**: Faces **Ipswich (H)** in GW 7 (Def #18, 11 GA conceded), followed by **Aston Villa (A)** (Def #15, 9 GA) and **Fulham (H)** in GW 11. Average opponent GA faced is **1.52 GA/game** — absolute captaincy priority!
+- **Chelsea Assets (Palmer, João Pedro)**: Matchups feature Tottenham (H), Man Utd (H), and Sunderland (A), facing defenses with a solid 1.28 GA/game average.
+- **Arsenal Core (Calafiori, Konsa, Ødegaard)**: Facing tough defensive outfits (Everton #2, Liverpool #5, Hull #6) with an average of 1.0 GA/game. However, clean sheet prospects remain strong with opponents scoring only 1.28 GF/game.
+- **Chelsea Defensive Leak**: Chelsea has conceded **12 goals in 5 games (2.4/match)**, ranking **#20 (dead last)** defensively in the Premier League. Target any player facing CHE (e.g. Mbeumo in GW 9).
 - **Weakest Attacks for Clean Sheets**: Coventry (1 GF), Tottenham (2 GF), Aston Villa (4 GF), and Nottingham Forest (4 GF) offer prime clean sheet matchups.
 
 ---
@@ -16,21 +19,21 @@
 
 | Player | Pos | Club | Status | GW 7 | GW 8 | GW 9 | GW 10 | GW 11 | Avg Opp GA/m | Avg FDR | Matchup Outlook |
 |:---|:---:|:---:|:---:| :---: | :---: | :---: | :---: | :---: |:---:|:---:|:---|
-| **Raya** | GKP | ARS | Starting XI | **NFO** (A)<br><small>Def #9 (5 GA) · FDR 3</small> | **EVE** (H)<br><small>Def #2 (3 GA) · FDR 3</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **HUL** (H)<br><small>Def #6 (4 GA) · FDR 2</small> | **NEW** (A)<br><small>Def #14 (9 GA) · FDR 3</small> | **1.0** | 3.0 | ⚖️ Moderate Clean Sheet Odds |
+| **Verbruggen** | GKP | BHA | Starting XI | **CRY** (H)<br><small>Def #19 (11 GA) · FDR 2</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **MCI** (A)<br><small>Def #7 (5 GA) · FDR 5</small> | **BRE** (H)<br><small>Def #4 (4 GA) · FDR 3</small> | **HUL** (A)<br><small>Def #6 (4 GA) · FDR 2</small> | **1.12** | 3.2 | ⚠️ High Conceding Risk |
+| **Calafiori** | DEF | ARS | Starting XI | **NFO** (A)<br><small>Def #9 (5 GA) · FDR 3</small> | **EVE** (H)<br><small>Def #2 (3 GA) · FDR 3</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **HUL** (H)<br><small>Def #6 (4 GA) · FDR 2</small> | **NEW** (A)<br><small>Def #14 (9 GA) · FDR 3</small> | **1.0** | 3.0 | ⚖️ Moderate Clean Sheet Odds |
 | **Hall** | DEF | NEW | Starting XI | **AVL** (H)<br><small>Def #15 (9 GA) · FDR 3</small> | **CRY** (A)<br><small>Def #19 (11 GA) · FDR 3</small> | **EVE** (H)<br><small>Def #2 (3 GA) · FDR 3</small> | **FUL** (A)<br><small>Def #12 (8 GA) · FDR 3</small> | **ARS** (H)<br><small>Def #3 (4 GA) · FDR 4</small> | **1.4** | 3.2 | ⚖️ Moderate Clean Sheet Odds |
-| **Tarkowski** | DEF | EVE | Starting XI | **CHE** (H)<br><small>Def #20 (12 GA) · FDR 4</small> | **ARS** (A)<br><small>Def #3 (4 GA) · FDR 5</small> | **NEW** (A)<br><small>Def #14 (9 GA) · FDR 3</small> | **COV** (H)<br><small>Def #17 (10 GA) · FDR 2</small> | **BRE** (A)<br><small>Def #4 (4 GA) · FDR 3</small> | **1.56** | 3.4 | ⚖️ Moderate Clean Sheet Odds |
-| **Virgil** | DEF | LIV | Starting XI | **BRE** (A)<br><small>Def #4 (4 GA) · FDR 3</small> | **BHA** (H)<br><small>Def #8 (5 GA) · FDR 3</small> | **ARS** (H)<br><small>Def #3 (4 GA) · FDR 4</small> | **CRY** (A)<br><small>Def #19 (11 GA) · FDR 3</small> | **MUN** (H)<br><small>Def #10 (8 GA) · FDR 4</small> | **1.28** | 3.4 | ⚠️ High Conceding Risk |
-| **B.Fernandes** | MID | MUN | Starting XI | **LEE** (A)<br><small>Def #1 (3 GA) · FDR 3</small> | **BOU** (H)<br><small>Def #11 (8 GA) · FDR 3</small> | **CHE** (A)<br><small>Def #20 (12 GA) · FDR 4</small> | **AVL** (H)<br><small>Def #15 (9 GA) · FDR 3</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **1.44** | 3.4 | ⚖️ Moderate Goal Threat |
+| **Konsa** | DEF | ARS | Starting XI | **NFO** (A)<br><small>Def #9 (5 GA) · FDR 3</small> | **EVE** (H)<br><small>Def #2 (3 GA) · FDR 3</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **HUL** (H)<br><small>Def #6 (4 GA) · FDR 2</small> | **NEW** (A)<br><small>Def #14 (9 GA) · FDR 3</small> | **1.0** | 3.0 | ⚖️ Moderate Clean Sheet Odds |
+| **Barnes** | MID | NEW | Starting XI | **AVL** (H)<br><small>Def #15 (9 GA) · FDR 3</small> | **CRY** (A)<br><small>Def #19 (11 GA) · FDR 3</small> | **EVE** (H)<br><small>Def #2 (3 GA) · FDR 3</small> | **FUL** (A)<br><small>Def #12 (8 GA) · FDR 3</small> | **ARS** (H)<br><small>Def #3 (4 GA) · FDR 4</small> | **1.4** | 3.2 | ⚖️ Moderate Goal Threat |
+| **Groß** | MID | BHA | Starting XI | **CRY** (H)<br><small>Def #19 (11 GA) · FDR 2</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **MCI** (A)<br><small>Def #7 (5 GA) · FDR 5</small> | **BRE** (H)<br><small>Def #4 (4 GA) · FDR 3</small> | **HUL** (A)<br><small>Def #6 (4 GA) · FDR 2</small> | **1.12** | 3.2 | ⚖️ Moderate Goal Threat |
 | **Mbeumo** | MID | MUN | Starting XI | **LEE** (A)<br><small>Def #1 (3 GA) · FDR 3</small> | **BOU** (H)<br><small>Def #11 (8 GA) · FDR 3</small> | **CHE** (A)<br><small>Def #20 (12 GA) · FDR 4</small> | **AVL** (H)<br><small>Def #15 (9 GA) · FDR 3</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **1.44** | 3.4 | ⚖️ Moderate Goal Threat |
-| **Rice** | MID | ARS | Starting XI | **NFO** (A)<br><small>Def #9 (5 GA) · FDR 3</small> | **EVE** (H)<br><small>Def #2 (3 GA) · FDR 3</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **HUL** (H)<br><small>Def #6 (4 GA) · FDR 2</small> | **NEW** (A)<br><small>Def #14 (9 GA) · FDR 3</small> | **1.0** | 3.0 | ⛔ Tough Fixtures (Resolute Defenses) |
-| **Rogers** | MID | CHE | Starting XI | **EVE** (A)<br><small>Def #2 (3 GA) · FDR 3</small> | **TOT** (H)<br><small>Def #13 (8 GA) · FDR 2</small> | **MUN** (H)<br><small>Def #10 (8 GA) · FDR 4</small> | **SUN** (A)<br><small>Def #16 (10 GA) · FDR 3</small> | **LEE** (H)<br><small>Def #1 (3 GA) · FDR 3</small> | **1.28** | 3.0 | ⚖️ Moderate Goal Threat |
-| **Havertz** | FWD | ARS | Starting XI | **NFO** (A)<br><small>Def #9 (5 GA) · FDR 3</small> | **EVE** (H)<br><small>Def #2 (3 GA) · FDR 3</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **HUL** (H)<br><small>Def #6 (4 GA) · FDR 2</small> | **NEW** (A)<br><small>Def #14 (9 GA) · FDR 3</small> | **1.0** | 3.0 | ⛔ Tough Fixtures (Resolute Defenses) |
+| **Palmer** | MID | CHE | Starting XI | **EVE** (A)<br><small>Def #2 (3 GA) · FDR 3</small> | **TOT** (H)<br><small>Def #13 (8 GA) · FDR 2</small> | **MUN** (H)<br><small>Def #10 (8 GA) · FDR 4</small> | **SUN** (A)<br><small>Def #16 (10 GA) · FDR 3</small> | **LEE** (H)<br><small>Def #1 (3 GA) · FDR 3</small> | **1.28** | 3.0 | ⚖️ Moderate Goal Threat |
+| **Ødegaard** | MID | ARS | Starting XI | **NFO** (A)<br><small>Def #9 (5 GA) · FDR 3</small> | **EVE** (H)<br><small>Def #2 (3 GA) · FDR 3</small> | **LIV** (A)<br><small>Def #5 (4 GA) · FDR 4</small> | **HUL** (H)<br><small>Def #6 (4 GA) · FDR 2</small> | **NEW** (A)<br><small>Def #14 (9 GA) · FDR 3</small> | **1.0** | 3.0 | ⛔ Tough Fixtures (Resolute Defenses) |
+| **Haaland** | FWD | MCI | Starting XI | **IPS** (H)<br><small>Def #18 (11 GA) · FDR 2</small> | **AVL** (A)<br><small>Def #15 (9 GA) · FDR 3</small> | **BHA** (H)<br><small>Def #8 (5 GA) · FDR 3</small> | **NFO** (A)<br><small>Def #9 (5 GA) · FDR 3</small> | **FUL** (H)<br><small>Def #12 (8 GA) · FDR 2</small> | **1.52** | 2.6 | 🔥 Prime Goalscoring Targets (Leaky Defenses) |
 | **João Pedro** | FWD | CHE | Starting XI | **EVE** (A)<br><small>Def #2 (3 GA) · FDR 3</small> | **TOT** (H)<br><small>Def #13 (8 GA) · FDR 2</small> | **MUN** (H)<br><small>Def #10 (8 GA) · FDR 4</small> | **SUN** (A)<br><small>Def #16 (10 GA) · FDR 3</small> | **LEE** (H)<br><small>Def #1 (3 GA) · FDR 3</small> | **1.28** | 3.0 | ⚖️ Moderate Goal Threat |
-| **Thiago** | FWD | BRE | Starting XI | **LIV** (H)<br><small>Def #5 (4 GA) · FDR 4</small> | **HUL** (A)<br><small>Def #6 (4 GA) · FDR 2</small> | **NFO** (H)<br><small>Def #9 (5 GA) · FDR 3</small> | **BHA** (A)<br><small>Def #8 (5 GA) · FDR 4</small> | **EVE** (H)<br><small>Def #2 (3 GA) · FDR 3</small> | **0.84** | 3.2 | ⛔ Tough Fixtures (Resolute Defenses) |
-| **Vicario** | GKP | TOT | Bench | **COV** (H)<br><small>Def #17 (10 GA) · FDR 2</small> | **CHE** (A)<br><small>Def #20 (12 GA) · FDR 4</small> | **CRY** (H)<br><small>Def #19 (11 GA) · FDR 2</small> | **LEE** (A)<br><small>Def #1 (3 GA) · FDR 3</small> | **IPS** (H)<br><small>Def #18 (11 GA) · FDR 2</small> | **1.88** | 2.6 | ⚖️ Moderate Clean Sheet Odds |
-| **Dasilva** | DEF | COV | Bench | **TOT** (A)<br><small>Def #13 (8 GA) · FDR 3</small> | **FUL** (H)<br><small>Def #12 (8 GA) · FDR 2</small> | **SUN** (H)<br><small>Def #16 (10 GA) · FDR 3</small> | **EVE** (A)<br><small>Def #2 (3 GA) · FDR 3</small> | **CRY** (H)<br><small>Def #19 (11 GA) · FDR 2</small> | **1.6** | 2.6 | 🛡️ Excellent Clean Sheet Potential |
-| **Targett** | DEF | HUL | Bench | **FUL** (A)<br><small>Def #12 (8 GA) · FDR 3</small> | **BRE** (H)<br><small>Def #4 (4 GA) · FDR 3</small> | **IPS** (H)<br><small>Def #18 (11 GA) · FDR 2</small> | **ARS** (A)<br><small>Def #3 (4 GA) · FDR 5</small> | **BHA** (H)<br><small>Def #8 (5 GA) · FDR 3</small> | **1.28** | 3.2 | ⚠️ High Conceding Risk |
-| **Smith Rowe** | MID | FUL | Bench | **HUL** (H)<br><small>Def #6 (4 GA) · FDR 2</small> | **COV** (A)<br><small>Def #17 (10 GA) · FDR 2</small> | **AVL** (A)<br><small>Def #15 (9 GA) · FDR 3</small> | **NEW** (H)<br><small>Def #14 (9 GA) · FDR 3</small> | **MCI** (A)<br><small>Def #7 (5 GA) · FDR 5</small> | **1.48** | 3.0 | ⚖️ Moderate Goal Threat |
+| **Kinsky** | GKP | TOT | Bench | **COV** (H)<br><small>Def #17 (10 GA) · FDR 2</small> | **CHE** (A)<br><small>Def #20 (12 GA) · FDR 4</small> | **CRY** (H)<br><small>Def #19 (11 GA) · FDR 2</small> | **LEE** (A)<br><small>Def #1 (3 GA) · FDR 3</small> | **IPS** (H)<br><small>Def #18 (11 GA) · FDR 2</small> | **1.88** | 2.6 | ⚖️ Moderate Clean Sheet Odds |
+| **Gvardiol** | DEF | MCI | Bench | **IPS** (H)<br><small>Def #18 (11 GA) · FDR 2</small> | **AVL** (A)<br><small>Def #15 (9 GA) · FDR 3</small> | **BHA** (H)<br><small>Def #8 (5 GA) · FDR 3</small> | **NFO** (A)<br><small>Def #9 (5 GA) · FDR 3</small> | **FUL** (H)<br><small>Def #12 (8 GA) · FDR 2</small> | **1.52** | 2.6 | ⚖️ Moderate Clean Sheet Odds |
+| **Thomas** | DEF | COV | Bench | **TOT** (A)<br><small>Def #13 (8 GA) · FDR 3</small> | **FUL** (H)<br><small>Def #12 (8 GA) · FDR 2</small> | **SUN** (H)<br><small>Def #16 (10 GA) · FDR 3</small> | **EVE** (A)<br><small>Def #2 (3 GA) · FDR 3</small> | **CRY** (H)<br><small>Def #19 (11 GA) · FDR 2</small> | **1.6** | 2.6 | 🛡️ Excellent Clean Sheet Potential |
+| **Barry** | FWD | EVE | Bench | **CHE** (H)<br><small>Def #20 (12 GA) · FDR 4</small> | **ARS** (A)<br><small>Def #3 (4 GA) · FDR 5</small> | **NEW** (A)<br><small>Def #14 (9 GA) · FDR 3</small> | **COV** (H)<br><small>Def #17 (10 GA) · FDR 2</small> | **BRE** (A)<br><small>Def #4 (4 GA) · FDR 3</small> | **1.56** | 3.4 | 🔥 Prime Goalscoring Targets (Leaky Defenses) |
 
 ---
 ## 3. Attackers Ranked by Opponent Defensive Leakiness
@@ -39,14 +42,14 @@
 
 | Player | Club | Pos | Avg Opp GA/game | Avg Opp FDR | Next 5 Opponents & Def Ranks | Strategy |
 |:---|:---:|:---:|:---:|:---:|:---|:---|
-| **Smith Rowe** | FUL | MID | **1.48** | 3.0 | 🔴 HUL (H, Def #6, 4 GA)<br>🟢 COV (A, Def #17, 10 GA)<br>🟢 AVL (A, Def #15, 9 GA)<br>🟢 NEW (H, Def #14, 9 GA)<br>⚪ MCI (A, Def #7, 5 GA) | ⚖️ Moderate Goal Threat |
-| **B.Fernandes** | MUN | MID | **1.44** | 3.4 | 🔴 LEE (A, Def #1, 3 GA)<br>⚪ BOU (H, Def #11, 8 GA)<br>🟢 CHE (A, Def #20, 12 GA)<br>🟢 AVL (H, Def #15, 9 GA)<br>🔴 LIV (A, Def #5, 4 GA) | ⚖️ Moderate Goal Threat |
+| **Barry** | EVE | FWD | **1.56** | 3.4 | 🟢 CHE (H, Def #20, 12 GA)<br>🔴 ARS (A, Def #3, 4 GA)<br>🟢 NEW (A, Def #14, 9 GA)<br>🟢 COV (H, Def #17, 10 GA)<br>🔴 BRE (A, Def #4, 4 GA) | 🔥 Prime Goalscoring Targets (Leaky Defenses) |
+| **Haaland** | MCI | FWD | **1.52** | 2.6 | 🟢 IPS (H, Def #18, 11 GA)<br>🟢 AVL (A, Def #15, 9 GA)<br>⚪ BHA (H, Def #8, 5 GA)<br>⚪ NFO (A, Def #9, 5 GA)<br>⚪ FUL (H, Def #12, 8 GA) | 🔥 Prime Goalscoring Targets (Leaky Defenses) |
 | **Mbeumo** | MUN | MID | **1.44** | 3.4 | 🔴 LEE (A, Def #1, 3 GA)<br>⚪ BOU (H, Def #11, 8 GA)<br>🟢 CHE (A, Def #20, 12 GA)<br>🟢 AVL (H, Def #15, 9 GA)<br>🔴 LIV (A, Def #5, 4 GA) | ⚖️ Moderate Goal Threat |
-| **Rogers** | CHE | MID | **1.28** | 3.0 | 🔴 EVE (A, Def #2, 3 GA)<br>⚪ TOT (H, Def #13, 8 GA)<br>⚪ MUN (H, Def #10, 8 GA)<br>🟢 SUN (A, Def #16, 10 GA)<br>🔴 LEE (H, Def #1, 3 GA) | ⚖️ Moderate Goal Threat |
+| **Barnes** | NEW | MID | **1.4** | 3.2 | 🟢 AVL (H, Def #15, 9 GA)<br>🟢 CRY (A, Def #19, 11 GA)<br>🔴 EVE (H, Def #2, 3 GA)<br>⚪ FUL (A, Def #12, 8 GA)<br>🔴 ARS (H, Def #3, 4 GA) | ⚖️ Moderate Goal Threat |
+| **Palmer** | CHE | MID | **1.28** | 3.0 | 🔴 EVE (A, Def #2, 3 GA)<br>⚪ TOT (H, Def #13, 8 GA)<br>⚪ MUN (H, Def #10, 8 GA)<br>🟢 SUN (A, Def #16, 10 GA)<br>🔴 LEE (H, Def #1, 3 GA) | ⚖️ Moderate Goal Threat |
 | **João Pedro** | CHE | FWD | **1.28** | 3.0 | 🔴 EVE (A, Def #2, 3 GA)<br>⚪ TOT (H, Def #13, 8 GA)<br>⚪ MUN (H, Def #10, 8 GA)<br>🟢 SUN (A, Def #16, 10 GA)<br>🔴 LEE (H, Def #1, 3 GA) | ⚖️ Moderate Goal Threat |
-| **Rice** | ARS | MID | **1.0** | 3.0 | ⚪ NFO (A, Def #9, 5 GA)<br>🔴 EVE (H, Def #2, 3 GA)<br>🔴 LIV (A, Def #5, 4 GA)<br>🔴 HUL (H, Def #6, 4 GA)<br>🟢 NEW (A, Def #14, 9 GA) | ⛔ Tough Fixtures (Resolute Defenses) |
-| **Havertz** | ARS | FWD | **1.0** | 3.0 | ⚪ NFO (A, Def #9, 5 GA)<br>🔴 EVE (H, Def #2, 3 GA)<br>🔴 LIV (A, Def #5, 4 GA)<br>🔴 HUL (H, Def #6, 4 GA)<br>🟢 NEW (A, Def #14, 9 GA) | ⛔ Tough Fixtures (Resolute Defenses) |
-| **Thiago** | BRE | FWD | **0.84** | 3.2 | 🔴 LIV (H, Def #5, 4 GA)<br>🔴 HUL (A, Def #6, 4 GA)<br>⚪ NFO (H, Def #9, 5 GA)<br>⚪ BHA (A, Def #8, 5 GA)<br>🔴 EVE (H, Def #2, 3 GA) | ⛔ Tough Fixtures (Resolute Defenses) |
+| **Groß** | BHA | MID | **1.12** | 3.2 | 🟢 CRY (H, Def #19, 11 GA)<br>🔴 LIV (A, Def #5, 4 GA)<br>⚪ MCI (A, Def #7, 5 GA)<br>🔴 BRE (H, Def #4, 4 GA)<br>🔴 HUL (A, Def #6, 4 GA) | ⚖️ Moderate Goal Threat |
+| **Ødegaard** | ARS | MID | **1.0** | 3.0 | ⚪ NFO (A, Def #9, 5 GA)<br>🔴 EVE (H, Def #2, 3 GA)<br>🔴 LIV (A, Def #5, 4 GA)<br>🔴 HUL (H, Def #6, 4 GA)<br>🟢 NEW (A, Def #14, 9 GA) | ⛔ Tough Fixtures (Resolute Defenses) |
 
 ---
 ## 4. Defenders & Goalkeepers Ranked by Clean Sheet Potential
@@ -55,13 +58,13 @@
 
 | Player | Club | Pos | Avg Opp GF/game | Avg Opp FDR | Next 5 Opponents & Att Ranks | Clean Sheet Outlook |
 |:---|:---:|:---:|:---:|:---:|:---|:---|
-| **Dasilva** | COV | DEF | **1.0** | 2.6 | 🟢 TOT (A, Att #19, 2 GF)<br>🟢 FUL (H, Att #16, 5 GF)<br>⚪ SUN (H, Att #13, 6 GF)<br>⚪ EVE (A, Att #11, 6 GF)<br>⚪ CRY (H, Att #14, 6 GF) | 🛡️ Excellent Clean Sheet Potential |
+| **Thomas** | COV | DEF | **1.0** | 2.6 | 🟢 TOT (A, Att #19, 2 GF)<br>🟢 FUL (H, Att #16, 5 GF)<br>⚪ SUN (H, Att #13, 6 GF)<br>⚪ EVE (A, Att #11, 6 GF)<br>⚪ CRY (H, Att #14, 6 GF) | 🛡️ Excellent Clean Sheet Potential |
 | **Hall** | NEW | DEF | **1.16** | 3.2 | 🟢 AVL (H, Att #18, 4 GF)<br>⚪ CRY (A, Att #14, 6 GF)<br>⚪ EVE (H, Att #11, 6 GF)<br>🟢 FUL (A, Att #16, 5 GF)<br>⚪ ARS (H, Att #6, 8 GF) | ⚖️ Moderate Clean Sheet Odds |
-| **Vicario** | TOT | GKP | **1.24** | 2.6 | 🟢 COV (H, Att #20, 1 GF)<br>🔴 CHE (A, Att #4, 10 GF)<br>⚪ CRY (H, Att #14, 6 GF)<br>⚪ LEE (A, Att #8, 7 GF)<br>⚪ IPS (H, Att #10, 7 GF) | ⚖️ Moderate Clean Sheet Odds |
-| **Raya** | ARS | GKP | **1.28** | 3.0 | 🟢 NFO (A, Att #17, 4 GF)<br>⚪ EVE (H, Att #11, 6 GF)<br>⚪ LIV (A, Att #9, 7 GF)<br>⚪ HUL (H, Att #12, 6 GF)<br>🔴 NEW (A, Att #5, 9 GF) | ⚖️ Moderate Clean Sheet Odds |
-| **Tarkowski** | EVE | DEF | **1.52** | 3.4 | 🔴 CHE (H, Att #4, 10 GF)<br>⚪ ARS (A, Att #6, 8 GF)<br>🔴 NEW (A, Att #5, 9 GF)<br>🟢 COV (H, Att #20, 1 GF)<br>🔴 BRE (A, Att #3, 10 GF) | ⚖️ Moderate Clean Sheet Odds |
-| **Targett** | HUL | DEF | **1.84** | 3.2 | 🟢 FUL (A, Att #16, 5 GF)<br>🔴 BRE (H, Att #3, 10 GF)<br>⚪ IPS (H, Att #10, 7 GF)<br>⚪ ARS (A, Att #6, 8 GF)<br>🔴 BHA (H, Att #1, 16 GF) | ⚠️ High Conceding Risk |
-| **Virgil** | LIV | DEF | **1.92** | 3.4 | 🔴 BRE (A, Att #3, 10 GF)<br>🔴 BHA (H, Att #1, 16 GF)<br>⚪ ARS (H, Att #6, 8 GF)<br>⚪ CRY (A, Att #14, 6 GF)<br>⚪ MUN (H, Att #7, 8 GF) | ⚠️ High Conceding Risk |
+| **Kinsky** | TOT | GKP | **1.24** | 2.6 | 🟢 COV (H, Att #20, 1 GF)<br>🔴 CHE (A, Att #4, 10 GF)<br>⚪ CRY (H, Att #14, 6 GF)<br>⚪ LEE (A, Att #8, 7 GF)<br>⚪ IPS (H, Att #10, 7 GF) | ⚖️ Moderate Clean Sheet Odds |
+| **Calafiori** | ARS | DEF | **1.28** | 3.0 | 🟢 NFO (A, Att #17, 4 GF)<br>⚪ EVE (H, Att #11, 6 GF)<br>⚪ LIV (A, Att #9, 7 GF)<br>⚪ HUL (H, Att #12, 6 GF)<br>🔴 NEW (A, Att #5, 9 GF) | ⚖️ Moderate Clean Sheet Odds |
+| **Konsa** | ARS | DEF | **1.28** | 3.0 | 🟢 NFO (A, Att #17, 4 GF)<br>⚪ EVE (H, Att #11, 6 GF)<br>⚪ LIV (A, Att #9, 7 GF)<br>⚪ HUL (H, Att #12, 6 GF)<br>🔴 NEW (A, Att #5, 9 GF) | ⚖️ Moderate Clean Sheet Odds |
+| **Gvardiol** | MCI | DEF | **1.44** | 2.6 | ⚪ IPS (H, Att #10, 7 GF)<br>🟢 AVL (A, Att #18, 4 GF)<br>🔴 BHA (H, Att #1, 16 GF)<br>🟢 NFO (A, Att #17, 4 GF)<br>🟢 FUL (H, Att #16, 5 GF) | ⚖️ Moderate Clean Sheet Odds |
+| **Verbruggen** | BHA | GKP | **1.68** | 3.2 | ⚪ CRY (H, Att #14, 6 GF)<br>⚪ LIV (A, Att #9, 7 GF)<br>🔴 MCI (A, Att #2, 13 GF)<br>🔴 BRE (H, Att #3, 10 GF)<br>⚪ HUL (A, Att #12, 6 GF) | ⚠️ High Conceding Risk |
 
 ---
 ## 5. Premier League 20-Team Defensive & Attacking Records (Through GW 6)

@@ -2,24 +2,25 @@
 """
 Generate a clean, comprehensive Markdown report and CSV file for squad fixtures
 and opponent defensive / attacking records.
+Supports generating for any manager in the mini-league (default: Arsene Wenger).
 """
 
 import json
 import csv
-import os
+import sys
+import argparse
 from pathlib import Path
 
-def main():
-    root = Path(__file__).resolve().parent.parent
-    data_path = root / "visualizer_data.json"
-    if not data_path.exists():
-        data_path = root / "visualizer_data_2026_27.json"
+def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
+    managers_dict = data.get("managers", {})
+    if mgr_name not in managers_dict:
+        # Fuzzy match
+        for m in managers_dict:
+            if mgr_name.lower() in m.lower():
+                mgr_name = m
+                break
 
-    with open(data_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    mgr_name = "Michael Hoffmann"
-    team_name = data.get("managers", {}).get(mgr_name, {}).get("team", "Bruno's Boys")
+    team_name = managers_dict.get(mgr_name, {}).get("team", mgr_name)
 
     # Determine active GW
     current_gw = data.get("current_gw") or 6
@@ -29,7 +30,8 @@ def main():
     # Squad lineup
     lineup = data.get("gameweeks", {}).get(str(current_gw), {}).get("lineups", {}).get(mgr_name, [])
     if not lineup:
-        # Fallback to latest available lineup
+        # Fallback to latest available played GW
+        played_gws = [int(k) for k, v in data.get("gameweeks", {}).items() if v.get("standings")]
         for gw_idx in sorted(played_gws, reverse=True):
             lineup = data.get("gameweeks", {}).get(str(gw_idx), {}).get("lineups", {}).get(mgr_name, [])
             if lineup:
@@ -149,16 +151,16 @@ def main():
 
         # Verdict
         if pos in ["MID", "FWD"]:
-            if avg_ga >= 1.6:
+            if avg_ga >= 1.5:
                 verdict = "🔥 Prime Goalscoring Targets (Leaky Defenses)"
-            elif avg_ga <= 1.0:
+            elif avg_ga <= 1.05:
                 verdict = "⛔ Tough Fixtures (Resolute Defenses)"
             else:
                 verdict = "⚖️ Moderate Goal Threat"
         else:
-            if avg_gf <= 1.0:
+            if avg_gf <= 1.15:
                 verdict = "🛡️ Excellent Clean Sheet Potential"
-            elif avg_gf >= 1.7:
+            elif avg_gf >= 1.6:
                 verdict = "⚠️ High Conceding Risk"
             else:
                 verdict = "⚖️ Moderate Clean Sheet Odds"
@@ -177,20 +179,7 @@ def main():
             "verdict": verdict
         })
 
-    # Output CSV
-    csv_path = root / "reports" / "squad_next_5_opponents.csv"
-    with open(csv_path, "w", newline="", encoding="utf-8") as f:
-        fieldnames = [
-            "Manager", "Team", "Player", "Position", "Squad Status", "Club", "Cost", "Points",
-            "GW", "Opponent", "Venue", "Opponent PL Rank", "Opponent GA", "Opponent GA/match",
-            "Opponent Def Rank", "Opponent GF", "Opponent GF/match", "Opponent Att Rank",
-            "FPL Difficulty (FDR)", "Defensive Matchup Tier"
-        ]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(csv_rows)
-
-    # Output Markdown Report
+    # Prepare Markdown Report Content
     md_lines = []
     md_lines.append(f"# Squad Next 5 Opponents & Defensive Records Report")
     md_lines.append(f"**Manager**: {mgr_name} ({team_name})  ")
@@ -210,9 +199,25 @@ def main():
     defenders_sorted = sorted(defenders, key=lambda p: p["avg_gf"])
     best_def = defenders_sorted[0] if defenders_sorted else None
 
-    md_lines.append(f"- **Top Attacking Target Run**: **{best_att['name']}** ({best_att['club']}) faces opponents conceding an average of **{best_att['avg_ga']} GA/game** over the next 5 weeks.")
-    md_lines.append(f"- **Top Clean Sheet Potential**: **{best_def['name']}** ({best_def['club']}) faces opponents scoring only **{best_def['avg_gf']} GF/game** over the next 5 weeks.")
-    md_lines.append(f"- **Chelsea Defensive Leak**: Chelsea has conceded **12 goals in 5 games (2.4/match)**, ranking **#20 (dead last)** defensively in the Premier League. Target any player facing CHE.")
+    if best_att:
+        md_lines.append(f"- **Top Attacking Target Run**: **{best_att['name']}** ({best_att['club']}) faces opponents conceding an average of **{best_att['avg_ga']} GA/game** over the next 5 weeks.")
+    if best_def:
+        md_lines.append(f"- **Top Clean Sheet Potential**: **{best_def['name']}** ({best_def['club']}) faces opponents scoring only **{best_def['avg_gf']} GF/game** over the next 5 weeks.")
+
+    # Manager-specific callouts
+    if "Haaland" in [p["name"] for p in player_summaries]:
+        haaland_p = next(p for p in player_summaries if p["name"] == "Haaland")
+        md_lines.append(f"- **Erling Haaland Capitalization**: Faces **Ipswich (H)** in GW 7 (Def #18, 11 GA conceded), followed by **Aston Villa (A)** (Def #15, 9 GA) and **Fulham (H)** in GW 11. Average opponent GA faced is **{haaland_p['avg_ga']} GA/game** — absolute captaincy priority!")
+
+    if any(p["club"] == "CHE" for p in player_summaries):
+        che_players = [p["name"] for p in player_summaries if p["club"] == "CHE"]
+        md_lines.append(f"- **Chelsea Assets ({', '.join(che_players)})**: Matchups feature Tottenham (H), Man Utd (H), and Sunderland (A), facing defenses with a solid 1.28 GA/game average.")
+
+    if any(p["club"] == "ARS" for p in player_summaries):
+        ars_players = [p["name"] for p in player_summaries if p["club"] == "ARS"]
+        md_lines.append(f"- **Arsenal Core ({', '.join(ars_players)})**: Facing tough defensive outfits (Everton #2, Liverpool #5, Hull #6) with an average of 1.0 GA/game. However, clean sheet prospects remain strong with opponents scoring only 1.28 GF/game.")
+
+    md_lines.append(f"- **Chelsea Defensive Leak**: Chelsea has conceded **12 goals in 5 games (2.4/match)**, ranking **#20 (dead last)** defensively in the Premier League. Target any player facing CHE (e.g. Mbeumo in GW 9).")
     md_lines.append(f"- **Weakest Attacks for Clean Sheets**: Coventry (1 GF), Tottenham (2 GF), Aston Villa (4 GF), and Nottingham Forest (4 GF) offer prime clean sheet matchups.\n")
 
     md_lines.append("---")
@@ -231,7 +236,6 @@ def main():
                 def_r = f["def_rank"]
                 ga = f["ga"]
                 fdr = f["fdr"]
-                # Clean format: OPP (Venue) <br> Def #Rank (GA)
                 fix_cols.append(f"**{opp}** ({ven})<br><small>Def #{def_r} ({ga} GA) · FDR {fdr}</small>")
 
         md_lines.append(
@@ -279,7 +283,6 @@ def main():
     md_lines.append("| Def Rank | Team | Played | GA | GA/match | Defensive Tier | Att Rank | GF | GF/match | Attacking Tier | Table Rank | Points |")
     md_lines.append("|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|")
 
-    # Sort all teams by defensive rank (fewest GA first)
     teams_sorted_def = sorted(team_records.values(), key=lambda t: (t.get("ga_per_game", 99), t.get("goals_against", 99)))
     for t in teams_sorted_def:
         def_tag = "🟢 Solid Defense" if t["def_tier"] == "solid" else ("🔴 Leaky Defense" if t["def_tier"] == "leaky" else "⚪ Average")
@@ -291,13 +294,63 @@ def main():
             f"#{t['table_rank']} | {t['points']} |"
         )
 
-    md_path = root / "reports" / "squad_opponents_analysis.md"
-    with open(md_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(md_lines) + "\n")
+    report_content = "\n".join(md_lines) + "\n"
 
-    print(f"[+] Successfully generated reports:")
-    print(f"    - Markdown: {md_path}")
-    print(f"    - CSV:      {csv_path}")
+    # Determine output file paths
+    safe_slug = mgr_name.lower().replace(" ", "_")
+    named_md_path = root / "reports" / f"{safe_slug}_opponents_analysis.md"
+    named_csv_path = root / "reports" / f"{safe_slug}_next_5_opponents.csv"
+
+    # Write named reports
+    with open(named_md_path, "w", encoding="utf-8") as f:
+        f.write(report_content)
+
+    csv_fieldnames = [
+        "Manager", "Team", "Player", "Position", "Squad Status", "Club", "Cost", "Points",
+        "GW", "Opponent", "Venue", "Opponent PL Rank", "Opponent GA", "Opponent GA/match",
+        "Opponent Def Rank", "Opponent GF", "Opponent GF/match", "Opponent Att Rank",
+        "FPL Difficulty (FDR)", "Defensive Matchup Tier"
+    ]
+    with open(named_csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=csv_fieldnames)
+        writer.writeheader()
+        writer.writerows(csv_rows)
+
+    print(f"[+] Generated for {mgr_name}:")
+    print(f"    - {named_md_path}")
+    print(f"    - {named_csv_path}")
+
+    # Also overwrite the primary squad reports if requested
+    if write_default_squad:
+        default_md_path = root / "reports" / "squad_opponents_analysis.md"
+        default_csv_path = root / "reports" / "squad_next_5_opponents.csv"
+        with open(default_md_path, "w", encoding="utf-8") as f:
+            f.write(report_content)
+        with open(default_csv_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=csv_fieldnames)
+            writer.writeheader()
+            writer.writerows(csv_rows)
+        print(f"    - Updated primary: {default_md_path}")
+
+def main():
+    parser = argparse.ArgumentParser(description="Generate squad next 5 opponents and defensive analysis reports.")
+    parser.add_argument("--manager", "-m", type=str, default="Arsene Wenger", help="Manager name to analyze (default: Arsene Wenger)")
+    parser.add_argument("--all", action="store_true", help="Generate reports for all managers in the league")
+    args = parser.parse_args()
+
+    root = Path(__file__).resolve().parent.parent
+    data_path = root / "visualizer_data.json"
+    if not data_path.exists():
+        data_path = root / "visualizer_data_2026_27.json"
+
+    with open(data_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    if args.all:
+        for mgr in data.get("managers", {}):
+            generate_report_for_manager(data, mgr, root, write_default_squad=(mgr == args.manager))
+    else:
+        generate_report_for_manager(data, args.manager, root, write_default_squad=True)
 
 if __name__ == "__main__":
     main()
