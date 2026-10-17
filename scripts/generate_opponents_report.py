@@ -442,32 +442,33 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
     
     if "Arsene" in mgr_name:
         md_lines.append("1. **Trade Out Martin Ødegaard (£6.8m, MID) ➡️ Trade In Antoine Semenyo (£8.3m, MID) or Rayan Cherki (£7.8m, MID)**")
-        md_lines.append("   - **Sell Reason**: Ødegaard has gone cold (1.5 form, 30 total points) and Arsenal faces a gauntlet of top defenses (Everton #2, Liverpool #5, Hull #6). His opponents concede a stingy 1.0 GA/match (worst in the squad).")
+        md_lines.append("   - **Sell Reason**: Ødegaard has gone cold (1.5 form, 30 total points, dropping from 11 -> 3 -> 2 -> 1 pt in recent weeks) and Arsenal faces a gauntlet of resilient defenses (Everton #4, Liverpool #8, Hull #7).")
         md_lines.append("   - **Buy Reason**: Manchester City has the easiest schedule in the entire Premier League over the next 5 gameweeks (Avg FDR 2.6): **Ipswich (H)**, **Aston Villa (A)**, **Brighton (H)**, **Forest (A)**, and **Fulham (H)**. Semenyo is averaging 7.7 form with 36 points; Cherki has 44 points (6.3 form). Stacking a City midfielder with Erling Haaland doubles down on City's goal hauls against leaky defenses like Ipswich (12 GA).\n")
 
-        md_lines.append("2. **Replace Inactive Cole Palmer (£4.0m, MID) ➡️ Trade In Sandro Tonali (£5.3m, MID) or Alex Iwobi (£5.4m, MID)**")
-        md_lines.append("   - **Sell Reason**: Palmer has recorded 0 minutes / 0 points, taking up an inactive spot in the squad.")
-        md_lines.append("   - **Buy Reason**: Tottenham has the #1 easiest fixture schedule across the next 5 weeks (Avg FDR 2.6): Coventry (H), Palace (H), and Ipswich (H). Tonali provides guaranteed minutes and 4.5 form. Alternatively, Fulham's Iwobi (4.5 form) faces Hull and Coventry over his next two.\n")
+        md_lines.append("2. **Upgrade Bobby Thomas (£5.5m, DEF) ➡️ Trade In Pedro Porro (£5.6m, DEF) or Gabriel (£6.1m, DEF)**")
+        md_lines.append("   - **Sell Reason**: Thomas is priced at £5.5m playing for newly-promoted Coventry City, facing away trips to Spurs and Everton with an FDR of 3.0.")
+        md_lines.append("   - **Buy Reason**: Tottenham has the #1 easiest fixture schedule across the next 5 weeks (Avg FDR 2.6): **Coventry (H)**, **Palace (H)**, and **Ipswich (H)**. Porro offers immense attacking threat (corners, shots) and clean sheet upside for almost the exact same price (£5.6m).\n")
 
-        md_lines.append("3. **Rotate Goalkeepers for GW 8 & 9 (Verbruggen ➡️ Kinsky)**")
-        md_lines.append("   - **Tactical Alert**: Brighton's Bart Verbruggen faces consecutive away trips to **Liverpool (A, FDR 4)** in GW 8 and **Man City (A, FDR 5)** in GW 9.")
-        md_lines.append("   - **Bench Solution**: Wenger already owns **Kinsky (TOT, £4.5m)**! Start Kinsky in GW 8 & 9 when Spurs play at home against Chelsea and Crystal Palace to avoid Verbruggen's brutal away fixtures.\n")
+        md_lines.append("3. **Rotate Goalkeepers for GW 7, 8 & 9 (Verbruggen ➡️ Kinsky)**")
+        md_lines.append("   - **Tactical Alert**: Brighton's Bart Verbruggen faces tough upcoming fixtures including **Liverpool (A, FDR 4)** in GW 8 and **Man City (A, FDR 5)** in GW 9.")
+        md_lines.append("   - **Bench Solution**: Wenger already owns **Kinsky (TOT, £4.5m)**! Start Kinsky in GW 7 against Coventry (Att #18, 5 GF) and keep him in goal through GW 8 & 9 when Spurs play at home against Chelsea and Crystal Palace.\n")
 
         md_lines.append("4. **Promote Josko Gvardiol (£5.8m, DEF) into the Starting XI**")
         md_lines.append("   - **Lineup Optimization**: Gvardiol is currently sitting on Wenger's **bench**, yet has 41 points and a stellar 6.3 form. Man City hosts Ipswich in GW 7 (prime clean sheet odds). Gvardiol should start immediately over Konsa or Calafiori when Arsenal plays Liverpool away in GW 9.\n")
 
-        md_lines.append("5. **Forward Upgrade: Barry (£5.7m, FWD) ➡️ Brian Brobbey (£5.7m, FWD)**")
-        md_lines.append("   - **Sell Reason**: Barry faces Arsenal (A, FDR 5) and Brentford (A) with an average FDR of 3.4.")
+        md_lines.append("5. **Forward Upgrade: Barry (£5.7m, FWD) ➡️ Brian Brobbey (£5.7m, FWD) after GW 7**")
+        md_lines.append("   - **Hold for GW 7**: Start Barry in GW 7 against Chelsea's leaky defense (#18, 13 GA conceded).")
+        md_lines.append("   - **Sell Reason for GW 8+**: Barry immediately faces Arsenal (A, FDR 5) and Brentford (A) with an average FDR of 3.4.")
         md_lines.append("   - **Buy Reason**: Brobbey is on a scorching **8.5 form** (24 pts) at the exact same price (£5.7m), facing opponents conceding an average of 1.68 GA/match.\n")
 
         md_lines.append("### 📋 Recommended Transfer Targets Table\n")
         md_lines.append("| Priority | Transfer Type | Player OUT | Club | Pos | Price | Form | Player IN | Club | Pos | Price | Form | Next 5 Avg FDR | Trade Rationale |")
         md_lines.append("|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---|")
         md_lines.append("| 🚨 **High** | Midfield Upgrade | **Ødegaard** | ARS | MID | £6.8m | 1.5 | **Semenyo** / **Cherki** | MCI | MID | £8.3m / £7.8m | 7.7 / 6.3 | **2.6** | Move away from Arsenal's tough defensive run into City's dream schedule (Ipswich H, Villa A, Fulham H). Stack with Haaland. |")
-        md_lines.append("| 🚨 **High** | Active Starter | **Palmer** | CHE | MID | £4.0m | 0.0 | **Tonali** / **Iwobi** | TOT / FUL | MID | £5.3m / £5.4m | 4.5 / 4.5 | **2.6 / 3.0** | Replace inactive asset with in-form midfielder facing leaky defenses (Coventry, Palace, Ipswich). |")
-        md_lines.append("| ⚡ **Medium** | Goalkeeper Swap | **Verbruggen** | BHA | GKP | £4.5m | 7.7 | **Kinsky** *(Internal)* | TOT | GKP | £4.5m | 2.5 | **2.6** | Bench Verbruggen for GW 8-9 away at Liverpool & Man City; start Kinsky at home for Spurs. |")
+        md_lines.append("| 🚨 **High** | Premium Defender | **Thomas** | COV | DEF | £5.5m | 4.3 | **Pedro Porro** | TOT | DEF | £5.6m | 5.0 | **2.6** | Swap £5.5m Coventry defender into Spurs' elite fixture run (Coventry H, Palace H, Ipswich H). Massive clean sheet + attacking upside. |")
+        md_lines.append("| ⚡ **Medium** | Goalkeeper Swap | **Verbruggen** | BHA | GKP | £4.6m | 7.7 | **Kinsky** *(Internal)* | TOT | GKP | £4.5m | 2.5 | **2.6** | Start Kinsky in GW 7 (Coventry H) and GW 8-9 (Liverpool/City away for Verbruggen). |")
         md_lines.append("| ⚡ **Medium** | Lineup Promotion | **Konsa** | ARS | DEF | £4.6m | 2.5 | **Gvardiol** *(Internal)* | MCI | DEF | £5.8m | 6.3 | **2.6** | Promote Gvardiol from bench into Starting XI for Ipswich (H) in GW 7 and Liverpool (A) in GW 9. |")
-        md_lines.append("| 💡 **Budget** | Forward Trade | **Barry** | EVE | FWD | £5.7m | 6.0 | **Brobbey** | SUN | FWD | £5.7m | 8.5 | **3.0** | Same price like-for-like swap into one of the hottest forwards in the league (8.5 form). |")
+        md_lines.append("| 💡 **Budget** | Post-GW7 Forward Pivot | **Barry** | EVE | FWD | £5.7m | 6.0 | **Brobbey** | SUN | FWD | £5.7m | 8.5 | **3.0** | Start Barry vs Chelsea (H) in GW7, then pivot before Everton plays Arsenal (A) into in-form Brobbey (8.5 form). |")
     else:
         toughest_players = sorted(player_summaries, key=lambda p: (p['avg_fdr'], -p['avg_ga']), reverse=True)[:3]
         md_lines.append("1. **Sell High-Difficulty Assets**:")
