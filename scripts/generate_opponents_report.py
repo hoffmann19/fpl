@@ -443,7 +443,7 @@ def generate_report_for_manager(data, mgr_name, root, write_default_squad=True):
     if "Arsene" in mgr_name:
         md_lines.append("1. **Trade Out Martin Ødegaard (£6.8m, MID) ➡️ Trade In Antoine Semenyo (£8.3m, MID) or Rayan Cherki (£7.8m, MID)**")
         md_lines.append("   - **Sell Reason**: Ødegaard has gone cold (1.5 form, 30 total points) and Arsenal faces a gauntlet of top defenses (Everton #2, Liverpool #5, Hull #6). His opponents concede a stingy 1.0 GA/match (worst in the squad).")
-        md_lines.append("   - **Buy Reason**: Manchester City has the easiest schedule in the entire Premier League over the next 5 gameweeks (Avg FDR 2.6): **Ipswich (H)**, **Aston Villa (A)**, **Brighton (H)**, **Forest (A)**, and **Fulham (H)**. Semenyo is averaging 7.7 form with 36 points; Cherki has 44 points (6.3 form). Stacking a City midfielder with Erling Haaland doubles down on City's goal hauls against leaky defenses like Ipswich (11 GA).\n")
+        md_lines.append("   - **Buy Reason**: Manchester City has the easiest schedule in the entire Premier League over the next 5 gameweeks (Avg FDR 2.6): **Ipswich (H)**, **Aston Villa (A)**, **Brighton (H)**, **Forest (A)**, and **Fulham (H)**. Semenyo is averaging 7.7 form with 36 points; Cherki has 44 points (6.3 form). Stacking a City midfielder with Erling Haaland doubles down on City's goal hauls against leaky defenses like Ipswich (12 GA).\n")
 
         md_lines.append("2. **Replace Inactive Cole Palmer (£4.0m, MID) ➡️ Trade In Sandro Tonali (£5.3m, MID) or Alex Iwobi (£5.4m, MID)**")
         md_lines.append("   - **Sell Reason**: Palmer has recorded 0 minutes / 0 points, taking up an inactive spot in the squad.")
