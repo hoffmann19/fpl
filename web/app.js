@@ -14,6 +14,7 @@ let fdrHorizon = 5;            // 5, 8, or 38
 let fdrSortMode = 'easiest';    // 'easiest', 'hardest', 'alpha'
 let fdrSearchQuery = '';
 let fdrSquadFilterOnly = false;
+let allTransfersExpanded = false;
 
 // Constant for User Manager Identification
 const USER_MANAGER_NAME = "Michael Hoffmann";
@@ -47,7 +48,8 @@ let elSelectSeason, elSelectGw, elBtnPrevGw, elBtnNextGw, elBtnCurrentGw, elLblC
 let elStatLeader, elStatGwTop, elStatGwAvg, elStatGwTransfers;
 let elSelectionBar, elSelectedMgrName, elSelectedTeamName, elBtnClearSelection;
 let elTotalsTableBody, elSortToggleGroup;
-let elTransfersCardsContainer, elSelectTransfersMgr, elTransfersTotalMoves, elTransfersTotalHits, elTransfersBestMove, elTransfersSubtitle;
+let elTransfersCardsContainer, elTransfersTotalMoves, elTransfersTotalHits, elTransfersBestMove, elTransfersSubtitle;
+let elBtnToggleAllTx, elLblToggleAllTx, elIconToggleAllTx;
 let elFdrHorizonGroup, elSelectFdrSort, elInputFdrSearch, elBtnFdrSquadOnly, elLblFdrSquadBtn;
 let elFdrTableHeadRow, elFdrMatrixBody, elTooltip;
 
@@ -83,11 +85,13 @@ function cacheDomElements() {
   elSortToggleGroup = document.getElementById('sort-toggle-group');
 
   elTransfersCardsContainer = document.getElementById('transfers-cards-container');
-  elSelectTransfersMgr = document.getElementById('select-transfers-mgr');
   elTransfersTotalMoves = document.getElementById('transfers-total-moves');
   elTransfersTotalHits = document.getElementById('transfers-total-hits');
   elTransfersBestMove = document.getElementById('transfers-best-move');
   elTransfersSubtitle = document.getElementById('transfers-subtitle');
+  elBtnToggleAllTx = document.getElementById('btn-toggle-all-transfers');
+  elLblToggleAllTx = document.getElementById('lbl-toggle-all-tx');
+  elIconToggleAllTx = document.getElementById('icon-toggle-all-tx');
 
   elFdrHorizonGroup = document.getElementById('fdr-horizon-group');
   elSelectFdrSort = document.getElementById('select-fdr-sort');
@@ -152,18 +156,19 @@ function bindEventListeners() {
       btn.classList.add('active');
       totalsSortMode = btn.dataset.sort;
       renderGameweekTotals();
+      renderTransfers();
     });
   }
 
-  // Transfers Manager Filter
-  if (elSelectTransfersMgr) {
-    elSelectTransfersMgr.addEventListener('change', (e) => {
-      const val = e.target.value;
-      if (val === 'ALL') {
-        clearManagerSelection();
-      } else {
-        selectManager(val);
-      }
+  // Toggle All Transfers (Expand / Collapse)
+  if (elBtnToggleAllTx) {
+    elBtnToggleAllTx.addEventListener('click', () => {
+      allTransfersExpanded = !allTransfersExpanded;
+      updateAllTransfersToggleBtn();
+      const accordions = document.querySelectorAll('.tx-team-accordion[data-has-moves="true"]');
+      accordions.forEach(acc => {
+        acc.classList.toggle('expanded', allTransfersExpanded);
+      });
     });
   }
 
@@ -335,11 +340,9 @@ function updateSelectionBar() {
     elSelectionBar.classList.remove('hidden');
     elSelectedMgrName.innerText = selectedManager;
     elSelectedTeamName.innerText = appData.managers[selectedManager].team || '—';
-    if (elSelectTransfersMgr) elSelectTransfersMgr.value = selectedManager;
     if (elLblFdrSquadBtn) elLblFdrSquadBtn.innerText = `Filter to ${selectedManager}'s Clubs`;
   } else {
     elSelectionBar.classList.add('hidden');
-    if (elSelectTransfersMgr) elSelectTransfersMgr.value = 'ALL';
     if (elLblFdrSquadBtn) elLblFdrSquadBtn.innerText = 'Filter to Squad Clubs';
   }
 }
@@ -543,16 +546,29 @@ function renderGameweekTotals() {
 }
 
 /**
+ * Update the Expand / Collapse All Transfers Toggle Button UI
+ */
+function updateAllTransfersToggleBtn() {
+  if (elLblToggleAllTx) {
+    elLblToggleAllTx.innerText = allTransfersExpanded ? 'Collapse All' : 'Expand All';
+  }
+  if (elIconToggleAllTx) {
+    elIconToggleAllTx.className = allTransfersExpanded ? 'fa-solid fa-angles-up' : 'fa-solid fa-angles-down';
+  }
+}
+
+/**
  * --------------------------------------------------------------------------
- * PANEL 2: GAMEWEEK TRANSFERS
+ * PANEL 2: GAMEWEEK TRANSFERS (ALL 11 TEAMS WITH EXPANDABLE DETAILS)
  * --------------------------------------------------------------------------
  */
 function renderTransfers() {
   if (!elTransfersCardsContainer || !appData || !appData.gameweeks) return;
   elTransfersCardsContainer.innerHTML = '';
+  updateAllTransfersToggleBtn();
 
   const gwData = appData.gameweeks[currentGW.toString()];
-  if (!gwData || !gwData.standings) {
+  if (!gwData || !gwData.standings || gwData.standings.length === 0) {
     elTransfersCardsContainer.innerHTML = `
       <div class="empty-transfers-state">
         <i class="fa-solid fa-arrows-spin"></i>
@@ -562,27 +578,10 @@ function renderTransfers() {
     return;
   }
 
-  // Populate Transfers Manager Dropdown (if not already done)
-  if (elSelectTransfersMgr) {
-    const prevVal = elSelectTransfersMgr.value;
-    elSelectTransfersMgr.innerHTML = '<option value="ALL">All Managers</option>';
-    gwData.standings.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.manager;
-      opt.innerText = s.manager;
-      if (selectedManager === s.manager || prevVal === s.manager) {
-        opt.selected = true;
-      }
-      elSelectTransfersMgr.appendChild(opt);
-    });
-  }
-
-  // Collect Transfer Records
+  // Calculate League-wide Transfer Summary Metrics
   let totalMoves = 0;
   let totalHits = 0;
   let bestMove = { manager: null, delta: -Infinity, inPlayer: '', outPlayer: '' };
-
-  const managersWithTransfers = [];
 
   gwData.standings.forEach(s => {
     const moves = (s.transfers_detail && s.transfers_detail.length > 0) 
@@ -604,14 +603,10 @@ function renderTransfers() {
           };
         }
       });
-      managersWithTransfers.push(s);
-    } else if (moves > 0) {
-      // Moves count > 0 but no details array (fallback)
-      managersWithTransfers.push(s);
     }
   });
 
-  // Update Summary Bar
+  // Update Summary Header Bar
   if (elTransfersTotalMoves) elTransfersTotalMoves.innerText = `${totalMoves} moves`;
   if (elTransfersTotalHits) elTransfersTotalHits.innerText = `-${totalHits} pts`;
   if (elTransfersBestMove) {
@@ -623,53 +618,78 @@ function renderTransfers() {
     }
   }
 
-  // Filter if a manager is selected
-  const displayList = selectedManager 
-    ? managersWithTransfers.filter(m => m.manager === selectedManager)
-    : managersWithTransfers;
-
   if (elTransfersSubtitle) {
-    elTransfersSubtitle.innerText = selectedManager 
-      ? `Showing transfers for ${selectedManager}`
-      : `All moves made across the league (${totalMoves} total)`;
+    elTransfersSubtitle.innerText = `All 11 teams · Click any team to view move details`;
   }
 
-  if (displayList.length === 0) {
-    const msg = selectedManager 
-      ? `${selectedManager} made no transfers in Gameweek ${currentGW}.`
-      : `No transfers were made across the league in Gameweek ${currentGW}.`;
-    elTransfersCardsContainer.innerHTML = `
-      <div class="empty-transfers-state">
-        <i class="fa-solid fa-arrow-right-arrow-left"></i>
-        <p>${msg}</p>
-      </div>
-    `;
-    return;
-  }
+  // Sort teams matching active standings order
+  const orderedStandings = [...gwData.standings].sort((a, b) => {
+    if (totalsSortMode === 'gw') {
+      if (b.gw_net_points !== a.gw_net_points) return b.gw_net_points - a.gw_net_points;
+      return b.overall_points - a.overall_points;
+    }
+    if (b.overall_points !== a.overall_points) return b.overall_points - a.overall_points;
+    return b.gw_net_points - a.gw_net_points;
+  });
 
-  // Render Transfer Cards
-  displayList.forEach(mgr => {
-    const mgrMeta = appData.managers[mgr.manager] || { team: mgr.team, color: '#38bdf8' };
-    const hitDeduction = Math.abs(mgr.gw_hits || 0);
-    const chipActive = mgr.chip && mgr.chip !== 'None' ? mgr.chip.toUpperCase() : null;
+  // Render All 11 Teams in Compact Accordions
+  orderedStandings.forEach(s => {
+    const mgrMeta = appData.managers[s.manager] || { team: s.team, color: '#38bdf8' };
+    const moves = (s.transfers_detail && s.transfers_detail.length > 0) 
+      ? s.transfers_detail.length 
+      : (s.transfers || 0);
+    const hitDeduction = Math.abs(s.gw_hits || 0);
+    const chipActive = (s.chip && s.chip !== 'None') ? s.chip.toUpperCase() : null;
+
+    // Calculate total net delta for this manager
+    let netDelta = 0;
+    if (s.transfers_detail && s.transfers_detail.length > 0) {
+      netDelta = s.transfers_detail.reduce((sum, t) => sum + (t.net_points || 0), 0);
+    }
+
+    const hasMoves = moves > 0;
+    const isSelected = selectedManager === s.manager;
+    const isExpanded = hasMoves && (allTransfersExpanded || isSelected);
 
     const card = document.createElement('div');
-    card.classList.add('mgr-transfer-card');
-    if (selectedManager === mgr.manager) card.classList.add('highlighted-mgr-card');
+    card.className = `tx-team-accordion${isExpanded ? ' expanded' : ''}${isSelected ? ' selected-tx-team' : ''}`;
+    card.dataset.manager = s.manager;
+    card.dataset.hasMoves = hasMoves ? 'true' : 'false';
 
-    let metaBadges = '';
+    // Move Count Pill
+    const countPillHtml = hasMoves
+      ? `<span class="tx-count-pill active-moves"><strong>${moves}</strong> move${moves > 1 ? 's' : ''}</span>`
+      : `<span class="tx-count-pill zero-moves">0 moves</span>`;
+
+    // Chip Pill
+    let chipPillHtml = '';
     if (chipActive) {
-      metaBadges += `<span class="tx-chip-badge">${chipActive}</span>`;
-    }
-    if (hitDeduction > 0) {
-      metaBadges += `<span class="hit-badge">-${hitDeduction} pts hit</span>`;
-    } else {
-      metaBadges += `<span class="hit-badge hit-none">0 hit penalty</span>`;
+      chipPillHtml = `<span class="tx-chip-badge">${chipActive}</span>`;
     }
 
-    let movesHtml = '';
-    if (mgr.transfers_detail && mgr.transfers_detail.length > 0) {
-      mgr.transfers_detail.forEach(t => {
+    // Hit Penalty Pill
+    let hitPillHtml = '';
+    if (hitDeduction > 0) {
+      hitPillHtml = `<span class="hit-badge">-${hitDeduction} pts</span>`;
+    }
+
+    // Net Delta Pill
+    let deltaPillHtml = '';
+    if (hasMoves && netDelta !== 0) {
+      const deltaClass = netDelta > 0 ? 'tx-delta-positive' : 'tx-delta-negative';
+      const deltaSign = netDelta > 0 ? '+' : '';
+      deltaPillHtml = `<span class="tx-delta-badge ${deltaClass}">${deltaSign}${netDelta} pts</span>`;
+    }
+
+    // Chevron / Action Indicator
+    const chevronHtml = hasMoves
+      ? `<i class="fa-solid fa-chevron-down tx-chevron"></i>`
+      : `<span class="tx-chevron chevron-disabled">•</span>`;
+
+    // Build Detail Rows if moves exist
+    let movesDetailHtml = '';
+    if (hasMoves && s.transfers_detail && s.transfers_detail.length > 0) {
+      s.transfers_detail.forEach(t => {
         const delta = t.net_points || 0;
         let deltaClass = 'tx-delta-neutral';
         let deltaSign = '';
@@ -680,7 +700,7 @@ function renderTransfers() {
           deltaClass = 'tx-delta-negative';
         }
 
-        movesHtml += `
+        movesDetailHtml += `
           <div class="tx-pair-row">
             <!-- OUT PLAYER -->
             <div class="tx-player-box tx-out">
@@ -711,11 +731,10 @@ function renderTransfers() {
           </div>
         `;
       });
-    } else {
-      // Basic transfer summary if details array is absent
-      const inList = (mgr.transfers_in || []).join(', ') || '—';
-      const outList = (mgr.transfers_out || []).join(', ') || '—';
-      movesHtml = `
+    } else if (hasMoves) {
+      const inList = (s.transfers_in || []).join(', ') || '—';
+      const outList = (s.transfers_out || []).join(', ') || '—';
+      movesDetailHtml = `
         <div class="tx-pair-row">
           <div class="tx-player-box tx-out"><span class="tx-pname">OUT: ${outList}</span></div>
           <i class="fa-solid fa-arrow-right tx-arrow-icon"></i>
@@ -725,20 +744,31 @@ function renderTransfers() {
     }
 
     card.innerHTML = `
-      <div class="mgr-tx-header">
-        <div class="mgr-tx-title">
+      <div class="tx-team-header">
+        <div class="tx-team-title">
           <span class="mgr-color-dot" style="background-color: ${mgrMeta.color};"></span>
-          <span class="mgr-tx-name">${mgr.manager}</span>
-          <span class="mgr-tx-team">${mgr.team || mgrMeta.team}</span>
+          <span class="tx-team-name">${s.manager}</span>
+          <span class="tx-team-sub">${s.team || mgrMeta.team}</span>
         </div>
-        <div class="mgr-tx-meta">
-          ${metaBadges}
+        <div class="tx-team-right">
+          ${chipPillHtml}
+          ${hitPillHtml}
+          ${deltaPillHtml}
+          ${countPillHtml}
+          ${chevronHtml}
         </div>
       </div>
-      <div class="mgr-tx-moves-list">
-        ${movesHtml}
-      </div>
+      ${hasMoves ? `<div class="tx-team-details">${movesDetailHtml}</div>` : ''}
     `;
+
+    // Click handler: expand details & cross-filter manager
+    const headerEl = card.querySelector('.tx-team-header');
+    headerEl.addEventListener('click', () => {
+      if (hasMoves) {
+        card.classList.toggle('expanded');
+      }
+      selectManager(s.manager);
+    });
 
     elTransfersCardsContainer.appendChild(card);
   });

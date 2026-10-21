@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Custom Modern Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=20261021_condensed">
+  <link rel="stylesheet" href="style.css?v=20261021_condensed_v2">
 </head>
 <body>
 
@@ -157,15 +157,14 @@
               <i class="fa-solid fa-arrows-rotate icon-mint"></i>
               Gameweek <span class="active-gw-num">6</span> Transfers
             </h2>
-            <span class="panel-subtitle" id="transfers-subtitle">All moves made across the league</span>
+            <span class="panel-subtitle" id="transfers-subtitle">All 11 teams · Click any team to view move details</span>
           </div>
 
           <div class="panel-actions">
-            <div class="transfers-filter-wrap">
-              <select id="select-transfers-mgr" class="select-pill-sm" title="Filter by Manager">
-                <option value="ALL">All Managers</option>
-              </select>
-            </div>
+            <button id="btn-toggle-all-transfers" class="btn-toggle-compact" title="Expand or collapse all transfer details">
+              <i class="fa-solid fa-angles-down" id="icon-toggle-all-tx"></i>
+              <span id="lbl-toggle-all-tx">Expand All</span>
+            </button>
           </div>
         </div>
 
@@ -279,6 +278,6 @@
   <div id="fdr-tooltip" class="floating-tooltip hidden"></div>
 
   <!-- Core Visualizer Application Script -->
-  <script src="app.js?v=20261021_unified"></script>
+  <script src="app.js?v=20261021_condensed_v2"></script>
 </body>
 </html>
