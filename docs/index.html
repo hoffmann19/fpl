@@ -225,6 +225,16 @@
           </div>
 
           <div class="fdr-toolbar">
+            <!-- Metric Focus Mode: Overall / Opponent Defense / Opponent Attack -->
+            <div class="toolbar-item">
+              <span class="toolbar-label">FDR View:</span>
+              <div class="toggle-group" id="fdr-metric-group">
+                <button class="toggle-btn active" data-mode="overall" title="Overall Premier League table standing">Overall</button>
+                <button class="toggle-btn" data-mode="defense" title="Opponent Defense Rank (Targets weak defenses for attackers)">vs Defense</button>
+                <button class="toggle-btn" data-mode="attack" title="Opponent Attack Rank (Targets weak attacks for clean sheets)">vs Attack</button>
+              </div>
+            </div>
+
             <!-- Horizon Picker -->
             <div class="toolbar-item">
               <span class="toolbar-label">Horizon:</span>
@@ -262,9 +272,9 @@
         </div>
 
         <!-- Opponent Standing Legend Bar -->
-        <div class="fdr-legend-bar">
-          <div class="legend-scale-title">Opponent Table Standing (Higher = Easier):</div>
-          <div class="legend-scale-items">
+        <div class="fdr-legend-bar" id="fdr-legend-bar">
+          <div class="legend-scale-title" id="fdr-legend-title">Opponent Table Standing (Higher = Easier):</div>
+          <div class="legend-scale-items" id="fdr-legend-items">
             <span class="legend-chip fdr-2">#17–20 Easiest</span>
             <span class="legend-chip fdr-1">#12–16 Favorable</span>
             <span class="legend-chip fdr-3">#7–11 Moderate</span>
@@ -300,6 +310,6 @@
   <div id="fdr-tooltip" class="floating-tooltip hidden"></div>
 
   <!-- Core Visualizer Application Script -->
-  <script src="app.js?v=20261021_gw_fdr"></script>
+  <script src="app.js?v=20261021_def_att_fdr"></script>
 </body>
 </html>

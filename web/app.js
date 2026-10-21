@@ -14,6 +14,7 @@ let totalsSortAsc = true;
 let totalsSearchFilter = '';
 let fdrHorizon = 5;            // 5, 8, or 38
 let fdrSortMode = 'easiest';    // 'easiest', 'hardest', 'alpha'
+let fdrMetricMode = 'overall';  // 'overall', 'defense', 'attack'
 let fdrSearchQuery = '';
 let fdrSquadFilterOnly = false;
 let allTransfersExpanded = false;
@@ -52,8 +53,8 @@ let elSelectionBar, elSelectedMgrName, elSelectedTeamName, elBtnClearSelection;
 let elTotalsTableBody, elTotalsTableHeadRow, elInputTotalsSearch, elBtnResetTotalsSort;
 let elTransfersCardsContainer, elTransfersTotalMoves, elTransfersTotalHits, elTransfersBestMove, elTransfersSubtitle;
 let elBtnToggleAllTx, elLblToggleAllTx, elIconToggleAllTx;
-let elFdrHorizonGroup, elSelectFdrSort, elInputFdrSearch, elBtnFdrSquadOnly, elLblFdrSquadBtn;
-let elFdrTableHeadRow, elFdrMatrixBody, elTooltip;
+let elFdrHorizonGroup, elFdrMetricGroup, elSelectFdrSort, elInputFdrSearch, elBtnFdrSquadOnly, elLblFdrSquadBtn;
+let elFdrTableHeadRow, elFdrMatrixBody, elTooltip, elFdrLegendTitle, elFdrLegendItems;
 
 // Initialize Application on Page Load
 document.addEventListener('DOMContentLoaded', () => {
@@ -98,6 +99,7 @@ function cacheDomElements() {
   elIconToggleAllTx = document.getElementById('icon-toggle-all-tx');
 
   elFdrHorizonGroup = document.getElementById('fdr-horizon-group');
+  elFdrMetricGroup = document.getElementById('fdr-metric-group');
   elSelectFdrSort = document.getElementById('select-fdr-sort');
   elInputFdrSearch = document.getElementById('input-fdr-search');
   elBtnFdrSquadOnly = document.getElementById('btn-fdr-squad-only');
@@ -105,6 +107,8 @@ function cacheDomElements() {
   elFdrTableHeadRow = document.getElementById('fdr-table-head-row');
   elFdrMatrixBody = document.getElementById('fdr-matrix-body');
   elTooltip = document.getElementById('fdr-tooltip');
+  elFdrLegendTitle = document.getElementById('fdr-legend-title');
+  elFdrLegendItems = document.getElementById('fdr-legend-items');
 }
 
 /**
@@ -206,6 +210,20 @@ function bindEventListeners() {
       accordions.forEach(acc => {
         acc.classList.toggle('expanded', allTransfersExpanded);
       });
+    });
+  }
+
+  // FDR Metric View Controls (Overall / vs Defense / vs Attack)
+  if (elFdrMetricGroup) {
+    elFdrMetricGroup.addEventListener('click', (e) => {
+      const btn = e.target.closest('.toggle-btn');
+      if (!btn) return;
+      elFdrMetricGroup.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      fdrMetricMode = btn.dataset.mode;
+      updateFdrSortOptions();
+      updateFdrLegend();
+      renderFdrGrid();
     });
   }
 
@@ -1104,6 +1122,70 @@ function renderTransfers() {
  * PANEL 3: FIXTURE DIFFICULTY RATING (FDR) GRID
  * --------------------------------------------------------------------------
  */
+
+/**
+ * Update FDR Sort Dropdown labels based on metric mode
+ */
+function updateFdrSortOptions() {
+  if (!elSelectFdrSort) return;
+  const currentVal = elSelectFdrSort.value;
+  if (fdrMetricMode === 'defense') {
+    elSelectFdrSort.innerHTML = `
+      <option value="easiest">Easiest Defense First (Weakest Defenses)</option>
+      <option value="hardest">Hardest Defense First (Stout Defenses)</option>
+      <option value="alpha">Alphabetical (A-Z)</option>
+    `;
+  } else if (fdrMetricMode === 'attack') {
+    elSelectFdrSort.innerHTML = `
+      <option value="easiest">Easiest Attack First (Best Clean Sheet Odds)</option>
+      <option value="hardest">Hardest Attack First (Most Lethal Attacks)</option>
+      <option value="alpha">Alphabetical (A-Z)</option>
+    `;
+  } else {
+    elSelectFdrSort.innerHTML = `
+      <option value="easiest">Easiest Run First (Highest Avg Standing)</option>
+      <option value="hardest">Hardest Run First (Lowest Avg Standing)</option>
+      <option value="alpha">Alphabetical (A-Z)</option>
+    `;
+  }
+  elSelectFdrSort.value = currentVal;
+}
+
+/**
+ * Update FDR Legend Bar based on metric mode
+ */
+function updateFdrLegend() {
+  if (!elFdrLegendTitle || !elFdrLegendItems) return;
+  if (fdrMetricMode === 'defense') {
+    elFdrLegendTitle.innerText = 'Opponent Defense (Higher = Weaker Defense / Easier to Score):';
+    elFdrLegendItems.innerHTML = `
+      <span class="legend-chip fdr-2">#17–20 Leakiest (Easiest)</span>
+      <span class="legend-chip fdr-1">#12–16 Favorable</span>
+      <span class="legend-chip fdr-3">#7–11 Moderate</span>
+      <span class="legend-chip fdr-4">#4–6 Tough</span>
+      <span class="legend-chip fdr-5">#1–3 Elite Def (Hardest)</span>
+    `;
+  } else if (fdrMetricMode === 'attack') {
+    elFdrLegendTitle.innerText = 'Opponent Attack (Higher = Weaker Attack / Best Clean Sheet Odds):';
+    elFdrLegendItems.innerHTML = `
+      <span class="legend-chip fdr-2">#17–20 Weakest (Best CS)</span>
+      <span class="legend-chip fdr-1">#12–16 Low Threat</span>
+      <span class="legend-chip fdr-3">#7–11 Moderate</span>
+      <span class="legend-chip fdr-4">#4–6 High Threat</span>
+      <span class="legend-chip fdr-5">#1–3 Lethal (Hardest)</span>
+    `;
+  } else {
+    elFdrLegendTitle.innerText = 'Opponent Table Standing (Higher = Easier):';
+    elFdrLegendItems.innerHTML = `
+      <span class="legend-chip fdr-2">#17–20 Easiest</span>
+      <span class="legend-chip fdr-1">#12–16 Favorable</span>
+      <span class="legend-chip fdr-3">#7–11 Moderate</span>
+      <span class="legend-chip fdr-4">#4–6 Tough</span>
+      <span class="legend-chip fdr-5">#1–3 Hardest</span>
+    `;
+  }
+}
+
 function renderFdrGrid() {
   if (!elFdrMatrixBody || !appData) return;
   elFdrMatrixBody.innerHTML = '';
@@ -1129,11 +1211,19 @@ function renderFdrGrid() {
     horizonGWs.push(g);
   }
 
+  // Header Run Avg tooltip based on active metric mode
+  let avgTooltip = `Average opponent Premier League standing over GW ${startGW}–${endGW} (Higher = Easiest run)`;
+  if (fdrMetricMode === 'defense') {
+    avgTooltip = `Average opponent defense rank over GW ${startGW}–${endGW} (Higher = Weaker defenses / Best for attackers to score)`;
+  } else if (fdrMetricMode === 'attack') {
+    avgTooltip = `Average opponent attack rank over GW ${startGW}–${endGW} (Higher = Weaker attacks / Best for defenders to keep clean sheets)`;
+  }
+
   // Render Table Header with Horizon GWs
   if (elFdrTableHeadRow) {
     elFdrTableHeadRow.innerHTML = `
       <th class="col-fdr-team sticky-col">Team</th>
-      <th class="col-fdr-avg sticky-col-2" title="Average opponent Premier League standing over GW ${startGW}–${endGW} (Higher = Easiest run)">Run Avg</th>
+      <th class="col-fdr-avg sticky-col-2" title="${avgTooltip}">Run Avg</th>
     `;
     horizonGWs.forEach(gw => {
       const th = document.createElement('th');
@@ -1143,11 +1233,61 @@ function renderFdrGrid() {
     });
   }
 
-  // Standings map for opponent ranking
+  // Standings map and team records for opponent defense/attack/table ranking
   const pls = appData.premier_league_standings;
   const standingsMap = (pls && pls.ranks_by_gw?.[currentGW.toString()]) 
     || (pls && pls.latest_ranks) 
     || {};
+  const teamRecords = (pls && pls.team_records_by_gw?.[currentGW.toString()]) 
+    || (pls && pls.latest_records) 
+    || {};
+
+  // Helper to evaluate a fixture's opponent metric
+  function getOpponentFixtureMetric(oppCode) {
+    if (!oppCode) return { rank: 10, label: 'Moderate', detail: '', tag: '—', fdrClass: 'fdr-3' };
+    const rec = teamRecords[oppCode];
+    let rank = 10;
+    let label = 'Moderate';
+    let detail = '';
+    let tag = `#10`;
+
+    if (fdrMetricMode === 'defense') {
+      rank = rec ? rec.def_rank : (standingsMap[oppCode] || 10);
+      detail = rec ? `${rec.goals_against} GA in ${rec.played} matches` : '';
+      tag = `Def #${rank}`;
+      if (rank >= 17) label = 'Leakiest Defense (Easiest to score)';
+      else if (rank >= 12) label = 'Favorable Defense';
+      else if (rank <= 3) label = 'Elite Defense (Toughest to score)';
+      else if (rank <= 6) label = 'Solid Defense';
+      else label = 'Moderate Defense';
+    } else if (fdrMetricMode === 'attack') {
+      rank = rec ? rec.att_rank : (standingsMap[oppCode] || 10);
+      detail = rec ? `${rec.goals_for} GF in ${rec.played} matches` : '';
+      tag = `Att #${rank}`;
+      if (rank >= 17) label = 'Weak Attack (Best clean sheet odds)';
+      else if (rank >= 12) label = 'Low Goal Threat';
+      else if (rank <= 3) label = 'Lethal Attack (Hardest for CS)';
+      else if (rank <= 6) label = 'High Goal Threat';
+      else label = 'Moderate Attack';
+    } else {
+      rank = standingsMap[oppCode] !== undefined ? standingsMap[oppCode] : 10;
+      tag = `#${rank}`;
+      if (rank >= 17) label = 'Easiest (#17–20)';
+      else if (rank >= 12) label = 'Favorable (#12–16)';
+      else if (rank <= 3) label = 'Hardest (#1–3)';
+      else if (rank <= 6) label = 'Tough (#4–6)';
+      else label = 'Moderate (#7–11)';
+    }
+
+    let fdrClass = 'fdr-3';
+    if (rank >= 17) fdrClass = 'fdr-2';
+    else if (rank >= 12) fdrClass = 'fdr-1';
+    else if (rank <= 3) fdrClass = 'fdr-5';
+    else if (rank <= 6) fdrClass = 'fdr-4';
+    else fdrClass = 'fdr-3';
+
+    return { rank, label, detail, tag, fdrClass };
+  }
 
   // Identify Selected Manager's Squad Clubs
   const squadClubsCount = {};
@@ -1160,7 +1300,7 @@ function renderFdrGrid() {
     });
   }
 
-  // Prepare Team Rows with Average Opponent Standing Calculation
+  // Prepare Team Rows with Average Calculation
   const teamRows = [];
   Object.keys(fdrData).forEach(teamCode => {
     const fixtures = fdrData[teamCode] || {};
@@ -1169,8 +1309,9 @@ function renderFdrGrid() {
 
     horizonGWs.forEach(gw => {
       const fix = fixtures[gw.toString()];
-      if (fix && fix.opponent_short && standingsMap[fix.opponent_short] !== undefined) {
-        diffSum += standingsMap[fix.opponent_short];
+      if (fix && fix.opponent_short) {
+        const m = getOpponentFixtureMetric(fix.opponent_short);
+        diffSum += m.rank;
         count++;
       }
     });
@@ -1204,7 +1345,7 @@ function renderFdrGrid() {
     filteredTeams = filteredTeams.filter(t => t.squadCount > 0);
   }
 
-  // Sort Teams (Higher average standing = facing lower-table opponents = easiest run)
+  // Sort Teams (Higher average = facing weaker opponents/defenses/attacks = easiest run)
   filteredTeams.sort((a, b) => {
     if (fdrSortMode === 'easiest') {
       return b.avgDiff - a.avgDiff || a.teamCode.localeCompare(b.teamCode);
@@ -1270,39 +1411,19 @@ function renderFdrGrid() {
       }
 
       const oppCode = fix.opponent_short;
-      const oppRank = (oppCode && standingsMap[oppCode] !== undefined) 
-        ? standingsMap[oppCode] 
-        : (fix.difficulty ? (21 - fix.difficulty * 4) : 10);
-
-      let fdrClass = 'fdr-3';
-      let rankLabel = 'Moderate';
-      if (oppRank >= 17) {
-        fdrClass = 'fdr-2';
-        rankLabel = 'Easiest (#17–20)';
-      } else if (oppRank >= 12) {
-        fdrClass = 'fdr-1';
-        rankLabel = 'Favorable (#12–16)';
-      } else if (oppRank >= 7) {
-        fdrClass = 'fdr-3';
-        rankLabel = 'Moderate (#7–11)';
-      } else if (oppRank >= 4) {
-        fdrClass = 'fdr-4';
-        rankLabel = 'Tough (#4–6)';
-      } else {
-        fdrClass = 'fdr-5';
-        rankLabel = 'Hardest (#1–3)';
-      }
+      const m = getOpponentFixtureMetric(oppCode);
 
       rowHtml += `
         <td>
-          <div class="fdr-cell ${fdrClass}" 
+          <div class="fdr-cell ${m.fdrClass}" 
                data-gw="${gw}"
                data-team="${t.fullName}"
                data-opp="${fix.opponent_name || fix.opponent_short}"
                data-venue="${fix.venue === 'H' ? 'Home' : 'Away'}"
-               data-rank="${oppRank}"
-               data-label="${rankLabel}">
-            <span class="opp-text">${oppCode} <small class="opp-standing-num">#${oppRank}</small></span>
+               data-rank="${m.rank}"
+               data-label="${m.label}"
+               data-detail="${m.detail}">
+            <span class="opp-text">${oppCode} <small class="opp-standing-num">${m.tag}</small></span>
             <span class="venue-tag">(${fix.venue || '?'})</span>
           </div>
         </td>
@@ -1331,11 +1452,21 @@ function attachFdrTooltipListeners() {
       const venue = cell.dataset.venue;
       const rank = cell.dataset.rank;
       const label = cell.dataset.label;
+      const detail = cell.dataset.detail;
+
+      const metricTypeTitle = fdrMetricMode === 'defense' 
+        ? 'Opponent Defense' 
+        : (fdrMetricMode === 'attack' ? 'Opponent Attack' : 'Opponent Standing');
+
+      const detailHtml = detail 
+        ? `<br><span style="font-size: 0.70rem; color: var(--text-secondary);">${detail}</span>` 
+        : '';
 
       elTooltip.innerHTML = `
         <strong>GW ${gw} Matchup</strong><br>
         <span>${team} vs ${opp} (${venue})</span><br>
-        <span style="font-size: 0.72rem; color: var(--accent-gold); font-weight: 700;">Opponent Standing: #${rank} (${label})</span>
+        <span style="font-size: 0.72rem; color: var(--accent-gold); font-weight: 700;">${metricTypeTitle}: #${rank} (${label})</span>
+        ${detailHtml}
       `;
       elTooltip.classList.remove('hidden');
     });
