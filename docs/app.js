@@ -6,8 +6,8 @@
 // Global Application State
 let appData = null;
 let activeSeason = '2026_27';
-let currentGW = 6;
-let latestGW = 6;
+let currentGW = 7;
+let latestGW = 7;
 let selectedManager = null;
 let totalsSortMetric = 'rank';  // 'rank', 'manager', 'gw_net', 'overall', 'saved_ft', 'fdr_3w', 'fdr_5w', 'captain', 'chip', 'value'
 let totalsSortAsc = true;
@@ -406,6 +406,17 @@ function updateSelectionBar() {
  * Master Render Loop
  */
 function renderAll() {
+  // Synchronize all heading and UI indicators to the active gameweek
+  document.querySelectorAll('.active-gw-num').forEach(el => {
+    el.innerText = currentGW;
+  });
+  if (elSelectGw && elSelectGw.value != currentGW) {
+    elSelectGw.value = currentGW;
+  }
+  if (elLblCurrentGwNum) {
+    elLblCurrentGwNum.innerText = latestGW;
+  }
+
   updateLeagueRibbon();
   updateSelectionBar();
   renderGameweekTotals();
