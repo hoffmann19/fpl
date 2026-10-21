@@ -498,6 +498,42 @@ function calculateManagerFdrRatings(gwNum) {
 }
 
 /**
+ * Calculate the number of stacked/saved free transfers each manager has for a given target gameweek
+ */
+function calculateStackedTransfers(targetGW) {
+  const stacked = {};
+  if (!appData || !appData.gameweeks || !appData.managers) return stacked;
+
+  const managers = Object.keys(appData.managers);
+  managers.forEach(m => {
+    let ft = 1; // Enter GW 2 with 1 FT
+
+    for (let g = 2; g <= targetGW; g++) {
+      const gwData = appData.gameweeks[g.toString()];
+      if (!gwData || !gwData.standings) continue;
+
+      const s = gwData.standings.find(x => x.manager === m);
+      if (!s) continue;
+
+      const chip = (s.chip || 'None').toLowerCase();
+      if (chip === 'wildcard' || chip === 'freehit') {
+        // In 2024+ FPL rules, FTs are preserved on Wildcard/Free Hit and +1 for next week (max 5)
+        ft = Math.min(5, ft + 1);
+      } else {
+        const moves = s.transfers !== undefined ? s.transfers : 0;
+        const used = Math.min(ft, moves);
+        const leftover = ft - used;
+        ft = Math.min(5, leftover + 1);
+      }
+    }
+
+    stacked[m] = ft;
+  });
+
+  return stacked;
+}
+
+/**
  * --------------------------------------------------------------------------
  * PANEL 1: GAMEWEEK TOTALS & STANDINGS TABLE
  * --------------------------------------------------------------------------
@@ -510,7 +546,7 @@ function renderGameweekTotals() {
   if (!gwData || !gwData.standings || gwData.standings.length === 0) {
     elTotalsTableBody.innerHTML = `
       <tr>
-        <td colspan="9" style="text-align: center; padding: 30px; color: var(--text-secondary);">
+        <td colspan="10" style="text-align: center; padding: 30px; color: var(--text-secondary);">
           <i class="fa-solid fa-clock-rotate-left" style="font-size: 1.5rem; margin-bottom: 6px;"></i>
           <p>Gameweek ${currentGW} fixtures have not yet concluded.</p>
         </td>
@@ -521,6 +557,8 @@ function renderGameweekTotals() {
 
   // Calculate upcoming FDR ratings & ranks for each manager
   const fdrMetrics = calculateManagerFdrRatings(currentGW);
+  // Calculate stacked free transfers for each manager
+  const stackedTransfers = calculateStackedTransfers(currentGW);
 
   // Sort standings based on user selection
   const standings = [...gwData.standings].sort((a, b) => {
@@ -538,6 +576,12 @@ function renderGameweekTotals() {
       const fdrA = fdrMetrics.scores5[a.manager] ?? 3.0;
       const fdrB = fdrMetrics.scores5[b.manager] ?? 3.0;
       if (fdrA !== fdrB) return fdrA - fdrB;
+      return b.overall_points - a.overall_points;
+    }
+    if (totalsSortMode === 'ft') {
+      const ftA = stackedTransfers[a.manager] ?? 1;
+      const ftB = stackedTransfers[b.manager] ?? 1;
+      if (ftB !== ftA) return ftB - ftA;
       return b.overall_points - a.overall_points;
     }
     // Default 'overall'
@@ -568,6 +612,14 @@ function renderGameweekTotals() {
 
     // Hits count
     const hitsCount = Math.abs(mgr.gw_hits || 0);
+
+    // Stacked Free Transfers
+    const ftCount = stackedTransfers[mgr.manager] ?? 1;
+    let ftBadgeClass = 'ft-min';
+    if (ftCount >= 5) ftBadgeClass = 'ft-max';
+    else if (ftCount === 4) ftBadgeClass = 'ft-high';
+    else if (ftCount === 3) ftBadgeClass = 'ft-med';
+    else if (ftCount === 2) ftBadgeClass = 'ft-low';
 
     // 3W FDR Metric & Rank
     const fdr3Rank = fdrMetrics.ranks3[mgr.manager] ?? '-';
@@ -633,6 +685,9 @@ function renderGameweekTotals() {
       </td>
       <td class="col-overall text-right">
         <span class="num-bold">${mgr.overall_points}</span>
+      </td>
+      <td class="col-ft text-center" title="${mgr.manager} has ${ftCount} free transfer${ftCount > 1 ? 's' : ''} stacked up for upcoming deadline (max 5)">
+        <span class="ft-stacked-badge ${ftBadgeClass}">${ftCount} FT</span>
       </td>
       <td class="col-fdr-3w text-center" title="Upcoming 3-GW Schedule (GW ${fdrMetrics.startGw}–${fdrMetrics.endGw3}) · Avg FDR: ${fdr3Score.toFixed(2)} (Lower = Easiest/Best)">
         <div class="fdr-mgr-cell">

@@ -367,7 +367,7 @@ html, body {
 /* Top Row: Totals (Left) & Transfers (Right) */
 .dashboard-top-row {
   display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
+  grid-template-columns: 1.28fr 0.72fr;
   gap: 12px;
   height: 410px;
 }
@@ -732,6 +732,54 @@ html, body {
 .fdr-sub-num {
   font-size: 0.65rem;
   color: var(--text-muted);
+}
+
+/* Stacked Free Transfers Badges */
+.col-ft {
+  white-space: nowrap;
+}
+
+.ft-stacked-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  line-height: 1.1;
+}
+
+.ft-stacked-badge.ft-max {
+  background: linear-gradient(135deg, rgba(0, 255, 135, 0.25) 0%, rgba(56, 189, 248, 0.25) 100%);
+  color: var(--accent-mint);
+  border: 1px solid var(--accent-mint);
+  box-shadow: 0 0 6px rgba(0, 255, 135, 0.3);
+}
+
+.ft-stacked-badge.ft-high {
+  background: rgba(0, 255, 135, 0.16);
+  color: var(--accent-mint);
+  border: 1px solid rgba(0, 255, 135, 0.4);
+}
+
+.ft-stacked-badge.ft-med {
+  background: rgba(56, 189, 248, 0.16);
+  color: var(--accent-blue);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.ft-stacked-badge.ft-low {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-secondary);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.ft-stacked-badge.ft-min {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Chip Badges */

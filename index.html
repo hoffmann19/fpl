@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Custom Modern Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=20261021_fdr_metrics">
+  <link rel="stylesheet" href="style.css?v=20261021_saved_ft">
 </head>
 <body>
 
@@ -129,6 +129,9 @@
               <button class="toggle-btn" data-sort="fdr5" title="Sort by 5-Week FDR (Easiest Schedule First)">
                 5W FDR
               </button>
+              <button class="toggle-btn" data-sort="ft" title="Sort by Stacked Free Transfers (Most Banked First)">
+                Saved FT
+              </button>
             </div>
           </div>
         </div>
@@ -141,6 +144,7 @@
                 <th class="col-manager">Manager & Team</th>
                 <th class="col-gw-pts text-right">GW Net</th>
                 <th class="col-overall text-right">Overall</th>
+                <th class="col-ft text-center" title="Free Transfers Stacked Up for upcoming deadline (max 5)">Saved FT</th>
                 <th class="col-fdr-3w text-center" title="Upcoming 3-Week Fixture Difficulty Ranking (Lower is Easiest/Best)">3W FDR Rank</th>
                 <th class="col-fdr-5w text-center" title="Upcoming 5-Week Fixture Difficulty Rating (Average Difficulty Score · Lower is Easiest/Best)">5W FDR Rating</th>
                 <th class="col-captain">Captain</th>
@@ -284,6 +288,6 @@
   <div id="fdr-tooltip" class="floating-tooltip hidden"></div>
 
   <!-- Core Visualizer Application Script -->
-  <script src="app.js?v=20261021_fdr_metrics"></script>
+  <script src="app.js?v=20261021_saved_ft"></script>
 </body>
 </html>
