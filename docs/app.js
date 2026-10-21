@@ -1,5 +1,5 @@
 /**
- * FPL MISSION CONTROL - UNIFIED 1-VIEW DASHBOARD
+ * FPL: BLUE SQUARE - UNIFIED 1-VIEW DASHBOARD
  * Modern, high-density, single-screen visualizer for FPL Gameweek Totals, Transfers, and FDR Matrix.
  */
 
