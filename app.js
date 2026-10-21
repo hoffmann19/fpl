@@ -452,6 +452,8 @@ function updateLeagueRibbon() {
  */
 function calculateManagerFdrRatings(gwNum) {
   const result = {
+    scoresGw: {},
+    ranksGw: {},
     scores3: {},
     ranks3: {},
     scores5: {},
@@ -488,15 +490,26 @@ function calculateManagerFdrRatings(gwNum) {
     || (pls && pls.latest_ranks) 
     || {};
 
-  // Compute average opponent Premier League standing for each manager (Higher standing = easier schedule)
+  // Compute average opponent Premier League standing for each manager:
+  // 1. Current Gameweek (gwNum)
+  // 2. Upcoming 3 Weeks
+  // 3. Upcoming 5 Weeks
   Object.keys(gwData.lineups).forEach(mgr => {
     const lineup = gwData.lineups[mgr] || [];
+    let sumGw = 0, countGw = 0;
     let sum3 = 0, count3 = 0;
     let sum5 = 0, count5 = 0;
 
     lineup.forEach(p => {
       const club = p.club;
       if (club && fdr[club]) {
+        // Current Gameweek Matchup
+        const fixGw = fdr[club][gwNum.toString()];
+        if (fixGw && fixGw.opponent_short && standingsMap[fixGw.opponent_short] !== undefined) {
+          sumGw += standingsMap[fixGw.opponent_short];
+          countGw++;
+        }
+        // Upcoming 3 GWs
         gws3.forEach(g => {
           const fix = fdr[club][g];
           if (fix && fix.opponent_short && standingsMap[fix.opponent_short] !== undefined) {
@@ -504,6 +517,7 @@ function calculateManagerFdrRatings(gwNum) {
             count3++;
           }
         });
+        // Upcoming 5 GWs
         gws5.forEach(g => {
           const fix = fdr[club][g];
           if (fix && fix.opponent_short && standingsMap[fix.opponent_short] !== undefined) {
@@ -514,8 +528,19 @@ function calculateManagerFdrRatings(gwNum) {
       }
     });
 
+    result.scoresGw[mgr] = countGw > 0 ? Number((sumGw / countGw).toFixed(2)) : 10.0;
     result.scores3[mgr] = count3 > 0 ? Number((sum3 / count3).toFixed(2)) : 10.0;
     result.scores5[mgr] = count5 > 0 ? Number((sum5 / count5).toFixed(2)) : 10.0;
+  });
+
+  // Assign Current GW ranks (Higher standing = facing worse teams = easier matchup = Rank #1)
+  const sortedGw = Object.keys(result.scoresGw).sort((a, b) => result.scoresGw[b] - result.scoresGw[a]);
+  sortedGw.forEach((mgr, i) => {
+    if (i > 0 && result.scoresGw[mgr] === result.scoresGw[sortedGw[i - 1]]) {
+      result.ranksGw[mgr] = result.ranksGw[sortedGw[i - 1]];
+    } else {
+      result.ranksGw[mgr] = i + 1;
+    }
   });
 
   // Assign 3W ranks (Higher opponent standing = facing worse teams = easier schedule = Rank #1)
@@ -599,6 +624,9 @@ function sortStandingsByActiveMetric(standingsList, fdrMetrics, stackedTransfers
       case 'saved_ft':
         cmp = (stackedTransfers[a.manager] || 1) - (stackedTransfers[b.manager] || 1);
         break;
+      case 'fdr_gw':
+        cmp = (fdrMetrics.scoresGw[a.manager] ?? 10.0) - (fdrMetrics.scoresGw[b.manager] ?? 10.0);
+        break;
       case 'fdr_3w':
         cmp = (fdrMetrics.scores3[a.manager] ?? 10.0) - (fdrMetrics.scores3[b.manager] ?? 10.0);
         break;
@@ -641,7 +669,7 @@ function renderGameweekTotals() {
   if (!gwData || !gwData.standings || gwData.standings.length === 0) {
     elTotalsTableBody.innerHTML = `
       <tr>
-        <td colspan="10" style="text-align: center; padding: 30px; color: var(--text-secondary);">
+        <td colspan="11" style="text-align: center; padding: 30px; color: var(--text-secondary);">
           <i class="fa-solid fa-clock-rotate-left" style="font-size: 1.5rem; margin-bottom: 6px;"></i>
           <p>Gameweek ${currentGW} fixtures have not yet concluded.</p>
         </td>
@@ -733,6 +761,14 @@ function renderGameweekTotals() {
     else if (ftCount === 3) ftBadgeClass = 'ft-med';
     else if (ftCount === 2) ftBadgeClass = 'ft-low';
 
+    // Current GW FDR Metric & Rank (Premier League Opponent Standing: Higher is easiest)
+    const fdrGwRank = fdrMetrics.ranksGw[mgr.manager] ?? '-';
+    const fdrGwScore = fdrMetrics.scoresGw[mgr.manager] ?? 10.0;
+    let rankGwBadgeClass = 'rank-mid';
+    if (fdrGwRank === 1) rankGwBadgeClass = 'rank-top';
+    else if (fdrGwRank <= 3) rankGwBadgeClass = 'rank-good';
+    else if (fdrGwRank >= 9) rankGwBadgeClass = 'rank-tough';
+
     // 3W FDR Metric & Rank (Premier League Opponent Standing: Higher is easiest)
     const fdr3Rank = fdrMetrics.ranks3[mgr.manager] ?? '-';
     const fdr3Score = fdrMetrics.scores3[mgr.manager] ?? 10.0;
@@ -800,6 +836,12 @@ function renderGameweekTotals() {
       </td>
       <td class="col-ft text-center" title="${mgr.manager} has ${ftCount} free transfer${ftCount > 1 ? 's' : ''} stacked up for upcoming deadline (max 5)">
         <span class="ft-stacked-badge ${ftBadgeClass}">${ftCount} FT</span>
+      </td>
+      <td class="col-fdr-gw text-center" title="Gameweek ${currentGW} Schedule · Avg Opponent Standing: ${fdrGwScore.toFixed(2)} (Higher is easiest matchup · #${fdrGwRank} in league)">
+        <div class="fdr-mgr-cell">
+          <span class="fdr-rank-badge ${rankGwBadgeClass}">#${fdrGwRank}</span>
+          <span class="fdr-sub-num">${fdrGwScore.toFixed(2)}</span>
+        </div>
       </td>
       <td class="col-fdr-3w text-center" title="Upcoming 3-GW Schedule (GW ${fdrMetrics.startGw}–${fdrMetrics.endGw3}) · Avg Opponent Standing: ${fdr3Score.toFixed(2)} (Higher is easiest schedule · #${fdr3Rank} in league)">
         <div class="fdr-mgr-cell">

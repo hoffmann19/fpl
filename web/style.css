@@ -723,7 +723,7 @@ html, body {
 }
 
 /* FDR Manager Metrics in Totals Table */
-.col-fdr-3w, .col-fdr-5w {
+.col-fdr-gw, .col-fdr-3w, .col-fdr-5w {
   white-space: nowrap;
 }
 
