@@ -795,12 +795,13 @@ function renderGameweekTotals() {
     else if (fdr3Rank <= 3) rank3BadgeClass = 'rank-good';
     else if (fdr3Rank >= 9) rank3BadgeClass = 'rank-tough';
 
-    // 5W FDR Metric & Rating Pill
+    // 5W FDR Metric & Rank (Premier League Opponent Standing: Higher is easiest)
     const fdr5Rank = fdrMetrics.ranks5[mgr.manager] ?? '-';
     const fdr5Score = fdrMetrics.scores5[mgr.manager] ?? 10.0;
-    let fdr5PillClass = 'fdr-med';
-    if (fdr5Score >= 10.45) fdr5PillClass = 'fdr-easy';
-    else if (fdr5Score < 10.00) fdr5PillClass = 'fdr-hard';
+    let rank5BadgeClass = 'rank-mid';
+    if (fdr5Rank === 1) rank5BadgeClass = 'rank-top';
+    else if (fdr5Rank <= 3) rank5BadgeClass = 'rank-good';
+    else if (fdr5Rank >= 9) rank5BadgeClass = 'rank-tough';
 
     // Chip badge
     let chipBadge = '<span class="chip-none">—</span>';
@@ -869,8 +870,8 @@ function renderGameweekTotals() {
       </td>
       <td class="col-fdr-5w text-center" title="Upcoming 5-GW Schedule (GW ${fdrMetrics.startGw}–${fdrMetrics.endGw5}) · Avg Opponent Standing: ${fdr5Score.toFixed(2)} (Higher is easiest schedule · #${fdr5Rank} in league)">
         <div class="fdr-mgr-cell">
-          <span class="fdr-score-pill ${fdr5PillClass}">${fdr5Score.toFixed(2)}</span>
-          <span class="fdr-sub-num">#${fdr5Rank}</span>
+          <span class="fdr-rank-badge ${rank5BadgeClass}">#${fdr5Rank}</span>
+          <span class="fdr-sub-num">${fdr5Score.toFixed(2)}</span>
         </div>
       </td>
       <td class="col-captain">
