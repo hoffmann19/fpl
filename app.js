@@ -164,9 +164,9 @@ function bindEventListeners() {
       } else {
         totalsSortMetric = metric;
         // Default direction based on metric:
-        // Rank, FDR metrics, Manager name default to ascending (lower/A first)
-        // GW points, Overall total, Saved FT, Captain points, Value default to descending (higher first)
-        if (['rank', 'fdr_3w', 'fdr_5w', 'manager'].includes(metric)) {
+        // Rank, Manager name default to ascending (Rank #1 first / A-Z first)
+        // Opponent rankings (fdr_3w, fdr_5w), GW points, Overall total, Saved FT, Captain points, Value default to descending (higher first = easiest/most points)
+        if (['rank', 'manager'].includes(metric)) {
           totalsSortAsc = true;
         } else {
           totalsSortAsc = false;
@@ -483,7 +483,12 @@ function calculateManagerFdrRatings(gwNum) {
   const gws5 = [];
   for (let g = startGw; g <= endGw5; g++) gws5.push(g.toString());
 
-  // Compute average difficulty for each manager
+  const pls = appData.premier_league_standings;
+  const standingsMap = (pls && pls.ranks_by_gw?.[gwNum.toString()]) 
+    || (pls && pls.latest_ranks) 
+    || {};
+
+  // Compute average opponent Premier League standing for each manager (Higher standing = easier schedule)
   Object.keys(gwData.lineups).forEach(mgr => {
     const lineup = gwData.lineups[mgr] || [];
     let sum3 = 0, count3 = 0;
@@ -493,26 +498,28 @@ function calculateManagerFdrRatings(gwNum) {
       const club = p.club;
       if (club && fdr[club]) {
         gws3.forEach(g => {
-          if (fdr[club][g] && fdr[club][g].difficulty !== undefined) {
-            sum3 += fdr[club][g].difficulty;
+          const fix = fdr[club][g];
+          if (fix && fix.opponent_short && standingsMap[fix.opponent_short] !== undefined) {
+            sum3 += standingsMap[fix.opponent_short];
             count3++;
           }
         });
         gws5.forEach(g => {
-          if (fdr[club][g] && fdr[club][g].difficulty !== undefined) {
-            sum5 += fdr[club][g].difficulty;
+          const fix = fdr[club][g];
+          if (fix && fix.opponent_short && standingsMap[fix.opponent_short] !== undefined) {
+            sum5 += standingsMap[fix.opponent_short];
             count5++;
           }
         });
       }
     });
 
-    result.scores3[mgr] = count3 > 0 ? Number((sum3 / count3).toFixed(2)) : 3.0;
-    result.scores5[mgr] = count5 > 0 ? Number((sum5 / count5).toFixed(2)) : 3.0;
+    result.scores3[mgr] = count3 > 0 ? Number((sum3 / count3).toFixed(2)) : 10.0;
+    result.scores5[mgr] = count5 > 0 ? Number((sum5 / count5).toFixed(2)) : 10.0;
   });
 
-  // Assign 3W ranks (lower difficulty = better rank)
-  const sorted3 = Object.keys(result.scores3).sort((a, b) => result.scores3[a] - result.scores3[b]);
+  // Assign 3W ranks (Higher opponent standing = facing worse teams = easier schedule = Rank #1)
+  const sorted3 = Object.keys(result.scores3).sort((a, b) => result.scores3[b] - result.scores3[a]);
   sorted3.forEach((mgr, i) => {
     if (i > 0 && result.scores3[mgr] === result.scores3[sorted3[i - 1]]) {
       result.ranks3[mgr] = result.ranks3[sorted3[i - 1]];
@@ -521,8 +528,8 @@ function calculateManagerFdrRatings(gwNum) {
     }
   });
 
-  // Assign 5W ranks (lower difficulty = better rank)
-  const sorted5 = Object.keys(result.scores5).sort((a, b) => result.scores5[a] - result.scores5[b]);
+  // Assign 5W ranks (Higher opponent standing = facing worse teams = easier schedule = Rank #1)
+  const sorted5 = Object.keys(result.scores5).sort((a, b) => result.scores5[b] - result.scores5[a]);
   sorted5.forEach((mgr, i) => {
     if (i > 0 && result.scores5[mgr] === result.scores5[sorted5[i - 1]]) {
       result.ranks5[mgr] = result.ranks5[sorted5[i - 1]];
@@ -593,10 +600,10 @@ function sortStandingsByActiveMetric(standingsList, fdrMetrics, stackedTransfers
         cmp = (stackedTransfers[a.manager] || 1) - (stackedTransfers[b.manager] || 1);
         break;
       case 'fdr_3w':
-        cmp = (fdrMetrics.scores3[a.manager] ?? 3.0) - (fdrMetrics.scores3[b.manager] ?? 3.0);
+        cmp = (fdrMetrics.scores3[a.manager] ?? 10.0) - (fdrMetrics.scores3[b.manager] ?? 10.0);
         break;
       case 'fdr_5w':
-        cmp = (fdrMetrics.scores5[a.manager] ?? 3.0) - (fdrMetrics.scores5[b.manager] ?? 3.0);
+        cmp = (fdrMetrics.scores5[a.manager] ?? 10.0) - (fdrMetrics.scores5[b.manager] ?? 10.0);
         break;
       case 'captain':
         cmp = (a.captain_points || 0) - (b.captain_points || 0);
@@ -726,9 +733,9 @@ function renderGameweekTotals() {
     else if (ftCount === 3) ftBadgeClass = 'ft-med';
     else if (ftCount === 2) ftBadgeClass = 'ft-low';
 
-    // 3W FDR Metric & Rank
+    // 3W FDR Metric & Rank (Premier League Opponent Standing: Higher is easiest)
     const fdr3Rank = fdrMetrics.ranks3[mgr.manager] ?? '-';
-    const fdr3Score = fdrMetrics.scores3[mgr.manager] ?? 3.0;
+    const fdr3Score = fdrMetrics.scores3[mgr.manager] ?? 10.0;
     let rank3BadgeClass = 'rank-mid';
     if (fdr3Rank === 1) rank3BadgeClass = 'rank-top';
     else if (fdr3Rank <= 3) rank3BadgeClass = 'rank-good';
@@ -736,10 +743,10 @@ function renderGameweekTotals() {
 
     // 5W FDR Metric & Rating Pill
     const fdr5Rank = fdrMetrics.ranks5[mgr.manager] ?? '-';
-    const fdr5Score = fdrMetrics.scores5[mgr.manager] ?? 3.0;
+    const fdr5Score = fdrMetrics.scores5[mgr.manager] ?? 10.0;
     let fdr5PillClass = 'fdr-med';
-    if (fdr5Score <= 3.01) fdr5PillClass = 'fdr-easy';
-    else if (fdr5Score >= 3.11) fdr5PillClass = 'fdr-hard';
+    if (fdr5Score >= 10.45) fdr5PillClass = 'fdr-easy';
+    else if (fdr5Score < 10.00) fdr5PillClass = 'fdr-hard';
 
     // Chip badge
     let chipBadge = '<span class="chip-none">—</span>';
@@ -794,13 +801,13 @@ function renderGameweekTotals() {
       <td class="col-ft text-center" title="${mgr.manager} has ${ftCount} free transfer${ftCount > 1 ? 's' : ''} stacked up for upcoming deadline (max 5)">
         <span class="ft-stacked-badge ${ftBadgeClass}">${ftCount} FT</span>
       </td>
-      <td class="col-fdr-3w text-center" title="Upcoming 3-GW Schedule (GW ${fdrMetrics.startGw}–${fdrMetrics.endGw3}) · Avg FDR: ${fdr3Score.toFixed(2)} (Lower = Easiest/Best)">
+      <td class="col-fdr-3w text-center" title="Upcoming 3-GW Schedule (GW ${fdrMetrics.startGw}–${fdrMetrics.endGw3}) · Avg Opponent Standing: ${fdr3Score.toFixed(2)} (Higher is easiest schedule · #${fdr3Rank} in league)">
         <div class="fdr-mgr-cell">
           <span class="fdr-rank-badge ${rank3BadgeClass}">#${fdr3Rank}</span>
           <span class="fdr-sub-num">${fdr3Score.toFixed(2)}</span>
         </div>
       </td>
-      <td class="col-fdr-5w text-center" title="Upcoming 5-GW Schedule (GW ${fdrMetrics.startGw}–${fdrMetrics.endGw5}) · League Rank: #${fdr5Rank} (Lower = Easiest/Best)">
+      <td class="col-fdr-5w text-center" title="Upcoming 5-GW Schedule (GW ${fdrMetrics.startGw}–${fdrMetrics.endGw5}) · Avg Opponent Standing: ${fdr5Score.toFixed(2)} (Higher is easiest schedule · #${fdr5Rank} in league)">
         <div class="fdr-mgr-cell">
           <span class="fdr-score-pill ${fdr5PillClass}">${fdr5Score.toFixed(2)}</span>
           <span class="fdr-sub-num">#${fdr5Rank}</span>
@@ -1084,7 +1091,7 @@ function renderFdrGrid() {
   if (elFdrTableHeadRow) {
     elFdrTableHeadRow.innerHTML = `
       <th class="col-fdr-team sticky-col">Team</th>
-      <th class="col-fdr-avg sticky-col-2" title="Average difficulty score over GW ${startGW}–${endGW}">Run Avg</th>
+      <th class="col-fdr-avg sticky-col-2" title="Average opponent Premier League standing over GW ${startGW}–${endGW} (Higher = Easiest run)">Run Avg</th>
     `;
     horizonGWs.forEach(gw => {
       const th = document.createElement('th');
@@ -1093,6 +1100,12 @@ function renderFdrGrid() {
       elFdrTableHeadRow.appendChild(th);
     });
   }
+
+  // Standings map for opponent ranking
+  const pls = appData.premier_league_standings;
+  const standingsMap = (pls && pls.ranks_by_gw?.[currentGW.toString()]) 
+    || (pls && pls.latest_ranks) 
+    || {};
 
   // Identify Selected Manager's Squad Clubs
   const squadClubsCount = {};
@@ -1105,7 +1118,7 @@ function renderFdrGrid() {
     });
   }
 
-  // Prepare Team Rows with Average FDR Calculation
+  // Prepare Team Rows with Average Opponent Standing Calculation
   const teamRows = [];
   Object.keys(fdrData).forEach(teamCode => {
     const fixtures = fdrData[teamCode] || {};
@@ -1114,13 +1127,13 @@ function renderFdrGrid() {
 
     horizonGWs.forEach(gw => {
       const fix = fixtures[gw.toString()];
-      if (fix && fix.difficulty !== undefined) {
-        diffSum += fix.difficulty;
+      if (fix && fix.opponent_short && standingsMap[fix.opponent_short] !== undefined) {
+        diffSum += standingsMap[fix.opponent_short];
         count++;
       }
     });
 
-    const avgDiff = count > 0 ? (diffSum / count) : 3.0;
+    const avgDiff = count > 0 ? (diffSum / count) : 10.0;
     const fullName = PL_TEAM_NAMES[teamCode] || teamCode;
     const squadCount = squadClubsCount[teamCode] || 0;
 
@@ -1149,12 +1162,12 @@ function renderFdrGrid() {
     filteredTeams = filteredTeams.filter(t => t.squadCount > 0);
   }
 
-  // Sort Teams
+  // Sort Teams (Higher average standing = facing lower-table opponents = easiest run)
   filteredTeams.sort((a, b) => {
     if (fdrSortMode === 'easiest') {
-      return a.avgDiff - b.avgDiff || a.teamCode.localeCompare(b.teamCode);
-    } else if (fdrSortMode === 'hardest') {
       return b.avgDiff - a.avgDiff || a.teamCode.localeCompare(b.teamCode);
+    } else if (fdrSortMode === 'hardest') {
+      return a.avgDiff - b.avgDiff || a.teamCode.localeCompare(b.teamCode);
     } else {
       // 'alpha'
       return a.teamCode.localeCompare(b.teamCode);
@@ -1177,11 +1190,14 @@ function renderFdrGrid() {
     const tr = document.createElement('tr');
     if (t.squadCount > 0) tr.classList.add('squad-owned-row');
 
-    // Run Avg color styling
+    // Run Avg color styling (Higher = easier run)
     const roundedAvg = t.avgDiff.toFixed(1);
     let avgColorClass = 'fdr-3';
-    if (t.avgDiff <= 2.4) avgColorClass = 'fdr-2';
-    else if (t.avgDiff >= 3.6) avgColorClass = 'fdr-4';
+    if (t.avgDiff >= 13.0) avgColorClass = 'fdr-2';
+    else if (t.avgDiff >= 10.5) avgColorClass = 'fdr-1';
+    else if (t.avgDiff >= 8.5) avgColorClass = 'fdr-3';
+    else if (t.avgDiff >= 6.5) avgColorClass = 'fdr-4';
+    else avgColorClass = 'fdr-5';
 
     // Squad badge html
     const squadBadgeHtml = t.squadCount > 0 
@@ -1211,9 +1227,29 @@ function renderFdrGrid() {
         return;
       }
 
-      const diff = fix.difficulty || 3;
-      const opp = fix.opponent || `${fix.opponent_short} (${fix.venue})`;
-      const fdrClass = `fdr-${diff}`;
+      const oppCode = fix.opponent_short;
+      const oppRank = (oppCode && standingsMap[oppCode] !== undefined) 
+        ? standingsMap[oppCode] 
+        : (fix.difficulty ? (21 - fix.difficulty * 4) : 10);
+
+      let fdrClass = 'fdr-3';
+      let rankLabel = 'Moderate';
+      if (oppRank >= 17) {
+        fdrClass = 'fdr-2';
+        rankLabel = 'Easiest (#17–20)';
+      } else if (oppRank >= 12) {
+        fdrClass = 'fdr-1';
+        rankLabel = 'Favorable (#12–16)';
+      } else if (oppRank >= 7) {
+        fdrClass = 'fdr-3';
+        rankLabel = 'Moderate (#7–11)';
+      } else if (oppRank >= 4) {
+        fdrClass = 'fdr-4';
+        rankLabel = 'Tough (#4–6)';
+      } else {
+        fdrClass = 'fdr-5';
+        rankLabel = 'Hardest (#1–3)';
+      }
 
       rowHtml += `
         <td>
@@ -1222,8 +1258,9 @@ function renderFdrGrid() {
                data-team="${t.fullName}"
                data-opp="${fix.opponent_name || fix.opponent_short}"
                data-venue="${fix.venue === 'H' ? 'Home' : 'Away'}"
-               data-diff="${diff}">
-            <span class="opp-text">${fix.opponent_short || opp}</span>
+               data-rank="${oppRank}"
+               data-label="${rankLabel}">
+            <span class="opp-text">${oppCode} <small class="opp-standing-num">#${oppRank}</small></span>
             <span class="venue-tag">(${fix.venue || '?'})</span>
           </div>
         </td>
@@ -1250,18 +1287,13 @@ function attachFdrTooltipListeners() {
       const team = cell.dataset.team;
       const opp = cell.dataset.opp;
       const venue = cell.dataset.venue;
-      const diff = cell.dataset.diff;
-
-      let diffLabel = 'Moderate';
-      if (diff === '1') diffLabel = 'Very Easy';
-      else if (diff === '2') diffLabel = 'Easy';
-      else if (diff === '4') diffLabel = 'Difficult';
-      else if (diff === '5') diffLabel = 'Extreme';
+      const rank = cell.dataset.rank;
+      const label = cell.dataset.label;
 
       elTooltip.innerHTML = `
         <strong>GW ${gw} Matchup</strong><br>
         <span>${team} vs ${opp} (${venue})</span><br>
-        <span style="font-size: 0.72rem; color: var(--text-secondary);">Difficulty: ${diff} (${diffLabel})</span>
+        <span style="font-size: 0.72rem; color: var(--accent-gold); font-weight: 700;">Opponent Standing: #${rank} (${label})</span>
       `;
       elTooltip.classList.remove('hidden');
     });

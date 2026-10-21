@@ -1426,7 +1426,7 @@ html, body {
 
 /* Matchup Cell Styles & FPL Colors */
 .fdr-cell {
-  min-width: 62px;
+  min-width: 66px;
   height: 38px;
   border-radius: 4px;
   display: flex;
@@ -1450,6 +1450,15 @@ html, body {
 .fdr-cell .opp-text {
   letter-spacing: -0.2px;
   line-height: 1.1;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.fdr-cell .opp-standing-num {
+  font-size: 0.64rem;
+  font-weight: 700;
+  opacity: 0.88;
 }
 
 .fdr-cell .venue-tag {

@@ -144,11 +144,11 @@
                 <th class="col-ft text-center sortable-th" data-metric="saved_ft" title="Sort by Banked Free Transfers (max 5)">
                   Saved FT <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
                 </th>
-                <th class="col-fdr-3w text-center sortable-th" data-metric="fdr_3w" title="Sort by Upcoming 3-Week Fixture Difficulty (Easiest / Lowest first)">
-                  3W FDR Rank <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                <th class="col-fdr-3w text-center sortable-th" data-metric="fdr_3w" title="Sort by Upcoming 3-Week Average Opponent Premier League Standing (Higher is easier schedule)">
+                  3W Opp Rank <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
                 </th>
-                <th class="col-fdr-5w text-center sortable-th" data-metric="fdr_5w" title="Sort by Upcoming 5-Week Fixture Difficulty (Easiest / Lowest first)">
-                  5W FDR Rating <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                <th class="col-fdr-5w text-center sortable-th" data-metric="fdr_5w" title="Sort by Upcoming 5-Week Average Opponent Premier League Standing (Higher is easier schedule)">
+                  5W Opp Rank <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
                 </th>
                 <th class="col-captain sortable-th" data-metric="captain" title="Sort by Captain Points Scored">
                   Captain <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
@@ -215,10 +215,10 @@
         <div class="panel-header fdr-header">
           <div class="panel-title-group">
             <h2 class="panel-title">
-              <i class="fa-solid fa-shield-halved icon-blue"></i>
-              Premier League Fixture Difficulty Rating (FDR)
+              <i class="fa-solid fa-ranking-star icon-blue"></i>
+              Premier League Fixture Difficulty & Opponent Standings
             </h2>
-            <span class="panel-subtitle">Official FPL matrix · Target favorable fixture runs for upcoming gameweeks</span>
+            <span class="panel-subtitle">Based on Premier League table standings · Higher number = facing lower table teams (easiest schedule)</span>
           </div>
 
           <div class="fdr-toolbar">
@@ -236,8 +236,8 @@
             <div class="toolbar-item">
               <span class="toolbar-label">Sort:</span>
               <select id="select-fdr-sort" class="select-pill-sm">
-                <option value="easiest">Easiest Run First (Lowest FDR)</option>
-                <option value="hardest">Hardest Run First</option>
+                <option value="easiest">Easiest Run First (Highest Avg Standing)</option>
+                <option value="hardest">Hardest Run First (Lowest Avg Standing)</option>
                 <option value="alpha">Alphabetical (A-Z)</option>
               </select>
             </div>
@@ -258,15 +258,15 @@
           </div>
         </div>
 
-        <!-- Official FPL Legend Bar -->
+        <!-- Opponent Standing Legend Bar -->
         <div class="fdr-legend-bar">
-          <div class="legend-scale-title">Fixture Difficulty Scale:</div>
+          <div class="legend-scale-title">Opponent Table Standing (Higher = Easier):</div>
           <div class="legend-scale-items">
-            <span class="legend-chip fdr-1">1 Very Easy</span>
-            <span class="legend-chip fdr-2">2 Easy</span>
-            <span class="legend-chip fdr-3">3 Moderate</span>
-            <span class="legend-chip fdr-4">4 Difficult</span>
-            <span class="legend-chip fdr-5">5 Extreme</span>
+            <span class="legend-chip fdr-2">#17–20 Easiest</span>
+            <span class="legend-chip fdr-1">#12–16 Favorable</span>
+            <span class="legend-chip fdr-3">#7–11 Moderate</span>
+            <span class="legend-chip fdr-4">#4–6 Tough</span>
+            <span class="legend-chip fdr-5">#1–3 Hardest</span>
           </div>
           <div class="legend-tip">
             <span><i class="fa-solid fa-circle-info"></i> <strong>(H)</strong> = Home, <strong>(A)</strong> = Away. Hover cell for matchup details.</span>
@@ -297,6 +297,6 @@
   <div id="fdr-tooltip" class="floating-tooltip hidden"></div>
 
   <!-- Core Visualizer Application Script -->
-  <script src="app.js?v=20261021_sort_headers"></script>
+  <script src="app.js?v=20261021_standing_fdr"></script>
 </body>
 </html>
