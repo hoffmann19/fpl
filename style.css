@@ -1106,6 +1106,20 @@ html, body {
   flex-shrink: 0;
 }
 
+/* Move Number Tag (e.g. #1, #2) */
+.tx-move-num-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  background: rgba(255, 184, 0, 0.14);
+  border: 1px solid rgba(255, 184, 0, 0.35);
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  line-height: 1.1;
+}
+
 /* OUT / IN Direction Badges */
 .tx-dir-badge {
   font-size: 0.68rem;

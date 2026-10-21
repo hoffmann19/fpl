@@ -369,8 +369,19 @@ function selectManager(managerName) {
   selectedManager = managerName;
   updateSelectionBar();
   renderGameweekTotals();
-  renderTransfers();
   renderFdrGrid();
+
+  // Highlight and expand this manager's transfer card in Panel 2 and scroll smoothly into view
+  document.querySelectorAll('.tx-team-accordion').forEach(acc => {
+    const isThisMgr = acc.dataset.manager === selectedManager;
+    acc.classList.toggle('selected-tx-team', isThisMgr);
+    if (isThisMgr && acc.dataset.hasMoves === 'true') {
+      acc.classList.add('expanded');
+      setTimeout(() => {
+        acc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
+    }
+  });
 }
 
 /**
@@ -382,8 +393,14 @@ function clearManagerSelection() {
   if (elBtnFdrSquadOnly) elBtnFdrSquadOnly.classList.remove('active');
   updateSelectionBar();
   renderGameweekTotals();
-  renderTransfers();
   renderFdrGrid();
+
+  document.querySelectorAll('.tx-team-accordion').forEach(acc => {
+    acc.classList.remove('selected-tx-team');
+    if (!allTransfersExpanded) {
+      acc.classList.remove('expanded');
+    }
+  });
 }
 
 /**
@@ -1044,7 +1061,7 @@ function renderTransfers() {
     // Build Detail Rows if moves exist
     let movesDetailHtml = '';
     if (hasMoves && s.transfers_detail && s.transfers_detail.length > 0) {
-      s.transfers_detail.forEach(t => {
+      s.transfers_detail.forEach((t, idx) => {
         const delta = t.net_points || 0;
         let deltaClass = 'tx-delta-neutral';
         let deltaSign = '';
@@ -1059,11 +1076,16 @@ function renderTransfers() {
           borderClass = 'border-negative';
         }
 
+        const moveNum = idx + 1;
+        const totalMoves = s.transfers_detail.length;
+        const moveNumHtml = totalMoves > 1 ? `<span class="tx-move-num-tag">#${moveNum}</span>` : '';
+
         movesDetailHtml += `
           <div class="tx-pair-row ${borderClass}">
             <!-- OUT SUBROW -->
             <div class="tx-subrow tx-subrow-out">
               <div class="tx-subrow-left">
+                ${moveNumHtml}
                 <span class="tx-dir-badge tx-badge-out">OUT</span>
                 <span class="tx-pname">${t.out_name}</span>
                 <span class="tx-pmeta-tag">${t.out_club} · ${t.out_pos}</span>
@@ -1093,24 +1115,32 @@ function renderTransfers() {
         `;
       });
     } else if (hasMoves) {
-      const inList = (s.transfers_in || []).join(', ') || '—';
-      const outList = (s.transfers_out || []).join(', ') || '—';
-      movesDetailHtml = `
-        <div class="tx-pair-row border-neutral">
-          <div class="tx-subrow tx-subrow-out">
-            <div class="tx-subrow-left">
-              <span class="tx-dir-badge tx-badge-out">OUT</span>
-              <span class="tx-pname">${outList}</span>
+      const ins = s.transfers_in || [];
+      const outs = s.transfers_out || [];
+      const count = Math.max(ins.length, outs.length);
+      for (let i = 0; i < count; i++) {
+        const inPlayer = ins[i] || '—';
+        const outPlayer = outs[i] || '—';
+        const moveNum = i + 1;
+        const moveNumHtml = count > 1 ? `<span class="tx-move-num-tag">#${moveNum}</span>` : '';
+        movesDetailHtml += `
+          <div class="tx-pair-row border-neutral">
+            <div class="tx-subrow tx-subrow-out">
+              <div class="tx-subrow-left">
+                ${moveNumHtml}
+                <span class="tx-dir-badge tx-badge-out">OUT</span>
+                <span class="tx-pname">${outPlayer}</span>
+              </div>
+            </div>
+            <div class="tx-subrow tx-subrow-in">
+              <div class="tx-subrow-left">
+                <span class="tx-dir-badge tx-badge-in">IN</span>
+                <span class="tx-pname">${inPlayer}</span>
+              </div>
             </div>
           </div>
-          <div class="tx-subrow tx-subrow-in">
-            <div class="tx-subrow-left">
-              <span class="tx-dir-badge tx-badge-in">IN</span>
-              <span class="tx-pname">${inList}</span>
-            </div>
-          </div>
-        </div>
-      `;
+        `;
+      }
     }
 
     card.innerHTML = `
@@ -1131,17 +1161,50 @@ function renderTransfers() {
       ${hasMoves ? `<div class="tx-team-details">${movesDetailHtml}</div>` : ''}
     `;
 
-    // Click handler: expand details & cross-filter manager
+    // Click handler: expand details smoothly & cross-filter manager without wiping container
     const headerEl = card.querySelector('.tx-team-header');
-    headerEl.addEventListener('click', () => {
+    headerEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isAlreadyExpanded = card.classList.contains('expanded');
+
       if (hasMoves) {
         card.classList.toggle('expanded');
+        if (!isAlreadyExpanded) {
+          setTimeout(() => {
+            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 40);
+        }
       }
-      selectManager(s.manager);
+
+      // Sync manager selection with other panels
+      if (selectedManager === s.manager) {
+        selectedManager = null;
+      } else {
+        selectedManager = s.manager;
+      }
+
+      updateSelectionBar();
+      renderGameweekTotals();
+      renderFdrGrid();
+
+      // Update selected class on accordion cards
+      document.querySelectorAll('.tx-team-accordion').forEach(acc => {
+        acc.classList.toggle('selected-tx-team', acc.dataset.manager === selectedManager);
+      });
     });
 
     elTransfersCardsContainer.appendChild(card);
   });
+
+  // If a manager was previously selected, ensure they are visible in Panel 2
+  if (selectedManager) {
+    const selectedEl = elTransfersCardsContainer.querySelector(`.tx-team-accordion[data-manager="${selectedManager}"]`);
+    if (selectedEl && selectedEl.dataset.hasMoves === 'true') {
+      setTimeout(() => {
+        selectedEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
+    }
+  }
 }
 
 /**
