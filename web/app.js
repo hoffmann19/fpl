@@ -1048,41 +1048,47 @@ function renderTransfers() {
         const delta = t.net_points || 0;
         let deltaClass = 'tx-delta-neutral';
         let deltaSign = '';
+        let borderClass = 'border-neutral';
+
         if (delta > 0) {
           deltaClass = 'tx-delta-positive';
           deltaSign = '+';
+          borderClass = 'border-positive';
         } else if (delta < 0) {
           deltaClass = 'tx-delta-negative';
+          borderClass = 'border-negative';
         }
 
         movesDetailHtml += `
-          <div class="tx-pair-row">
-            <!-- OUT PLAYER -->
-            <div class="tx-player-box tx-out">
-              <span class="tx-dir-badge">OUT</span>
-              <div class="tx-player-info">
+          <div class="tx-pair-row ${borderClass}">
+            <!-- OUT SUBROW -->
+            <div class="tx-subrow tx-subrow-out">
+              <div class="tx-subrow-left">
+                <span class="tx-dir-badge tx-badge-out">OUT</span>
                 <span class="tx-pname">${t.out_name}</span>
-                <span class="tx-pmeta">${t.out_club} · ${t.out_pos} · £${t.out_cost}m</span>
+                <span class="tx-pmeta-tag">${t.out_club} · ${t.out_pos}</span>
+                <span class="tx-cost-tag">£${t.out_cost}m</span>
               </div>
-              <span class="tx-pts-tag" title="GW Points scored by outgoing player">${t.out_points} pts</span>
+              <div class="tx-subrow-right">
+                <span class="tx-pts-tag" title="Points scored by outgoing player in GW ${currentGW}">${t.out_points} pts</span>
+              </div>
             </div>
 
-            <i class="fa-solid fa-arrow-right tx-arrow-icon"></i>
-
-            <!-- IN PLAYER -->
-            <div class="tx-player-box tx-in">
-              <span class="tx-dir-badge">IN</span>
-              <div class="tx-player-info">
+            <!-- IN SUBROW -->
+            <div class="tx-subrow tx-subrow-in">
+              <div class="tx-subrow-left">
+                <span class="tx-dir-badge tx-badge-in">IN</span>
                 <span class="tx-pname">${t.in_name}</span>
-                <span class="tx-pmeta">${t.in_club} · ${t.in_pos} · £${t.in_cost}m</span>
+                <span class="tx-pmeta-tag">${t.in_club} · ${t.in_pos}</span>
+                <span class="tx-cost-tag">£${t.in_cost}m</span>
               </div>
-              <span class="tx-pts-tag" title="GW Points scored by incoming player">${t.in_points} pts</span>
+              <div class="tx-subrow-right">
+                <span class="tx-pts-tag tx-pts-in" title="Points scored by incoming player in GW ${currentGW}">${t.in_points} pts</span>
+                <span class="tx-delta-badge ${deltaClass}" title="Net points delta from this transfer">
+                  ${deltaSign}${delta} pts
+                </span>
+              </div>
             </div>
-
-            <!-- NET DELTA -->
-            <span class="tx-delta-badge ${deltaClass}" title="Net GW points gain from transfer">
-              ${deltaSign}${delta} pts
-            </span>
           </div>
         `;
       });
@@ -1090,10 +1096,19 @@ function renderTransfers() {
       const inList = (s.transfers_in || []).join(', ') || '—';
       const outList = (s.transfers_out || []).join(', ') || '—';
       movesDetailHtml = `
-        <div class="tx-pair-row">
-          <div class="tx-player-box tx-out"><span class="tx-pname">OUT: ${outList}</span></div>
-          <i class="fa-solid fa-arrow-right tx-arrow-icon"></i>
-          <div class="tx-player-box tx-in"><span class="tx-pname">IN: ${inList}</span></div>
+        <div class="tx-pair-row border-neutral">
+          <div class="tx-subrow tx-subrow-out">
+            <div class="tx-subrow-left">
+              <span class="tx-dir-badge tx-badge-out">OUT</span>
+              <span class="tx-pname">${outList}</span>
+            </div>
+          </div>
+          <div class="tx-subrow tx-subrow-in">
+            <div class="tx-subrow-left">
+              <span class="tx-dir-badge tx-badge-in">IN</span>
+              <span class="tx-pname">${inList}</span>
+            </div>
+          </div>
         </div>
       `;
     }
