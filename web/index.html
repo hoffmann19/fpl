@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Custom Modern Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=20261021_fpl_blue_square">
+  <link rel="stylesheet" href="style.css?v=20261021_sort_headers">
 </head>
 <body>
 
@@ -115,40 +115,50 @@
           </div>
 
           <div class="panel-actions">
-            <div class="toggle-group" id="sort-toggle-group">
-              <button class="toggle-btn active" data-sort="overall" title="Sort by Total League Points">
-                Overall Total
-              </button>
-              <button class="toggle-btn" data-sort="gw" title="Sort by Gameweek Net Score">
-                GW Points
-              </button>
-              <button class="toggle-btn" data-sort="fdr3" title="Sort by 3-Week FDR (Easiest Schedule First)">
-                3W FDR
-              </button>
-              <button class="toggle-btn" data-sort="fdr5" title="Sort by 5-Week FDR (Easiest Schedule First)">
-                5W FDR
-              </button>
-              <button class="toggle-btn" data-sort="ft" title="Sort by Stacked Free Transfers (Most Banked First)">
-                Saved FT
-              </button>
+            <div class="totals-search-wrap">
+              <i class="fa-solid fa-magnifying-glass search-icon-xs"></i>
+              <input type="text" id="input-totals-search" class="search-input-xs" placeholder="Filter team or manager...">
             </div>
+            <button id="btn-reset-totals-sort" class="btn-toggle-compact" title="Reset table to default league rank order">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+            </button>
           </div>
         </div>
 
         <div class="table-container" id="totals-table-wrapper">
           <table class="data-table" id="totals-table">
             <thead>
-              <tr>
-                <th class="col-rank">Rank</th>
-                <th class="col-manager">Manager & Team</th>
-                <th class="col-gw-pts text-right">GW Net</th>
-                <th class="col-overall text-right">Overall</th>
-                <th class="col-ft text-center" title="Free Transfers Stacked Up for upcoming deadline (max 5)">Saved FT</th>
-                <th class="col-fdr-3w text-center" title="Upcoming 3-Week Fixture Difficulty Ranking (Lower is Easiest/Best)">3W FDR Rank</th>
-                <th class="col-fdr-5w text-center" title="Upcoming 5-Week Fixture Difficulty Rating (Average Difficulty Score · Lower is Easiest/Best)">5W FDR Rating</th>
-                <th class="col-captain">Captain</th>
-                <th class="col-chip text-center">Chip</th>
-                <th class="col-value text-right">Squad Value</th>
+              <tr id="totals-table-head-row">
+                <th class="col-rank sortable-th active-sort" data-metric="rank" title="Sort by League Rank">
+                  Rank <span class="sort-icon"><i class="fa-solid fa-arrow-down-1-9"></i></span>
+                </th>
+                <th class="col-manager sortable-th" data-metric="manager" title="Sort alphabetically by Manager Name">
+                  Manager & Team <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                </th>
+                <th class="col-gw-pts text-right sortable-th" data-metric="gw_net" title="Sort by Gameweek Net Score">
+                  GW Net <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                </th>
+                <th class="col-overall text-right sortable-th" data-metric="overall" title="Sort by Total Overall Points">
+                  Overall <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                </th>
+                <th class="col-ft text-center sortable-th" data-metric="saved_ft" title="Sort by Banked Free Transfers (max 5)">
+                  Saved FT <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                </th>
+                <th class="col-fdr-3w text-center sortable-th" data-metric="fdr_3w" title="Sort by Upcoming 3-Week Fixture Difficulty (Easiest / Lowest first)">
+                  3W FDR Rank <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                </th>
+                <th class="col-fdr-5w text-center sortable-th" data-metric="fdr_5w" title="Sort by Upcoming 5-Week Fixture Difficulty (Easiest / Lowest first)">
+                  5W FDR Rating <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                </th>
+                <th class="col-captain sortable-th" data-metric="captain" title="Sort by Captain Points Scored">
+                  Captain <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                </th>
+                <th class="col-chip text-center sortable-th" data-metric="chip" title="Sort by Active Chips">
+                  Chip <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                </th>
+                <th class="col-value text-right sortable-th" data-metric="value" title="Sort by Total Squad Value">
+                  Squad Value <span class="sort-icon"><i class="fa-solid fa-sort"></i></span>
+                </th>
               </tr>
             </thead>
             <tbody id="totals-table-body">
@@ -287,6 +297,6 @@
   <div id="fdr-tooltip" class="floating-tooltip hidden"></div>
 
   <!-- Core Visualizer Application Script -->
-  <script src="app.js?v=20261021_fpl_blue_square"></script>
+  <script src="app.js?v=20261021_sort_headers"></script>
 </body>
 </html>

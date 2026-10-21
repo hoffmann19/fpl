@@ -9,7 +9,9 @@ let activeSeason = '2026_27';
 let currentGW = 6;
 let latestGW = 6;
 let selectedManager = null;
-let totalsSortMode = 'overall'; // 'overall' or 'gw'
+let totalsSortMetric = 'rank';  // 'rank', 'manager', 'gw_net', 'overall', 'saved_ft', 'fdr_3w', 'fdr_5w', 'captain', 'chip', 'value'
+let totalsSortAsc = true;
+let totalsSearchFilter = '';
 let fdrHorizon = 5;            // 5, 8, or 38
 let fdrSortMode = 'easiest';    // 'easiest', 'hardest', 'alpha'
 let fdrSearchQuery = '';
@@ -47,7 +49,7 @@ const PL_TEAM_NAMES = {
 let elSelectSeason, elSelectGw, elBtnPrevGw, elBtnNextGw, elBtnCurrentGw, elLblCurrentGwNum;
 let elStatLeader, elStatGwTop, elStatGwAvg, elStatGwTransfers;
 let elSelectionBar, elSelectedMgrName, elSelectedTeamName, elBtnClearSelection;
-let elTotalsTableBody, elSortToggleGroup;
+let elTotalsTableBody, elTotalsTableHeadRow, elInputTotalsSearch, elBtnResetTotalsSort;
 let elTransfersCardsContainer, elTransfersTotalMoves, elTransfersTotalHits, elTransfersBestMove, elTransfersSubtitle;
 let elBtnToggleAllTx, elLblToggleAllTx, elIconToggleAllTx;
 let elFdrHorizonGroup, elSelectFdrSort, elInputFdrSearch, elBtnFdrSquadOnly, elLblFdrSquadBtn;
@@ -82,7 +84,9 @@ function cacheDomElements() {
   elBtnClearSelection = document.getElementById('btn-clear-selection');
 
   elTotalsTableBody = document.getElementById('totals-table-body');
-  elSortToggleGroup = document.getElementById('sort-toggle-group');
+  elTotalsTableHeadRow = document.getElementById('totals-table-head-row');
+  elInputTotalsSearch = document.getElementById('input-totals-search');
+  elBtnResetTotalsSort = document.getElementById('btn-reset-totals-sort');
 
   elTransfersCardsContainer = document.getElementById('transfers-cards-container');
   elTransfersTotalMoves = document.getElementById('transfers-total-moves');
@@ -147,14 +151,47 @@ function bindEventListeners() {
     });
   }
 
-  // Totals Sort Buttons
-  if (elSortToggleGroup) {
-    elSortToggleGroup.addEventListener('click', (e) => {
-      const btn = e.target.closest('.toggle-btn');
-      if (!btn) return;
-      elSortToggleGroup.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      totalsSortMode = btn.dataset.sort;
+  // Sortable Totals Table Headers
+  if (elTotalsTableHeadRow) {
+    elTotalsTableHeadRow.addEventListener('click', (e) => {
+      const th = e.target.closest('.sortable-th');
+      if (!th) return;
+      const metric = th.dataset.metric;
+      if (!metric) return;
+
+      if (totalsSortMetric === metric) {
+        totalsSortAsc = !totalsSortAsc;
+      } else {
+        totalsSortMetric = metric;
+        // Default direction based on metric:
+        // Rank, FDR metrics, Manager name default to ascending (lower/A first)
+        // GW points, Overall total, Saved FT, Captain points, Value default to descending (higher first)
+        if (['rank', 'fdr_3w', 'fdr_5w', 'manager'].includes(metric)) {
+          totalsSortAsc = true;
+        } else {
+          totalsSortAsc = false;
+        }
+      }
+      renderGameweekTotals();
+      renderTransfers();
+    });
+  }
+
+  // Totals Filter Search Input
+  if (elInputTotalsSearch) {
+    elInputTotalsSearch.addEventListener('input', (e) => {
+      totalsSearchFilter = e.target.value.trim().toLowerCase();
+      renderGameweekTotals();
+    });
+  }
+
+  // Reset Totals Sort Button
+  if (elBtnResetTotalsSort) {
+    elBtnResetTotalsSort.addEventListener('click', () => {
+      totalsSortMetric = 'rank';
+      totalsSortAsc = true;
+      totalsSearchFilter = '';
+      if (elInputTotalsSearch) elInputTotalsSearch.value = '';
       renderGameweekTotals();
       renderTransfers();
     });
@@ -534,6 +571,57 @@ function calculateStackedTransfers(targetGW) {
 }
 
 /**
+ * Sort standings dynamically by whichever table column metric is selected
+ */
+function sortStandingsByActiveMetric(standingsList, fdrMetrics, stackedTransfers) {
+  return [...standingsList].sort((a, b) => {
+    let cmp = 0;
+    switch (totalsSortMetric) {
+      case 'rank':
+        cmp = (a.rank || 0) - (b.rank || 0);
+        break;
+      case 'manager':
+        cmp = (a.manager || '').localeCompare(b.manager || '');
+        break;
+      case 'gw_net':
+        cmp = (a.gw_net_points || 0) - (b.gw_net_points || 0);
+        break;
+      case 'overall':
+        cmp = (a.overall_points || 0) - (b.overall_points || 0);
+        break;
+      case 'saved_ft':
+        cmp = (stackedTransfers[a.manager] || 1) - (stackedTransfers[b.manager] || 1);
+        break;
+      case 'fdr_3w':
+        cmp = (fdrMetrics.scores3[a.manager] ?? 3.0) - (fdrMetrics.scores3[b.manager] ?? 3.0);
+        break;
+      case 'fdr_5w':
+        cmp = (fdrMetrics.scores5[a.manager] ?? 3.0) - (fdrMetrics.scores5[b.manager] ?? 3.0);
+        break;
+      case 'captain':
+        cmp = (a.captain_points || 0) - (b.captain_points || 0);
+        break;
+      case 'chip':
+        const chipA = a.chip && a.chip !== 'None' ? 1 : 0;
+        const chipB = b.chip && b.chip !== 'None' ? 1 : 0;
+        cmp = chipA - chipB;
+        break;
+      case 'value':
+        cmp = (a.team_value || 0) - (b.team_value || 0);
+        break;
+      default:
+        cmp = (a.rank || 0) - (b.rank || 0);
+    }
+
+    if (cmp !== 0) {
+      return totalsSortAsc ? cmp : -cmp;
+    }
+    // Tiebreaker: overall points descending
+    return (b.overall_points || 0) - (a.overall_points || 0);
+  });
+}
+
+/**
  * --------------------------------------------------------------------------
  * PANEL 1: GAMEWEEK TOTALS & STANDINGS TABLE
  * --------------------------------------------------------------------------
@@ -555,39 +643,56 @@ function renderGameweekTotals() {
     return;
   }
 
+  // Update Header Sort Icons & Active State
+  if (elTotalsTableHeadRow) {
+    elTotalsTableHeadRow.querySelectorAll('.sortable-th').forEach(th => {
+      const metric = th.dataset.metric;
+      const iconSpan = th.querySelector('.sort-icon');
+      if (metric === totalsSortMetric) {
+        th.classList.add('active-sort');
+        if (iconSpan) {
+          iconSpan.innerHTML = totalsSortAsc 
+            ? '<i class="fa-solid fa-arrow-up-wide-short"></i>' 
+            : '<i class="fa-solid fa-arrow-down-wide-short"></i>';
+        }
+      } else {
+        th.classList.remove('active-sort');
+        if (iconSpan) {
+          iconSpan.innerHTML = '<i class="fa-solid fa-sort"></i>';
+        }
+      }
+    });
+  }
+
   // Calculate upcoming FDR ratings & ranks for each manager
   const fdrMetrics = calculateManagerFdrRatings(currentGW);
   // Calculate stacked free transfers for each manager
   const stackedTransfers = calculateStackedTransfers(currentGW);
 
-  // Sort standings based on user selection
-  const standings = [...gwData.standings].sort((a, b) => {
-    if (totalsSortMode === 'gw') {
-      if (b.gw_net_points !== a.gw_net_points) return b.gw_net_points - a.gw_net_points;
-      return b.overall_points - a.overall_points;
-    }
-    if (totalsSortMode === 'fdr3') {
-      const fdrA = fdrMetrics.scores3[a.manager] ?? 3.0;
-      const fdrB = fdrMetrics.scores3[b.manager] ?? 3.0;
-      if (fdrA !== fdrB) return fdrA - fdrB;
-      return b.overall_points - a.overall_points;
-    }
-    if (totalsSortMode === 'fdr5') {
-      const fdrA = fdrMetrics.scores5[a.manager] ?? 3.0;
-      const fdrB = fdrMetrics.scores5[b.manager] ?? 3.0;
-      if (fdrA !== fdrB) return fdrA - fdrB;
-      return b.overall_points - a.overall_points;
-    }
-    if (totalsSortMode === 'ft') {
-      const ftA = stackedTransfers[a.manager] ?? 1;
-      const ftB = stackedTransfers[b.manager] ?? 1;
-      if (ftB !== ftA) return ftB - ftA;
-      return b.overall_points - a.overall_points;
-    }
-    // Default 'overall'
-    if (b.overall_points !== a.overall_points) return b.overall_points - a.overall_points;
-    return b.gw_net_points - a.gw_net_points;
-  });
+  // Filter standings if search query is active
+  let standings = [...gwData.standings];
+  if (totalsSearchFilter) {
+    standings = standings.filter(s => {
+      const mName = (s.manager || '').toLowerCase();
+      const tName = (s.team || '').toLowerCase();
+      const capName = (s.captain || '').toLowerCase();
+      return mName.includes(totalsSearchFilter) || tName.includes(totalsSearchFilter) || capName.includes(totalsSearchFilter);
+    });
+  }
+
+  if (standings.length === 0) {
+    elTotalsTableBody.innerHTML = `
+      <tr>
+        <td colspan="10" style="text-align: center; padding: 30px; color: var(--text-secondary);">
+          No teams found matching "${totalsSearchFilter}".
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  // Sort standings dynamically by active metric
+  standings = sortStandingsByActiveMetric(standings, fdrMetrics, stackedTransfers);
 
   standings.forEach((mgr, idx) => {
     const isSelected = selectedManager === mgr.manager;
@@ -799,14 +904,9 @@ function renderTransfers() {
   }
 
   // Sort teams matching active standings order
-  const orderedStandings = [...gwData.standings].sort((a, b) => {
-    if (totalsSortMode === 'gw') {
-      if (b.gw_net_points !== a.gw_net_points) return b.gw_net_points - a.gw_net_points;
-      return b.overall_points - a.overall_points;
-    }
-    if (b.overall_points !== a.overall_points) return b.overall_points - a.overall_points;
-    return b.gw_net_points - a.gw_net_points;
-  });
+  const fdrMetrics = calculateManagerFdrRatings(currentGW);
+  const stackedTransfers = calculateStackedTransfers(currentGW);
+  const orderedStandings = sortStandingsByActiveMetric(gwData.standings, fdrMetrics, stackedTransfers);
 
   // Render All 11 Teams in Compact Accordions
   orderedStandings.forEach(s => {

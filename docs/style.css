@@ -502,6 +502,68 @@ html, body {
   white-space: nowrap;
 }
 
+/* Sortable Table Headers */
+.data-table thead th.sortable-th {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.data-table thead th.sortable-th:hover {
+  background-color: var(--bg-surface-hover);
+  color: #ffffff;
+}
+
+.data-table thead th.sortable-th.active-sort {
+  color: var(--accent-mint) !important;
+  background-color: rgba(0, 255, 135, 0.08);
+}
+
+.sort-icon {
+  margin-left: 3px;
+  font-size: 0.60rem;
+  opacity: 0.65;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.active-sort .sort-icon {
+  opacity: 1;
+  color: var(--accent-mint);
+}
+
+/* Totals Header Search Input */
+.totals-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon-xs {
+  position: absolute;
+  left: 7px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.search-input-xs {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.72rem;
+  padding: 2px 8px 2px 22px;
+  width: 140px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.search-input-xs:focus {
+  border-color: var(--accent-mint);
+  width: 170px;
+}
+
 .data-table tbody tr {
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   cursor: pointer;
