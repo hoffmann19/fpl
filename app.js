@@ -411,6 +411,93 @@ function updateLeagueRibbon() {
 }
 
 /**
+ * Calculate upcoming 3-week and 5-week fixture difficulty ratings and ranks for all managers
+ */
+function calculateManagerFdrRatings(gwNum) {
+  const result = {
+    scores3: {},
+    ranks3: {},
+    scores5: {},
+    ranks5: {},
+    startGw: 1,
+    endGw3: 3,
+    endGw5: 5
+  };
+
+  if (!appData || !appData.team_fixtures_fdr || !appData.gameweeks) {
+    return result;
+  }
+
+  const gwData = appData.gameweeks[gwNum.toString()];
+  if (!gwData || !gwData.lineups) return result;
+
+  const fdr = appData.team_fixtures_fdr;
+  const startGw = gwNum < 38 ? gwNum + 1 : gwNum;
+  const endGw3 = Math.min(38, startGw + 2);
+  const endGw5 = Math.min(38, startGw + 4);
+
+  result.startGw = startGw;
+  result.endGw3 = endGw3;
+  result.endGw5 = endGw5;
+
+  const gws3 = [];
+  for (let g = startGw; g <= endGw3; g++) gws3.push(g.toString());
+
+  const gws5 = [];
+  for (let g = startGw; g <= endGw5; g++) gws5.push(g.toString());
+
+  // Compute average difficulty for each manager
+  Object.keys(gwData.lineups).forEach(mgr => {
+    const lineup = gwData.lineups[mgr] || [];
+    let sum3 = 0, count3 = 0;
+    let sum5 = 0, count5 = 0;
+
+    lineup.forEach(p => {
+      const club = p.club;
+      if (club && fdr[club]) {
+        gws3.forEach(g => {
+          if (fdr[club][g] && fdr[club][g].difficulty !== undefined) {
+            sum3 += fdr[club][g].difficulty;
+            count3++;
+          }
+        });
+        gws5.forEach(g => {
+          if (fdr[club][g] && fdr[club][g].difficulty !== undefined) {
+            sum5 += fdr[club][g].difficulty;
+            count5++;
+          }
+        });
+      }
+    });
+
+    result.scores3[mgr] = count3 > 0 ? Number((sum3 / count3).toFixed(2)) : 3.0;
+    result.scores5[mgr] = count5 > 0 ? Number((sum5 / count5).toFixed(2)) : 3.0;
+  });
+
+  // Assign 3W ranks (lower difficulty = better rank)
+  const sorted3 = Object.keys(result.scores3).sort((a, b) => result.scores3[a] - result.scores3[b]);
+  sorted3.forEach((mgr, i) => {
+    if (i > 0 && result.scores3[mgr] === result.scores3[sorted3[i - 1]]) {
+      result.ranks3[mgr] = result.ranks3[sorted3[i - 1]];
+    } else {
+      result.ranks3[mgr] = i + 1;
+    }
+  });
+
+  // Assign 5W ranks (lower difficulty = better rank)
+  const sorted5 = Object.keys(result.scores5).sort((a, b) => result.scores5[a] - result.scores5[b]);
+  sorted5.forEach((mgr, i) => {
+    if (i > 0 && result.scores5[mgr] === result.scores5[sorted5[i - 1]]) {
+      result.ranks5[mgr] = result.ranks5[sorted5[i - 1]];
+    } else {
+      result.ranks5[mgr] = i + 1;
+    }
+  });
+
+  return result;
+}
+
+/**
  * --------------------------------------------------------------------------
  * PANEL 1: GAMEWEEK TOTALS & STANDINGS TABLE
  * --------------------------------------------------------------------------
@@ -432,10 +519,25 @@ function renderGameweekTotals() {
     return;
   }
 
+  // Calculate upcoming FDR ratings & ranks for each manager
+  const fdrMetrics = calculateManagerFdrRatings(currentGW);
+
   // Sort standings based on user selection
   const standings = [...gwData.standings].sort((a, b) => {
     if (totalsSortMode === 'gw') {
       if (b.gw_net_points !== a.gw_net_points) return b.gw_net_points - a.gw_net_points;
+      return b.overall_points - a.overall_points;
+    }
+    if (totalsSortMode === 'fdr3') {
+      const fdrA = fdrMetrics.scores3[a.manager] ?? 3.0;
+      const fdrB = fdrMetrics.scores3[b.manager] ?? 3.0;
+      if (fdrA !== fdrB) return fdrA - fdrB;
+      return b.overall_points - a.overall_points;
+    }
+    if (totalsSortMode === 'fdr5') {
+      const fdrA = fdrMetrics.scores5[a.manager] ?? 3.0;
+      const fdrB = fdrMetrics.scores5[b.manager] ?? 3.0;
+      if (fdrA !== fdrB) return fdrA - fdrB;
       return b.overall_points - a.overall_points;
     }
     // Default 'overall'
@@ -464,11 +566,23 @@ function renderGameweekTotals() {
       rankBadgeClass += ' rank-3';
     }
 
-    // Hits badge
+    // Hits count
     const hitsCount = Math.abs(mgr.gw_hits || 0);
-    const hitsBadge = hitsCount > 0 
-      ? `<span class="hit-badge">-${hitsCount}</span>` 
-      : `<span class="hit-badge hit-none">—</span>`;
+
+    // 3W FDR Metric & Rank
+    const fdr3Rank = fdrMetrics.ranks3[mgr.manager] ?? '-';
+    const fdr3Score = fdrMetrics.scores3[mgr.manager] ?? 3.0;
+    let rank3BadgeClass = 'rank-mid';
+    if (fdr3Rank === 1) rank3BadgeClass = 'rank-top';
+    else if (fdr3Rank <= 3) rank3BadgeClass = 'rank-good';
+    else if (fdr3Rank >= 9) rank3BadgeClass = 'rank-tough';
+
+    // 5W FDR Metric & Rating Pill
+    const fdr5Rank = fdrMetrics.ranks5[mgr.manager] ?? '-';
+    const fdr5Score = fdrMetrics.scores5[mgr.manager] ?? 3.0;
+    let fdr5PillClass = 'fdr-med';
+    if (fdr5Score <= 3.01) fdr5PillClass = 'fdr-easy';
+    else if (fdr5Score >= 3.11) fdr5PillClass = 'fdr-hard';
 
     // Chip badge
     let chipBadge = '<span class="chip-none">—</span>';
@@ -514,16 +628,23 @@ function renderGameweekTotals() {
         </div>
       </td>
       <td class="col-gw-pts text-right">
-        <span class="num-bold">${mgr.gw_points}</span>
-      </td>
-      <td class="col-hits text-center">
-        ${hitsBadge}
-      </td>
-      <td class="col-net-pts text-right">
         <span class="num-bold num-highlight">${mgr.gw_net_points}</span>
+        ${hitsCount > 0 ? `<small class="num-muted"> (-${hitsCount})</small>` : ''}
       </td>
       <td class="col-overall text-right">
         <span class="num-bold">${mgr.overall_points}</span>
+      </td>
+      <td class="col-fdr-3w text-center" title="Upcoming 3-GW Schedule (GW ${fdrMetrics.startGw}–${fdrMetrics.endGw3}) · Avg FDR: ${fdr3Score.toFixed(2)} (Lower = Easiest/Best)">
+        <div class="fdr-mgr-cell">
+          <span class="fdr-rank-badge ${rank3BadgeClass}">#${fdr3Rank}</span>
+          <span class="fdr-sub-num">${fdr3Score.toFixed(2)}</span>
+        </div>
+      </td>
+      <td class="col-fdr-5w text-center" title="Upcoming 5-GW Schedule (GW ${fdrMetrics.startGw}–${fdrMetrics.endGw5}) · League Rank: #${fdr5Rank} (Lower = Easiest/Best)">
+        <div class="fdr-mgr-cell">
+          <span class="fdr-score-pill ${fdr5PillClass}">${fdr5Score.toFixed(2)}</span>
+          <span class="fdr-sub-num">#${fdr5Rank}</span>
+        </div>
       </td>
       <td class="col-captain">
         ${captainHtml}
