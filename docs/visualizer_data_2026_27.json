@@ -576,7 +576,7 @@
       "total_points": 39,
       "points_per_game": 5.6,
       "form": 9.0,
-      "cost": 4.6,
+      "cost": 4.7,
       "gw_points": {
         "1": 0,
         "2": 1,
@@ -3228,7 +3228,7 @@
       "total_points": 11,
       "points_per_game": 1.6,
       "form": 1.7,
-      "cost": 4.9,
+      "cost": 4.8,
       "gw_points": {
         "1": 0,
         "2": 1,
@@ -5718,7 +5718,7 @@
       "total_points": 30,
       "points_per_game": 3.8,
       "form": 3.3,
-      "cost": 5.7,
+      "cost": 5.6,
       "gw_points": {
         "1": 8,
         "2": 2,
@@ -5994,7 +5994,7 @@
       "total_points": 5,
       "points_per_game": 1.0,
       "form": 0.3,
-      "cost": 5.3,
+      "cost": 5.2,
       "gw_points": {
         "1": 1,
         "2": 1,
@@ -6094,7 +6094,7 @@
       "total_points": 0,
       "points_per_game": 0.0,
       "form": 0.0,
-      "cost": 4.4,
+      "cost": 4.3,
       "gw_points": {
         "1": 0,
         "2": 0,
@@ -7895,7 +7895,7 @@
       "total_points": 43,
       "points_per_game": 5.4,
       "form": 5.3,
-      "cost": 5.0,
+      "cost": 5.1,
       "gw_points": {
         "1": 6,
         "2": 4,
@@ -9008,7 +9008,7 @@
       "total_points": 19,
       "points_per_game": 3.2,
       "form": 4.0,
-      "cost": 8.0,
+      "cost": 8.1,
       "gw_points": {
         "3": 1,
         "4": 3,
@@ -10499,7 +10499,7 @@
       "total_points": 4,
       "points_per_game": 2.0,
       "form": 0.0,
-      "cost": 4.9,
+      "cost": 4.8,
       "gw_points": {
         "1": 0,
         "2": 0,
@@ -12857,7 +12857,7 @@
       "total_points": 1,
       "points_per_game": 1.0,
       "form": 0.3,
-      "cost": 4.5,
+      "cost": 4.4,
       "gw_points": {
         "2": 0,
         "3": 0,
