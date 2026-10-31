@@ -51,6 +51,8 @@
 
 html, body {
   width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   min-height: 100vh;
   background-color: var(--bg-body);
   color: var(--text-primary);
@@ -367,14 +369,15 @@ html, body {
 /* Top Row: Totals (Left) & Transfers (Right) */
 .dashboard-top-row {
   display: grid;
-  grid-template-columns: 1.28fr 0.72fr;
+  grid-template-columns: minmax(0, 1.32fr) minmax(360px, 0.68fr);
   gap: 12px;
-  height: 410px;
+  height: 462px;
 }
 
 /* Bottom Row: FDR Grid */
 .dashboard-bottom-row {
   width: 100%;
+  min-width: 0;
 }
 
 /* Card Panel Base */
@@ -386,12 +389,22 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
+}
+
+.panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 10px;
   padding: 6px 14px;
   background: var(--bg-panel-header);
   border-bottom: 1px solid var(--border-subtle);
@@ -471,10 +484,12 @@ html, body {
 
 .panel-totals {
   height: 100%;
+  min-height: 0;
 }
 
 .table-container {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: auto;
 }
@@ -494,7 +509,7 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.3px;
   text-transform: uppercase;
-  padding: 5px 8px;
+  padding: 5px 6px;
   border-bottom: 1px solid var(--border-subtle);
   position: sticky;
   top: 0;
@@ -580,7 +595,7 @@ html, body {
 }
 
 .data-table tbody td {
-  padding: 3.5px 8px;
+  padding: 4px 6px;
   white-space: nowrap;
   vertical-align: middle;
   line-height: 1.2;
@@ -889,6 +904,7 @@ html, body {
 
 .panel-transfers {
   height: 100%;
+  min-height: 0;
 }
 
 .btn-toggle-compact {
@@ -915,7 +931,9 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 12px;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 5px 12px;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--border-subtle);
   font-size: 0.74rem;
@@ -926,6 +944,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 5px;
+  min-width: 0;
 }
 
 .summary-stat .lbl {
@@ -936,20 +955,24 @@ html, body {
 .text-success { color: var(--accent-mint); }
 
 .transfers-scroll-container {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
-  padding: 4px 8px;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  padding: 5px 8px 8px 8px;
   display: flex;
   flex-direction: column;
-  gap: 2.5px;
+  gap: 3px;
 }
 
 /* Manager Transfer Accordion Item */
 .tx-team-accordion {
+  flex-shrink: 0;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
-  overflow: hidden;
+  overflow: visible;
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
@@ -966,10 +989,18 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 8px;
   padding: 4px 10px;
   cursor: pointer;
   user-select: none;
-  min-height: 27px;
+  min-height: 28px;
+  border-radius: 5px;
+}
+
+.tx-team-accordion.expanded .tx-team-header {
+  border-radius: 5px 5px 0 0;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .tx-team-title {
@@ -977,22 +1008,23 @@ html, body {
   align-items: center;
   gap: 7px;
   min-width: 0;
+  flex: 1 1 180px;
 }
 
 .tx-team-name {
   font-weight: 700;
   color: #ffffff;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   white-space: nowrap;
 }
 
 .tx-team-sub {
-  font-size: 0.70rem;
-  color: var(--text-secondary);
+  font-size: 0.72rem;
+  color: #cbd5e1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 140px;
+  min-width: 0;
 }
 
 .tx-team-right {
@@ -1000,6 +1032,7 @@ html, body {
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .tx-count-pill {
@@ -1023,7 +1056,7 @@ html, body {
 }
 
 .tx-chevron {
-  font-size: 0.62rem;
+  font-size: 0.65rem;
   color: var(--text-secondary);
   transition: transform 0.2s ease;
   width: 12px;
@@ -1041,11 +1074,12 @@ html, body {
 
 .tx-team-details {
   display: none;
-  padding: 7px 10px 10px 10px;
-  background: rgba(10, 15, 29, 0.75);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 10px 10px 10px;
+  background: rgba(10, 15, 29, 0.88);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0 0 5px 5px;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .tx-team-accordion.expanded .tx-team-details {
@@ -1056,18 +1090,40 @@ html, body {
 .tx-pair-row {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px;
   padding: 8px 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
+.tx-pair-row.has-move-num {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.tx-move-num-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 6px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  align-self: stretch;
+}
+
+.tx-pair-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
 .tx-pair-row:hover {
-  background: rgba(30, 41, 59, 0.95);
-  border-color: rgba(255, 255, 255, 0.18);
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .tx-pair-row.border-positive {
@@ -1079,7 +1135,7 @@ html, body {
 }
 
 .tx-pair-row.border-neutral {
-  border-left: 3.5px solid var(--border-subtle);
+  border-left: 3.5px solid rgba(148, 163, 184, 0.45);
 }
 
 /* Transfer Subrow (OUT / IN) */
@@ -1087,16 +1143,18 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 5px 8px;
   min-height: 24px;
 }
 
 .tx-subrow-left {
   display: flex;
   align-items: center;
-  gap: 7px;
+  flex-wrap: wrap;
+  gap: 5px 7px;
   min-width: 0;
-  flex: 1;
+  flex: 1 1 200px;
 }
 
 .tx-subrow-right {
@@ -1104,20 +1162,23 @@ html, body {
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* Move Number Tag (e.g. #1, #2) */
 .tx-move-num-tag {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 800;
   color: var(--accent-gold);
-  background: rgba(255, 184, 0, 0.14);
-  border: 1px solid rgba(255, 184, 0, 0.35);
-  padding: 1px 5px;
-  border-radius: 3px;
+  background: rgba(255, 184, 0, 0.16);
+  border: 1px solid rgba(255, 184, 0, 0.4);
+  padding: 2px 5px;
+  border-radius: 4px;
   flex-shrink: 0;
   line-height: 1.1;
+  min-width: 26px;
+  text-align: center;
 }
 
 /* OUT / IN Direction Badges */
@@ -1128,52 +1189,55 @@ html, body {
   padding: 2px 6px;
   border-radius: 4px;
   letter-spacing: 0.5px;
-  line-height: 1.1;
+  line-height: 1.15;
   flex-shrink: 0;
+  min-width: 38px;
+  text-align: center;
 }
 
 .tx-badge-out {
-  background: rgba(244, 63, 94, 0.22);
-  color: #ff6b8b;
-  border: 1px solid rgba(244, 63, 94, 0.45);
+  background: rgba(244, 63, 94, 0.24);
+  color: #ff8fa3;
+  border: 1px solid rgba(244, 63, 94, 0.5);
 }
 
 .tx-badge-in {
   background: rgba(0, 255, 135, 0.22);
   color: #00ff87;
-  border: 1px solid rgba(0, 255, 135, 0.45);
+  border: 1px solid rgba(0, 255, 135, 0.5);
 }
 
-/* Player Name */
+/* Player Name - always fully visible, never truncated */
 .tx-pname {
   font-weight: 700;
   color: #ffffff;
-  font-size: 0.85rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: -0.2px;
+  font-size: 0.88rem;
+  white-space: normal;
+  word-break: break-word;
+  letter-spacing: -0.1px;
+  line-height: 1.2;
 }
 
 /* Club & Position Tag */
 .tx-pmeta-tag {
-  font-size: 0.68rem;
+  font-size: 0.69rem;
   font-family: var(--font-mono);
   font-weight: 700;
-  color: var(--accent-blue);
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.28);
-  padding: 1px 5px;
-  border-radius: 3px;
+  color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 1.5px 6px;
+  border-radius: 4px;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 /* Cost Tag */
 .tx-cost-tag {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-family: var(--font-mono);
-  color: var(--text-secondary);
+  font-weight: 600;
+  color: #cbd5e1;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -1181,20 +1245,20 @@ html, body {
 /* Points Scored Tag */
 .tx-pts-tag {
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   font-weight: 800;
   padding: 2px 7px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .tx-pts-tag.tx-pts-in {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 /* Net Delta Badge */
@@ -1216,14 +1280,14 @@ html, body {
 
 .tx-delta-negative {
   background: rgba(244, 63, 94, 0.2);
-  color: #ff6b8b;
+  color: #ff8fa3;
   border: 1px solid rgba(244, 63, 94, 0.45);
 }
 
 .tx-delta-neutral {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: rgba(148, 163, 184, 0.16);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.35);
 }
 
 /* Empty Transfers */
@@ -1357,6 +1421,7 @@ html, body {
 .legend-scale-items {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -1674,12 +1739,18 @@ html, body {
 
 @media (max-width: 1200px) {
   .dashboard-top-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     height: auto;
   }
 
-  .panel-totals, .panel-transfers {
-    height: 400px;
+  .panel-totals {
+    height: auto;
+    max-height: 480px;
+  }
+
+  .panel-transfers {
+    height: auto;
+    max-height: 650px;
   }
 }
 
@@ -1706,6 +1777,14 @@ html, body {
     padding: 10px;
   }
 
+  .select-pill-sm {
+    max-width: 220px;
+  }
+
+  .tx-subrow-left {
+    flex: 1 1 150px;
+  }
+
   .sticky-col {
     width: 145px;
     min-width: 145px;
@@ -1725,19 +1804,19 @@ html, body {
    ========================================================================== */
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 255, 135, 0.55);
 }

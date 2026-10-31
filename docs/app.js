@@ -362,6 +362,24 @@ function setGameweek(gw) {
 }
 
 /**
+ * Scroll a transfer card cleanly into view within the Transfers scroll container
+ * without jumping the outer page or skipping past the card header on tall cards.
+ */
+function scrollTransferCardIntoContainer(card) {
+  if (!elTransfersCardsContainer || !card) return;
+  const containerRect = elTransfersCardsContainer.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  const currentScroll = elTransfersCardsContainer.scrollTop;
+  const relativeTop = cardRect.top - containerRect.top;
+
+  // If card header is above view or card bottom overflows below view, align near top
+  if (relativeTop < 4 || cardRect.bottom > containerRect.bottom) {
+    const targetScroll = Math.max(0, currentScroll + relativeTop - 6);
+    elTransfersCardsContainer.scrollTo({ top: targetScroll, behavior: 'smooth' });
+  }
+}
+
+/**
  * Select a Manager across all 3 panels
  */
 function selectManager(managerName) {
@@ -381,7 +399,7 @@ function selectManager(managerName) {
     if (isThisMgr && acc.dataset.hasMoves === 'true') {
       acc.classList.add('expanded');
       setTimeout(() => {
-        acc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        scrollTransferCardIntoContainer(acc);
       }, 50);
     }
   });
@@ -1041,7 +1059,13 @@ function renderTransfers() {
     // Chip Pill
     let chipPillHtml = '';
     if (chipActive) {
-      chipPillHtml = `<span class="tx-chip-badge">${chipActive}</span>`;
+      const chipLower = chipActive.toLowerCase();
+      let chipLabel = chipActive;
+      if (chipLower === 'wildcard') chipLabel = 'WC';
+      else if (chipLower === 'freehit') chipLabel = 'FH';
+      else if (chipLower === 'bboost') chipLabel = 'BB';
+      else if (chipLower === '3xc') chipLabel = 'TC';
+      chipPillHtml = `<span class="chip-pill chip-${chipLower}" title="${chipActive} chip active">${chipLabel}</span>`;
     }
 
     // Hit Penalty Pill
@@ -1055,7 +1079,7 @@ function renderTransfers() {
     if (hasMoves && netDelta !== 0) {
       const deltaClass = netDelta > 0 ? 'tx-delta-positive' : 'tx-delta-negative';
       const deltaSign = netDelta > 0 ? '+' : '';
-      deltaPillHtml = `<span class="tx-delta-badge ${deltaClass}">${deltaSign}${netDelta} pts</span>`;
+      deltaPillHtml = `<span class="tx-delta-badge ${deltaClass}">Net ${deltaSign}${netDelta}</span>`;
     }
 
     // Chevron / Action Indicator
@@ -1082,38 +1106,45 @@ function renderTransfers() {
         }
 
         const moveNum = idx + 1;
-        const totalMoves = s.transfers_detail.length;
-        const moveNumHtml = totalMoves > 1 ? `<span class="tx-move-num-tag">#${moveNum}</span>` : '';
+        const totalTeamMoves = s.transfers_detail.length;
+        const hasMoveNum = totalTeamMoves > 1;
+        const moveNumColHtml = hasMoveNum
+          ? `<div class="tx-move-num-col"><span class="tx-move-num-tag">#${moveNum}</span></div>`
+          : '';
+        const outCostStr = typeof t.out_cost === 'number' ? t.out_cost.toFixed(1) : t.out_cost;
+        const inCostStr = typeof t.in_cost === 'number' ? t.in_cost.toFixed(1) : t.in_cost;
 
         movesDetailHtml += `
-          <div class="tx-pair-row ${borderClass}">
-            <!-- OUT SUBROW -->
-            <div class="tx-subrow tx-subrow-out">
-              <div class="tx-subrow-left">
-                ${moveNumHtml}
-                <span class="tx-dir-badge tx-badge-out">OUT</span>
-                <span class="tx-pname">${t.out_name}</span>
-                <span class="tx-pmeta-tag">${t.out_club} · ${t.out_pos}</span>
-                <span class="tx-cost-tag">£${t.out_cost}m</span>
+          <div class="tx-pair-row ${borderClass}${hasMoveNum ? ' has-move-num' : ''}">
+            ${moveNumColHtml}
+            <div class="tx-pair-body">
+              <!-- OUT SUBROW -->
+              <div class="tx-subrow tx-subrow-out">
+                <div class="tx-subrow-left">
+                  <span class="tx-dir-badge tx-badge-out">OUT</span>
+                  <span class="tx-pname">${t.out_name}</span>
+                  <span class="tx-pmeta-tag">${t.out_club} · ${t.out_pos}</span>
+                  <span class="tx-cost-tag">£${outCostStr}m</span>
+                </div>
+                <div class="tx-subrow-right">
+                  <span class="tx-pts-tag" title="Points scored by outgoing player in GW ${currentGW}">${t.out_points} pts</span>
+                </div>
               </div>
-              <div class="tx-subrow-right">
-                <span class="tx-pts-tag" title="Points scored by outgoing player in GW ${currentGW}">${t.out_points} pts</span>
-              </div>
-            </div>
 
-            <!-- IN SUBROW -->
-            <div class="tx-subrow tx-subrow-in">
-              <div class="tx-subrow-left">
-                <span class="tx-dir-badge tx-badge-in">IN</span>
-                <span class="tx-pname">${t.in_name}</span>
-                <span class="tx-pmeta-tag">${t.in_club} · ${t.in_pos}</span>
-                <span class="tx-cost-tag">£${t.in_cost}m</span>
-              </div>
-              <div class="tx-subrow-right">
-                <span class="tx-pts-tag tx-pts-in" title="Points scored by incoming player in GW ${currentGW}">${t.in_points} pts</span>
-                <span class="tx-delta-badge ${deltaClass}" title="Net points delta from this transfer">
-                  ${deltaSign}${delta} pts
-                </span>
+              <!-- IN SUBROW -->
+              <div class="tx-subrow tx-subrow-in">
+                <div class="tx-subrow-left">
+                  <span class="tx-dir-badge tx-badge-in">IN</span>
+                  <span class="tx-pname">${t.in_name}</span>
+                  <span class="tx-pmeta-tag">${t.in_club} · ${t.in_pos}</span>
+                  <span class="tx-cost-tag">£${inCostStr}m</span>
+                </div>
+                <div class="tx-subrow-right">
+                  <span class="tx-pts-tag tx-pts-in" title="Points scored by incoming player in GW ${currentGW}">${t.in_points} pts</span>
+                  <span class="tx-delta-badge ${deltaClass}" title="Net points delta from this transfer">
+                    Net ${deltaSign}${delta}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -1123,24 +1154,29 @@ function renderTransfers() {
       const ins = s.transfers_in || [];
       const outs = s.transfers_out || [];
       const count = Math.max(ins.length, outs.length);
+      const hasMoveNum = count > 1;
       for (let i = 0; i < count; i++) {
         const inPlayer = ins[i] || '—';
         const outPlayer = outs[i] || '—';
         const moveNum = i + 1;
-        const moveNumHtml = count > 1 ? `<span class="tx-move-num-tag">#${moveNum}</span>` : '';
+        const moveNumColHtml = hasMoveNum
+          ? `<div class="tx-move-num-col"><span class="tx-move-num-tag">#${moveNum}</span></div>`
+          : '';
         movesDetailHtml += `
-          <div class="tx-pair-row border-neutral">
-            <div class="tx-subrow tx-subrow-out">
-              <div class="tx-subrow-left">
-                ${moveNumHtml}
-                <span class="tx-dir-badge tx-badge-out">OUT</span>
-                <span class="tx-pname">${outPlayer}</span>
+          <div class="tx-pair-row border-neutral${hasMoveNum ? ' has-move-num' : ''}">
+            ${moveNumColHtml}
+            <div class="tx-pair-body">
+              <div class="tx-subrow tx-subrow-out">
+                <div class="tx-subrow-left">
+                  <span class="tx-dir-badge tx-badge-out">OUT</span>
+                  <span class="tx-pname">${outPlayer}</span>
+                </div>
               </div>
-            </div>
-            <div class="tx-subrow tx-subrow-in">
-              <div class="tx-subrow-left">
-                <span class="tx-dir-badge tx-badge-in">IN</span>
-                <span class="tx-pname">${inPlayer}</span>
+              <div class="tx-subrow tx-subrow-in">
+                <div class="tx-subrow-left">
+                  <span class="tx-dir-badge tx-badge-in">IN</span>
+                  <span class="tx-pname">${inPlayer}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1176,7 +1212,7 @@ function renderTransfers() {
         card.classList.toggle('expanded');
         if (!isAlreadyExpanded) {
           setTimeout(() => {
-            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            scrollTransferCardIntoContainer(card);
           }, 40);
         }
       }
@@ -1206,7 +1242,7 @@ function renderTransfers() {
     const selectedEl = elTransfersCardsContainer.querySelector(`.tx-team-accordion[data-manager="${selectedManager}"]`);
     if (selectedEl && selectedEl.dataset.hasMoves === 'true') {
       setTimeout(() => {
-        selectedEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        scrollTransferCardIntoContainer(selectedEl);
       }, 50);
     }
   }
