@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Custom Modern Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=20261021_sort_headers">
+  <link rel="stylesheet" href="style.css?v=20261030_gw_anchor">
 </head>
 <body>
 
@@ -221,17 +221,17 @@
               <i class="fa-solid fa-ranking-star icon-blue"></i>
               Premier League Fixture Difficulty & Opponent Standings
             </h2>
-            <span class="panel-subtitle">Based on Premier League table standings · Higher number = facing lower table teams (easiest schedule)</span>
+            <span class="panel-subtitle" id="fdr-panel-subtitle">Based on Premier League table standings · Higher number = facing lower table teams (easiest schedule)</span>
           </div>
 
           <div class="fdr-toolbar">
-            <!-- Metric Focus Mode: Overall / Opponent Defense / Opponent Attack -->
+            <!-- Metric Focus Mode: Overall / Attack / Defense -->
             <div class="toolbar-item">
               <span class="toolbar-label">FDR View:</span>
               <div class="toggle-group" id="fdr-metric-group">
-                <button class="toggle-btn active" data-mode="overall" title="Overall Premier League table standing">Overall</button>
-                <button class="toggle-btn" data-mode="defense" title="Opponent Defense Rank (Targets weak defenses for attackers)">vs Defense</button>
-                <button class="toggle-btn" data-mode="attack" title="Opponent Attack Rank (Targets weak attacks for clean sheets)">vs Attack</button>
+                <button class="toggle-btn active" data-mode="overall" title="Overall FDR: Club table standing & opponent standings">Overall</button>
+                <button class="toggle-btn" data-mode="attack" title="Attack FDR: Club Attack rank & attacking fixture difficulty (vs opponent defense)">Attack</button>
+                <button class="toggle-btn" data-mode="defense" title="Defense FDR: Club Defense rank & defensive fixture difficulty (vs opponent attack)">Defense</button>
               </div>
             </div>
 
@@ -239,9 +239,11 @@
             <div class="toolbar-item">
               <span class="toolbar-label">Horizon:</span>
               <div class="toggle-group" id="fdr-horizon-group">
-                <button class="toggle-btn active" data-horizon="5">5 GWs</button>
-                <button class="toggle-btn" data-horizon="8">8 GWs</button>
-                <button class="toggle-btn" data-horizon="38">All 38</button>
+                <button class="toggle-btn" data-horizon="2" title="Show 2 gameweeks starting from selected GW">2 GWs</button>
+                <button class="toggle-btn" data-horizon="3" title="Show 3 gameweeks starting from selected GW">3 GWs</button>
+                <button class="toggle-btn active" data-horizon="5" title="Show 5 gameweeks starting from selected GW">5 GWs</button>
+                <button class="toggle-btn" data-horizon="8" title="Show 8 gameweeks starting from selected GW">8 GWs</button>
+                <button class="toggle-btn" data-horizon="38" title="Show all 38 season gameweeks">All 38</button>
               </div>
             </div>
 
@@ -251,6 +253,8 @@
               <select id="select-fdr-sort" class="select-pill-sm">
                 <option value="easiest">Easiest Run First (Highest Avg Standing)</option>
                 <option value="hardest">Hardest Run First (Lowest Avg Standing)</option>
+                <option value="club_best">Strongest Team First (#1–20)</option>
+                <option value="club_worst">Weakest Team First (#20–1)</option>
                 <option value="alpha">Alphabetical (A-Z)</option>
               </select>
             </div>
@@ -310,6 +314,6 @@
   <div id="fdr-tooltip" class="floating-tooltip hidden"></div>
 
   <!-- Core Visualizer Application Script -->
-  <script src="app.js?v=20261021_scroll_and_all_tx"></script>
+  <script src="app.js?v=20261030_gw_anchor"></script>
 </body>
 </html>

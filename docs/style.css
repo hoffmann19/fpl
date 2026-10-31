@@ -1421,18 +1421,18 @@ html, body {
   z-index: 15;
   text-align: left;
   border-right: 1px solid var(--border-subtle);
-  width: 175px;
-  min-width: 175px;
+  width: 245px;
+  min-width: 245px;
 }
 
 .sticky-col-2 {
   position: sticky;
-  left: 175px;
+  left: 245px;
   background: var(--bg-panel);
   z-index: 15;
   border-right: 1px solid var(--border-subtle);
-  width: 70px;
-  min-width: 70px;
+  width: 72px;
+  min-width: 72px;
 }
 
 .fdr-table thead th.sticky-col,
@@ -1441,30 +1441,125 @@ html, body {
   background: var(--bg-surface);
 }
 
+.fdr-table thead th.fdr-sortable-th {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.fdr-table thead th.fdr-sortable-th:hover {
+  background-color: var(--bg-surface-hover);
+  color: #ffffff;
+}
+
+.fdr-table thead th.fdr-sortable-th.active-fdr-sort {
+  color: var(--accent-mint);
+}
+
+.fdr-th-team-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  gap: 6px;
+}
+
+.fdr-th-mode-tag {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(0, 255, 135, 0.14);
+  color: var(--accent-mint);
+  border: 1px solid rgba(0, 255, 135, 0.35);
+}
+
 .fdr-team-cell {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 10px;
-  gap: 8px;
+  padding: 4px 8px;
+  gap: 6px;
 }
 
 .fdr-team-title {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .fdr-team-code {
   font-weight: 800;
   font-family: var(--font-mono);
   color: #ffffff;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
+  flex-shrink: 0;
 }
 
 .fdr-team-fullname {
-  font-size: 0.74rem;
+  font-size: 0.73rem;
   color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fdr-team-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.club-fdr-badge {
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1.1;
+  white-space: nowrap;
+  cursor: help;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.club-fdr-badge:hover {
+  transform: scale(1.06);
+  filter: brightness(1.15);
+}
+
+.club-fdr-badge.club-tier-elite {
+  background: rgba(0, 255, 135, 0.18);
+  color: var(--accent-mint);
+  border: 1px solid rgba(0, 255, 135, 0.45);
+}
+
+.club-fdr-badge.club-tier-strong {
+  background: rgba(56, 189, 248, 0.18);
+  color: var(--accent-blue);
+  border: 1px solid rgba(56, 189, 248, 0.42);
+}
+
+.club-fdr-badge.club-tier-mid {
+  background: rgba(148, 163, 184, 0.14);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.club-fdr-badge.club-tier-weak {
+  background: rgba(245, 158, 11, 0.16);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.club-fdr-badge.club-tier-poor {
+  background: rgba(244, 63, 94, 0.18);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.42);
 }
 
 .squad-count-badge {
@@ -1489,6 +1584,7 @@ html, body {
   padding: 2px 6px;
   border-radius: 4px;
   display: inline-block;
+  cursor: help;
 }
 
 /* Matchup Cell Styles & FPL Colors */
@@ -1611,12 +1707,16 @@ html, body {
   }
 
   .sticky-col {
-    width: 120px;
-    min-width: 120px;
+    width: 145px;
+    min-width: 145px;
+  }
+
+  .fdr-team-fullname {
+    display: none;
   }
   
   .sticky-col-2 {
-    left: 120px;
+    left: 145px;
   }
 }
 
