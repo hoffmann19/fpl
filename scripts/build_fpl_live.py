@@ -8,6 +8,7 @@ and compiles visualizer_data_2026_27.json and visualizer_data.json.
 import json
 import os
 import sys
+import time
 import urllib.request
 import sqlite3
 from datetime import datetime, timezone
@@ -20,17 +21,23 @@ COLOR_PALETTE = [
     "#9333ea"
 ]
 
-def fetch_json(url):
-    req = urllib.request.Request(
-        url,
-        headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except Exception as e:
-        print(f"[!] Error fetching {url}: {e}")
-        return None
+def fetch_json(url, retries=4):
+    for attempt in range(retries):
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"}
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except Exception as e:
+            if attempt < retries - 1:
+                wait = 1.5 * (attempt + 1)
+                print(f"[!] Retry {attempt + 1}/{retries - 1} fetching {url} ({e}), waiting {wait:.1f}s...")
+                time.sleep(wait)
+            else:
+                print(f"[!] Error fetching {url}: {e}")
+                return None
 
 def sync_sqlite(db_path, league_id, bootstrap, results, managers_meta, gameweeks_dict, player_gw_scores, max_gw, all_fixtures=None, gw_live_stats=None):
     """
