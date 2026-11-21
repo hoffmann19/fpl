@@ -1,76 +1,76 @@
 Manager,Team,Player,Position,Squad Status,Club,Cost,Points,GW,Opponent,Venue,Opponent PL Rank,Opponent GA,Opponent GA/match,Opponent Def Rank,Opponent GF,Opponent GF/match,Opponent Att Rank,FPL Difficulty (FDR),Defensive Matchup Tier
-Arsene Wenger,Set Piece Champions,Kinsky,GKP,Starting XI,TOT,4.4,32,10,LEE,A,7,6,0.75,2,9,1.12,11,3,Solid
-Arsene Wenger,Set Piece Champions,Kinsky,GKP,Starting XI,TOT,4.4,32,11,IPS,H,12,16,2.0,19,12,1.5,7,2,Leaky
-Arsene Wenger,Set Piece Champions,Kinsky,GKP,Starting XI,TOT,4.4,32,12,SUN,A,20,14,1.75,16,6,0.75,20,3,Leaky
-Arsene Wenger,Set Piece Champions,Kinsky,GKP,Starting XI,TOT,4.4,32,13,FUL,H,15,10,1.25,10,8,1.0,17,2,Average
-Arsene Wenger,Set Piece Champions,Kinsky,GKP,Starting XI,TOT,4.4,32,14,ARS,H,2,5,0.62,1,13,1.62,5,4,Solid
-Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,45,10,HUL,H,10,8,1.0,5,9,1.12,13,2,Solid
-Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,45,11,NEW,A,8,14,1.75,15,12,1.5,6,3,Leaky
-Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,45,12,MCI,H,1,9,1.12,6,20,2.5,2,4,Solid
-Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,45,13,BRE,A,6,9,1.12,7,14,1.75,4,3,Average
-Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,45,14,TOT,A,14,10,1.25,9,8,1.0,16,3,Average
-Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.7,42,10,NFO,A,18,10,1.25,11,6,0.75,18,3,Average
-Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.7,42,11,FUL,H,15,10,1.25,10,8,1.0,17,2,Average
-Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.7,42,12,ARS,A,2,5,0.62,1,13,1.62,5,5,Solid
-Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.7,42,13,LEE,H,7,6,0.75,2,9,1.12,11,3,Solid
-Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.7,42,14,BRE,A,6,9,1.12,7,14,1.75,4,3,Average
-Arsene Wenger,Set Piece Champions,Hall,DEF,Starting XI,NEW,5.3,40,10,FUL,A,15,10,1.25,10,8,1.0,17,3,Average
-Arsene Wenger,Set Piece Champions,Hall,DEF,Starting XI,NEW,5.3,40,11,ARS,H,2,5,0.62,1,13,1.62,5,4,Solid
-Arsene Wenger,Set Piece Champions,Hall,DEF,Starting XI,NEW,5.3,40,12,BHA,A,3,7,0.88,3,23,2.88,1,4,Solid
-Arsene Wenger,Set Piece Champions,Hall,DEF,Starting XI,NEW,5.3,40,13,MUN,H,16,13,1.62,14,10,1.25,10,4,Average
-Arsene Wenger,Set Piece Champions,Hall,DEF,Starting XI,NEW,5.3,40,14,SUN,H,20,14,1.75,16,6,0.75,20,3,Leaky
-Arsene Wenger,Set Piece Champions,Konsa,DEF,Starting XI,ARS,4.7,39,10,HUL,H,10,8,1.0,5,9,1.12,13,2,Solid
-Arsene Wenger,Set Piece Champions,Konsa,DEF,Starting XI,ARS,4.7,39,11,NEW,A,8,14,1.75,15,12,1.5,6,3,Leaky
-Arsene Wenger,Set Piece Champions,Konsa,DEF,Starting XI,ARS,4.7,39,12,MCI,H,1,9,1.12,6,20,2.5,2,4,Solid
-Arsene Wenger,Set Piece Champions,Konsa,DEF,Starting XI,ARS,4.7,39,13,BRE,A,6,9,1.12,7,14,1.75,4,3,Average
-Arsene Wenger,Set Piece Champions,Konsa,DEF,Starting XI,ARS,4.7,39,14,TOT,A,14,10,1.25,9,8,1.0,16,3,Average
-Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.1,40,10,FUL,A,15,10,1.25,10,8,1.0,17,3,Average
-Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.1,40,11,ARS,H,2,5,0.62,1,13,1.62,5,4,Solid
-Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.1,40,12,BHA,A,3,7,0.88,3,23,2.88,1,4,Solid
-Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.1,40,13,MUN,H,16,13,1.62,14,10,1.25,10,4,Average
-Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.1,40,14,SUN,H,20,14,1.75,16,6,0.75,20,3,Leaky
-Arsene Wenger,Set Piece Champions,Cherki,MID,Starting XI,MCI,8.0,44,10,NFO,A,18,10,1.25,11,6,0.75,18,3,Average
-Arsene Wenger,Set Piece Champions,Cherki,MID,Starting XI,MCI,8.0,44,11,FUL,H,15,10,1.25,10,8,1.0,17,2,Average
-Arsene Wenger,Set Piece Champions,Cherki,MID,Starting XI,MCI,8.0,44,12,ARS,A,2,5,0.62,1,13,1.62,5,5,Solid
-Arsene Wenger,Set Piece Champions,Cherki,MID,Starting XI,MCI,8.0,44,13,LEE,H,7,6,0.75,2,9,1.12,11,3,Solid
-Arsene Wenger,Set Piece Champions,Cherki,MID,Starting XI,MCI,8.0,44,14,BRE,A,6,9,1.12,7,14,1.75,4,3,Average
-Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.9,45,10,AVL,H,9,12,1.5,12,9,1.12,12,3,Average
-Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.9,45,11,LIV,A,4,8,1.0,4,11,1.38,9,4,Solid
-Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.9,45,12,BRE,H,6,9,1.12,7,14,1.75,4,3,Average
-Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.9,45,13,NEW,A,8,14,1.75,15,12,1.5,6,3,Leaky
-Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.9,45,14,COV,H,19,15,1.88,18,6,0.75,19,2,Leaky
-Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,10,SUN,A,20,14,1.75,16,6,0.75,20,3,Leaky
-Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,11,LEE,H,7,6,0.75,2,9,1.12,11,3,Solid
-Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,12,NFO,A,18,10,1.25,11,6,0.75,18,3,Average
-Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,13,CRY,H,17,19,2.38,20,9,1.12,14,2,Leaky
-Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,14,LIV,H,4,8,1.0,4,11,1.38,9,4,Solid
-Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,66,10,NFO,A,18,10,1.25,11,6,0.75,18,3,Average
-Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,66,11,FUL,H,15,10,1.25,10,8,1.0,17,2,Average
-Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,66,12,ARS,A,2,5,0.62,1,13,1.62,5,5,Solid
-Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,66,13,LEE,H,7,6,0.75,2,9,1.12,11,3,Solid
-Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,66,14,BRE,A,6,9,1.12,7,14,1.75,4,3,Average
-Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,6.9,34,10,MUN,A,16,13,1.62,14,10,1.25,10,4,Average
-Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,6.9,34,11,SUN,H,20,14,1.75,16,6,0.75,20,3,Leaky
-Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,6.9,34,12,IPS,A,12,16,2.0,19,12,1.5,7,2,Leaky
-Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,6.9,34,13,EVE,H,11,9,1.12,8,8,1.0,15,3,Average
-Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,6.9,34,14,CRY,H,17,19,2.38,20,9,1.12,14,2,Leaky
-Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Bench,BHA,4.6,40,10,BRE,H,6,9,1.12,7,14,1.75,4,3,Average
-Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Bench,BHA,4.6,40,11,HUL,A,10,8,1.0,5,9,1.12,13,2,Solid
-Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Bench,BHA,4.6,40,12,NEW,H,8,14,1.75,15,12,1.5,6,3,Leaky
-Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Bench,BHA,4.6,40,13,BOU,A,13,13,1.62,13,12,1.5,8,3,Average
-Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Bench,BHA,4.6,40,14,NFO,A,18,10,1.25,11,6,0.75,18,3,Average
-Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,10,EVE,A,11,9,1.12,8,8,1.0,15,3,Average
-Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,11,CRY,H,17,19,2.38,20,9,1.12,14,2,Leaky
-Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,12,LEE,A,7,6,0.75,2,9,1.12,11,3,Solid
-Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,13,IPS,H,12,16,2.0,19,12,1.5,7,2,Leaky
-Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,14,MUN,A,16,13,1.62,14,10,1.25,10,4,Average
-Arsene Wenger,Set Piece Champions,Groß,MID,Bench,BHA,6.2,58,10,BRE,H,6,9,1.12,7,14,1.75,4,3,Average
-Arsene Wenger,Set Piece Champions,Groß,MID,Bench,BHA,6.2,58,11,HUL,A,10,8,1.0,5,9,1.12,13,2,Solid
-Arsene Wenger,Set Piece Champions,Groß,MID,Bench,BHA,6.2,58,12,NEW,H,8,14,1.75,15,12,1.5,6,3,Leaky
-Arsene Wenger,Set Piece Champions,Groß,MID,Bench,BHA,6.2,58,13,BOU,A,13,13,1.62,13,12,1.5,8,3,Average
-Arsene Wenger,Set Piece Champions,Groß,MID,Bench,BHA,6.2,58,14,NFO,A,18,10,1.25,11,6,0.75,18,3,Average
-Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.4,0,10,NEW,H,8,14,1.75,15,12,1.5,6,3,Leaky
-Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.4,0,11,MCI,A,1,9,1.12,6,20,2.5,2,5,Solid
-Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.4,0,12,BOU,H,13,13,1.62,13,12,1.5,8,3,Average
-Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.4,0,13,TOT,A,14,10,1.25,9,8,1.0,16,3,Average
-Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.4,0,14,EVE,A,11,9,1.12,8,8,1.0,15,3,Average
+Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Starting XI,BHA,4.7,57,11,HUL,A,13,11,1.1,8,11,1.1,13,2,Average
+Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Starting XI,BHA,4.7,57,12,NEW,H,12,16,1.6,14,13,1.3,11,3,Average
+Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Starting XI,BHA,4.7,57,13,BOU,A,7,14,1.4,12,16,1.6,4,4,Average
+Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Starting XI,BHA,4.7,57,14,NFO,A,16,13,1.3,11,9,0.9,19,2,Average
+Arsene Wenger,Set Piece Champions,Verbruggen,GKP,Starting XI,BHA,4.7,57,15,EVE,H,6,10,1.0,5,12,1.2,12,3,Solid
+Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,57,11,NEW,A,12,16,1.6,14,13,1.3,11,3,Average
+Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,57,12,MCI,H,3,13,1.3,10,21,2.1,2,4,Average
+Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,57,13,BRE,A,8,11,1.1,6,16,1.6,5,4,Solid
+Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,57,14,TOT,A,11,11,1.1,7,10,1.0,15,3,Average
+Arsene Wenger,Set Piece Champions,Calafiori,DEF,Starting XI,ARS,5.9,57,15,BOU,H,7,14,1.4,12,16,1.6,4,3,Average
+Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.6,44,11,FUL,H,15,12,1.2,9,10,1.0,16,2,Average
+Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.6,44,12,ARS,A,1,5,0.5,1,15,1.5,6,5,Solid
+Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.6,44,13,LEE,H,9,8,0.8,3,10,1.0,14,3,Solid
+Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.6,44,14,BRE,A,8,11,1.1,6,16,1.6,5,4,Solid
+Arsene Wenger,Set Piece Champions,Gvardiol,DEF,Starting XI,MCI,5.6,44,15,CHE,H,5,16,1.6,13,19,1.9,3,4,Average
+Arsene Wenger,Set Piece Champions,Silva,DEF,Starting XI,BOU,5.1,40,11,NFO,H,16,13,1.3,11,9,0.9,19,3,Average
+Arsene Wenger,Set Piece Champions,Silva,DEF,Starting XI,BOU,5.1,40,12,FUL,A,15,12,1.2,9,10,1.0,16,3,Average
+Arsene Wenger,Set Piece Champions,Silva,DEF,Starting XI,BOU,5.1,40,13,BHA,H,2,7,0.7,2,26,2.6,1,4,Solid
+Arsene Wenger,Set Piece Champions,Silva,DEF,Starting XI,BOU,5.1,40,14,HUL,H,13,11,1.1,8,11,1.1,13,2,Average
+Arsene Wenger,Set Piece Champions,Silva,DEF,Starting XI,BOU,5.1,40,15,ARS,A,1,5,0.5,1,15,1.5,6,5,Solid
+Arsene Wenger,Set Piece Champions,Barcola,MID,Starting XI,LIV,8.1,25,11,MUN,H,18,19,1.9,18,14,1.4,10,3,Leaky
+Arsene Wenger,Set Piece Champions,Barcola,MID,Starting XI,LIV,8.1,25,12,EVE,A,6,10,1.0,5,12,1.2,12,3,Solid
+Arsene Wenger,Set Piece Champions,Barcola,MID,Starting XI,LIV,8.1,25,13,SUN,H,19,17,1.7,16,8,0.8,20,2,Leaky
+Arsene Wenger,Set Piece Champions,Barcola,MID,Starting XI,LIV,8.1,25,14,CHE,A,5,16,1.6,13,19,1.9,3,4,Average
+Arsene Wenger,Set Piece Champions,Barcola,MID,Starting XI,LIV,8.1,25,15,LEE,H,9,8,0.8,3,10,1.0,14,3,Solid
+Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.0,44,11,ARS,H,1,5,0.5,1,15,1.5,6,4,Solid
+Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.0,44,12,BHA,A,2,7,0.7,2,26,2.6,1,4,Solid
+Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.0,44,13,MUN,H,18,19,1.9,18,14,1.4,10,3,Leaky
+Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.0,44,14,SUN,H,19,17,1.7,16,8,0.8,20,2,Leaky
+Arsene Wenger,Set Piece Champions,Barnes,MID,Starting XI,NEW,6.0,44,15,IPS,A,14,20,2.0,19,15,1.5,7,2,Leaky
+Arsene Wenger,Set Piece Champions,Groß,MID,Starting XI,BHA,6.3,70,11,HUL,A,13,11,1.1,8,11,1.1,13,2,Average
+Arsene Wenger,Set Piece Champions,Groß,MID,Starting XI,BHA,6.3,70,12,NEW,H,12,16,1.6,14,13,1.3,11,3,Average
+Arsene Wenger,Set Piece Champions,Groß,MID,Starting XI,BHA,6.3,70,13,BOU,A,7,14,1.4,12,16,1.6,4,4,Average
+Arsene Wenger,Set Piece Champions,Groß,MID,Starting XI,BHA,6.3,70,14,NFO,A,16,13,1.3,11,9,0.9,19,2,Average
+Arsene Wenger,Set Piece Champions,Groß,MID,Starting XI,BHA,6.3,70,15,EVE,H,6,10,1.0,5,12,1.2,12,3,Solid
+Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.8,46,11,LIV,A,4,10,1.0,4,14,1.4,8,4,Solid
+Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.8,46,12,BRE,H,8,11,1.1,6,16,1.6,5,3,Solid
+Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.8,46,13,NEW,A,12,16,1.6,14,13,1.3,11,3,Average
+Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.8,46,14,COV,H,17,19,1.9,17,10,1.0,17,2,Leaky
+Arsene Wenger,Set Piece Champions,Mbeumo,MID,Starting XI,MUN,7.8,46,15,CRY,A,20,24,2.4,20,10,1.0,18,2,Leaky
+Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,11,LEE,H,9,8,0.8,3,10,1.0,14,3,Solid
+Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,12,NFO,A,16,13,1.3,11,9,0.9,19,2,Average
+Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,13,CRY,H,20,24,2.4,20,10,1.0,18,2,Leaky
+Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,14,LIV,H,4,10,1.0,4,14,1.4,8,4,Solid
+Arsene Wenger,Set Piece Champions,Palmer,MID,Starting XI,CHE,4.0,0,15,MCI,A,3,13,1.3,10,21,2.1,2,5,Average
+Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,70,11,FUL,H,15,12,1.2,9,10,1.0,16,2,Average
+Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,70,12,ARS,A,1,5,0.5,1,15,1.5,6,5,Solid
+Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,70,13,LEE,H,9,8,0.8,3,10,1.0,14,3,Solid
+Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,70,14,BRE,A,8,11,1.1,6,16,1.6,5,4,Solid
+Arsene Wenger,Set Piece Champions,Haaland,FWD,Starting XI,MCI,15.8,70,15,CHE,H,5,16,1.6,13,19,1.9,3,4,Average
+Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,7.2,54,11,SUN,H,19,17,1.7,16,8,0.8,20,2,Leaky
+Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,7.2,54,12,IPS,A,14,20,2.0,19,15,1.5,7,2,Leaky
+Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,7.2,54,13,EVE,H,6,10,1.0,5,12,1.2,12,3,Solid
+Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,7.2,54,14,CRY,H,20,24,2.4,20,10,1.0,18,2,Leaky
+Arsene Wenger,Set Piece Champions,N.Jackson,FWD,Starting XI,AVL,7.2,54,15,COV,A,17,19,1.9,17,10,1.0,17,2,Leaky
+Arsene Wenger,Set Piece Champions,Kinsky,GKP,Bench,TOT,4.4,40,11,IPS,H,14,20,2.0,19,15,1.5,7,2,Leaky
+Arsene Wenger,Set Piece Champions,Kinsky,GKP,Bench,TOT,4.4,40,12,SUN,A,19,17,1.7,16,8,0.8,20,3,Leaky
+Arsene Wenger,Set Piece Champions,Kinsky,GKP,Bench,TOT,4.4,40,13,FUL,H,15,12,1.2,9,10,1.0,16,2,Average
+Arsene Wenger,Set Piece Champions,Kinsky,GKP,Bench,TOT,4.4,40,14,ARS,H,1,5,0.5,1,15,1.5,6,4,Solid
+Arsene Wenger,Set Piece Champions,Kinsky,GKP,Bench,TOT,4.4,40,15,HUL,A,13,11,1.1,8,11,1.1,13,2,Average
+Arsene Wenger,Set Piece Champions,Hall,DEF,Bench,NEW,5.2,46,11,ARS,H,1,5,0.5,1,15,1.5,6,4,Solid
+Arsene Wenger,Set Piece Champions,Hall,DEF,Bench,NEW,5.2,46,12,BHA,A,2,7,0.7,2,26,2.6,1,4,Solid
+Arsene Wenger,Set Piece Champions,Hall,DEF,Bench,NEW,5.2,46,13,MUN,H,18,19,1.9,18,14,1.4,10,3,Leaky
+Arsene Wenger,Set Piece Champions,Hall,DEF,Bench,NEW,5.2,46,14,SUN,H,19,17,1.7,16,8,0.8,20,2,Leaky
+Arsene Wenger,Set Piece Champions,Hall,DEF,Bench,NEW,5.2,46,15,IPS,A,14,20,2.0,19,15,1.5,7,2,Leaky
+Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,11,CRY,H,20,24,2.4,20,10,1.0,18,2,Leaky
+Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,12,LEE,A,9,8,0.8,3,10,1.0,14,3,Solid
+Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,13,IPS,H,14,20,2.0,19,15,1.5,7,2,Leaky
+Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,14,MUN,A,18,19,1.9,18,14,1.4,10,3,Leaky
+Arsene Wenger,Set Piece Champions,Thomas,DEF,Bench,COV,5.5,13,15,AVL,H,10,17,1.7,15,14,1.4,9,3,Leaky
+Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.3,0,11,MCI,A,3,13,1.3,10,21,2.1,2,5,Average
+Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.3,0,12,BOU,H,7,14,1.4,12,16,1.6,4,3,Average
+Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.3,0,13,TOT,A,11,11,1.1,7,10,1.0,15,3,Average
+Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.3,0,14,EVE,A,6,10,1.0,5,12,1.2,12,3,Solid
+Arsene Wenger,Set Piece Champions,Kusi-Asare,FWD,Bench,FUL,4.3,0,15,BRE,H,8,11,1.1,6,16,1.6,5,3,Solid
