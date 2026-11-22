@@ -329,9 +329,9 @@
       "web_name": "Rice",
       "team": "ARS",
       "position": "MID",
-      "total_points": 51,
-      "points_per_game": 4.6,
-      "form": 3.8,
+      "total_points": 53,
+      "points_per_game": 4.8,
+      "form": 4.2,
       "cost": 7.5,
       "gw_points": {
         "1": 3,
@@ -344,7 +344,7 @@
         "8": 3,
         "9": 8,
         "10": 3,
-        "11": 1
+        "11": 3
       }
     },
     "Eze": {
@@ -2065,7 +2065,7 @@
       "total_points": 67,
       "points_per_game": 6.1,
       "form": 7.5,
-      "cost": 6.5,
+      "cost": 6.6,
       "gw_points": {
         "1": 4,
         "2": 5,
@@ -2455,7 +2455,7 @@
       "total_points": 22,
       "points_per_game": 5.5,
       "form": 0.0,
-      "cost": 4.5,
+      "cost": 4.4,
       "gw_points": {
         "1": 0,
         "2": 0,
@@ -2777,7 +2777,7 @@
       "total_points": 32,
       "points_per_game": 3.2,
       "form": 2.0,
-      "cost": 5.4,
+      "cost": 5.3,
       "gw_points": {
         "1": 14,
         "2": 4,
@@ -3386,7 +3386,7 @@
       "total_points": 0,
       "points_per_game": 0.0,
       "form": 0.0,
-      "cost": 4.4,
+      "cost": 4.3,
       "gw_points": {
         "1": 0,
         "2": 0,
@@ -3409,7 +3409,7 @@
       "total_points": 1,
       "points_per_game": 1.0,
       "form": 0.0,
-      "cost": 4.8,
+      "cost": 4.7,
       "gw_points": {
         "1": 1,
         "2": 0,
@@ -3745,7 +3745,7 @@
       "total_points": 57,
       "points_per_game": 5.2,
       "form": 4.2,
-      "cost": 8.2,
+      "cost": 8.3,
       "gw_points": {
         "1": 8,
         "2": 5,
@@ -4964,7 +4964,7 @@
       "total_points": 0,
       "points_per_game": 0.0,
       "form": 0.0,
-      "cost": 4.4,
+      "cost": 4.3,
       "gw_points": {
         "1": 0,
         "2": 0,
@@ -4987,7 +4987,7 @@
       "total_points": 6,
       "points_per_game": 1.2,
       "form": 0.2,
-      "cost": 5.3,
+      "cost": 5.2,
       "gw_points": {
         "1": 2,
         "2": 1,
@@ -5785,7 +5785,7 @@
       "total_points": 0,
       "points_per_game": 0.0,
       "form": 0.0,
-      "cost": 4.4,
+      "cost": 4.3,
       "gw_points": {
         "1": 0,
         "2": 0,
@@ -5900,7 +5900,7 @@
       "total_points": 10,
       "points_per_game": 1.2,
       "form": 1.2,
-      "cost": 5.3,
+      "cost": 5.2,
       "gw_points": {
         "1": 2,
         "2": 1,
@@ -7595,7 +7595,7 @@
       "total_points": 48,
       "points_per_game": 5.3,
       "form": 2.2,
-      "cost": 5.3,
+      "cost": 5.2,
       "gw_points": {
         "1": 3,
         "2": 6,
@@ -8368,7 +8368,7 @@
       "total_points": 5,
       "points_per_game": 0.8,
       "form": 0.2,
-      "cost": 3.9,
+      "cost": 3.8,
       "gw_points": {
         "1": 2,
         "2": -1,
@@ -8414,7 +8414,7 @@
       "total_points": 6,
       "points_per_game": 3.0,
       "form": 0.0,
-      "cost": 4.8,
+      "cost": 4.7,
       "gw_points": {
         "1": 4,
         "2": 2,
@@ -9378,7 +9378,7 @@
       "total_points": 13,
       "points_per_game": 1.4,
       "form": 1.0,
-      "cost": 5.3,
+      "cost": 5.2,
       "gw_points": {
         "1": 0,
         "2": 4,
@@ -9447,7 +9447,7 @@
       "total_points": 56,
       "points_per_game": 5.1,
       "form": 6.0,
-      "cost": 5.0,
+      "cost": 5.1,
       "gw_points": {
         "1": 9,
         "2": 3,
@@ -9808,7 +9808,7 @@
       "total_points": 25,
       "points_per_game": 2.5,
       "form": 2.2,
-      "cost": 5.3,
+      "cost": 5.2,
       "gw_points": {
         "1": 0,
         "2": 1,
@@ -10450,7 +10450,7 @@
       "total_points": 39,
       "points_per_game": 3.5,
       "form": 2.8,
-      "cost": 5.8,
+      "cost": 5.7,
       "gw_points": {
         "1": 9,
         "2": 4,
@@ -10749,7 +10749,7 @@
       "total_points": 37,
       "points_per_game": 5.3,
       "form": 0.0,
-      "cost": 8.2,
+      "cost": 8.1,
       "gw_points": {
         "1": 2,
         "2": 5,
@@ -13366,7 +13366,7 @@
       "total_points": 63,
       "points_per_game": 5.7,
       "form": 8.0,
-      "cost": 5.1,
+      "cost": 5.2,
       "gw_points": {
         "1": 1,
         "2": 1,
@@ -16762,7 +16762,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Rogers",
@@ -17144,7 +17144,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -21215,7 +21215,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Rogers",
@@ -21625,7 +21625,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -26637,7 +26637,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Rogers",
@@ -27047,7 +27047,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -32461,7 +32461,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Rogers",
@@ -32871,7 +32871,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -37737,7 +37737,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Rogers",
@@ -38147,7 +38147,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -42590,7 +42590,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Rogers",
@@ -42986,7 +42986,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -46492,13 +46492,13 @@
               "out_pos": "MID",
               "out_cost": 7.3,
               "out_points": 9,
-              "out_season_points": 51,
-              "out_points_since": 24,
-              "out_ppg": 4.8,
-              "out_ppg_since": 4.8,
-              "out_season_ppg": 4.6,
+              "out_season_points": 53,
+              "out_points_since": 26,
+              "out_ppg": 5.2,
+              "out_ppg_since": 5.2,
+              "out_season_ppg": 4.8,
               "net_points": -6,
-              "net_points_since": -15,
+              "net_points_since": -17,
               "transfer_gw": 7,
               "time": "2026-10-16T02:29:18.409551Z"
             },
@@ -48628,7 +48628,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -51265,11 +51265,11 @@
               "in_pos": "MID",
               "in_cost": 7.3,
               "in_points": 3,
-              "in_season_points": 51,
-              "in_points_since": 15,
-              "in_ppg": 3.8,
-              "in_ppg_since": 3.8,
-              "in_season_ppg": 4.6,
+              "in_season_points": 53,
+              "in_points_since": 17,
+              "in_ppg": 4.2,
+              "in_ppg_since": 4.2,
+              "in_season_ppg": 4.8,
               "out_name": "Wharton",
               "out_club": "CRY",
               "out_pos": "MID",
@@ -51281,7 +51281,7 @@
               "out_ppg_since": 2.2,
               "out_season_ppg": 2.7,
               "net_points": 1,
-              "net_points_since": 6,
+              "net_points_since": 8,
               "transfer_gw": 8,
               "time": "2026-10-22T04:03:42.800651Z"
             },
@@ -51607,11 +51607,11 @@
               "in_pos": "MID",
               "in_cost": 7.3,
               "in_points": 3,
-              "in_season_points": 51,
-              "in_points_since": 15,
-              "in_ppg": 3.8,
-              "in_ppg_since": 3.8,
-              "in_season_ppg": 4.6,
+              "in_season_points": 53,
+              "in_points_since": 17,
+              "in_ppg": 4.2,
+              "in_ppg_since": 4.2,
+              "in_season_ppg": 4.8,
               "out_name": "Semenyo",
               "out_club": "MCI",
               "out_pos": "MID",
@@ -51623,7 +51623,7 @@
               "out_ppg_since": 0.0,
               "out_season_ppg": 5.3,
               "net_points": 3,
-              "net_points_since": 15,
+              "net_points_since": 17,
               "transfer_gw": 8,
               "time": "2026-10-22T18:05:08.236346Z"
             },
@@ -53069,7 +53069,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Haaland",
@@ -53211,7 +53211,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -53663,7 +53663,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -57649,7 +57649,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "M.Sangar\u00e9",
@@ -57861,7 +57861,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -58299,7 +58299,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -62772,7 +62772,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Haaland",
@@ -62914,7 +62914,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -63352,7 +63352,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -65501,7 +65501,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [
             "Bogle"
           ],
@@ -67324,13 +67324,13 @@
             "opponent": "NEW (A)",
             "opponent_name": "Newcastle",
             "position": "MID",
-            "points": 1,
+            "points": 3,
             "captain": false,
             "vice_captain": false,
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -67522,13 +67522,13 @@
             "opponent": "NEW (A)",
             "opponent_name": "Newcastle",
             "position": "MID",
-            "points": 1,
+            "points": 3,
             "captain": false,
             "vice_captain": false,
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -67960,13 +67960,13 @@
             "opponent": "NEW (A)",
             "opponent_name": "Newcastle",
             "position": "MID",
-            "points": 1,
+            "points": 3,
             "captain": false,
             "vice_captain": false,
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -69007,7 +69007,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -70538,7 +70538,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -70736,7 +70736,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -71174,7 +71174,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -71598,7 +71598,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -73129,7 +73129,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -73327,7 +73327,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -73765,7 +73765,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -74189,7 +74189,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -75720,7 +75720,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -75918,7 +75918,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -76356,7 +76356,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -76780,7 +76780,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -78311,7 +78311,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -78509,7 +78509,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -78947,7 +78947,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -79371,7 +79371,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -80902,7 +80902,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -81100,7 +81100,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -81538,7 +81538,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -81962,7 +81962,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -83493,7 +83493,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -83691,7 +83691,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -84129,7 +84129,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -84553,7 +84553,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -86084,7 +86084,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -86282,7 +86282,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -86720,7 +86720,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -87144,7 +87144,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -88675,7 +88675,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -88873,7 +88873,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -89311,7 +89311,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -89735,7 +89735,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -91266,7 +91266,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -91464,7 +91464,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -91902,7 +91902,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -92326,7 +92326,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -93857,7 +93857,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -94055,7 +94055,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -94493,7 +94493,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -94917,7 +94917,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -96448,7 +96448,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -96646,7 +96646,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -97084,7 +97084,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -97508,7 +97508,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -99039,7 +99039,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -99237,7 +99237,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -99675,7 +99675,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -100099,7 +100099,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -101630,7 +101630,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -101828,7 +101828,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -102266,7 +102266,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -102690,7 +102690,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -104221,7 +104221,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -104419,7 +104419,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -104857,7 +104857,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -105281,7 +105281,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -106812,7 +106812,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -107010,7 +107010,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -107448,7 +107448,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -107872,7 +107872,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -109403,7 +109403,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -109601,7 +109601,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -110039,7 +110039,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -110463,7 +110463,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -111994,7 +111994,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -112192,7 +112192,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -112630,7 +112630,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -113054,7 +113054,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -114585,7 +114585,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -114783,7 +114783,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -115221,7 +115221,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -115645,7 +115645,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -117176,7 +117176,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -117374,7 +117374,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -117812,7 +117812,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -118236,7 +118236,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -119767,7 +119767,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -119965,7 +119965,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -120403,7 +120403,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -120827,7 +120827,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -122358,7 +122358,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -122556,7 +122556,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -122994,7 +122994,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -123418,7 +123418,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -124949,7 +124949,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -125147,7 +125147,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -125585,7 +125585,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -126009,7 +126009,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -127540,7 +127540,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -127738,7 +127738,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -128176,7 +128176,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -128600,7 +128600,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -130131,7 +130131,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -130329,7 +130329,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -130767,7 +130767,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -131191,7 +131191,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -132722,7 +132722,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -132920,7 +132920,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -133358,7 +133358,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -133782,7 +133782,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -135313,7 +135313,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -135511,7 +135511,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -135949,7 +135949,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
@@ -136373,7 +136373,7 @@
           "captain": "Haaland",
           "captain_points": 4,
           "players_left": 5,
-          "value_left": 32.2,
+          "value_left": 32.1,
           "transfers_in": [],
           "transfers_out": [],
           "transfers_detail": [],
@@ -137904,7 +137904,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Schade",
@@ -138102,7 +138102,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "McGinn",
@@ -138540,7 +138540,7 @@
             "starting": true,
             "sub_in": false,
             "sub_out": false,
-            "form": 3.8
+            "form": 4.2
           },
           {
             "name": "Mbeumo",
