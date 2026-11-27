@@ -955,18 +955,29 @@ def main():
     element_types = {1: "GKP", 2: "DEF", 3: "MID", 4: "FWD"}
     events = bootstrap["events"]
 
-    # Determine current and finished GWs
+    # Determine current, finished, and upcoming GWs
     current_gw = 1
+    current_gw_finished = False
+    next_gw = None
     finished_gws = []
     for e in events:
         if e.get("is_current"):
             current_gw = e["id"]
+            current_gw_finished = bool(e.get("finished"))
+        if e.get("is_next"):
+            next_gw = e["id"]
         if e.get("finished"):
             finished_gws.append(e["id"])
 
     # Max GW to process (at least 1)
     max_gw = max(current_gw, max(finished_gws, default=1))
-    print(f"[*] Current Gameweek: {current_gw}, Max Gameweek: {max_gw}")
+    if current_gw_finished and next_gw:
+        upcoming_gw = next_gw
+    elif current_gw_finished and max_gw < 38:
+        upcoming_gw = max_gw + 1
+    else:
+        upcoming_gw = max_gw
+    print(f"[*] Current Gameweek: {current_gw} (finished={current_gw_finished}), Upcoming Gameweek: {upcoming_gw}, Max Gameweek: {max_gw}")
 
     # Fetch League Standings
     print(f"[*] Fetching standings for Blue Square mini-league (ID: {LEAGUE_ID})...")
@@ -1497,6 +1508,8 @@ def main():
     output_data = {
         "season": "2026/27",
         "current_gw": max_gw,
+        "current_gw_finished": current_gw_finished,
+        "upcoming_gw": upcoming_gw,
         "managers": {m: {"team": meta["team"], "color": meta["color"]} for m, meta in managers_meta.items()},
         "players": players_catalog,
         "gameweeks": gameweeks_dict,

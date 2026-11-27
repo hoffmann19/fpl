@@ -1,6 +1,8 @@
 {
   "season": "2026/27",
   "current_gw": 11,
+  "current_gw_finished": true,
+  "upcoming_gw": 12,
   "managers": {
     "jon shidal": {
       "team": "shidal FC",

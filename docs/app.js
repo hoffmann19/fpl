@@ -336,11 +336,20 @@ async function loadSeasonData(seasonKey) {
 function populateGwDropdown() {
   if (!elSelectGw) return;
   elSelectGw.innerHTML = '';
+  const upcomingGw = appData && appData.upcoming_gw ? parseInt(appData.upcoming_gw, 10) : null;
 
   for (let i = 1; i <= 38; i++) {
     const opt = document.createElement('option');
     opt.value = i;
-    opt.innerText = i === latestGW ? `GW ${i} (Live)` : `GW ${i}`;
+    if (i === latestGW && upcomingGw && upcomingGw > latestGW) {
+      opt.innerText = `GW ${i} (Latest)`;
+    } else if (i === latestGW) {
+      opt.innerText = `GW ${i} (Live)`;
+    } else if (upcomingGw && i === upcomingGw && upcomingGw > latestGW) {
+      opt.innerText = `GW ${i} (Upcoming)`;
+    } else {
+      opt.innerText = `GW ${i}`;
+    }
     if (i === currentGW) opt.selected = true;
     elSelectGw.appendChild(opt);
   }
@@ -540,10 +549,15 @@ function calculateManagerFdrRatings(gwNum) {
   if (!gwData || !gwData.lineups) return result;
 
   const fdr = appData.team_fixtures_fdr;
-  const startGw = gwNum < 38 ? gwNum + 1 : gwNum;
+  const upcomingGw = appData.upcoming_gw ? parseInt(appData.upcoming_gw, 10) : (latestGW < 38 ? latestGW + 1 : latestGW);
+  const startGw = (gwNum === latestGW && upcomingGw > latestGW)
+    ? upcomingGw
+    : (gwNum < 38 ? gwNum + 1 : gwNum);
+  const gwFdrTarget = (gwNum === latestGW && upcomingGw > latestGW) ? upcomingGw : gwNum;
   const endGw3 = Math.min(38, startGw + 2);
   const endGw5 = Math.min(38, startGw + 4);
 
+  result.gwFdrTarget = gwFdrTarget;
   result.startGw = startGw;
   result.endGw3 = endGw3;
   result.endGw5 = endGw5;
@@ -560,7 +574,7 @@ function calculateManagerFdrRatings(gwNum) {
     || {};
 
   // Compute average opponent Premier League standing for each manager:
-  // 1. Current Gameweek (gwNum)
+  // 1. Target Gameweek (gwFdrTarget)
   // 2. Upcoming 3 Weeks
   // 3. Upcoming 5 Weeks
   Object.keys(gwData.lineups).forEach(mgr => {
@@ -572,8 +586,8 @@ function calculateManagerFdrRatings(gwNum) {
     lineup.forEach(p => {
       const club = p.club;
       if (club && fdr[club]) {
-        // Current Gameweek Matchup
-        const fixGw = fdr[club][gwNum.toString()];
+        // Target Gameweek Matchup
+        const fixGw = fdr[club][gwFdrTarget.toString()];
         if (fixGw && fixGw.opponent_short && standingsMap[fixGw.opponent_short] !== undefined) {
           sumGw += standingsMap[fixGw.opponent_short];
           countGw++;
@@ -907,7 +921,7 @@ function renderGameweekTotals() {
       <td class="col-ft text-center" title="${mgr.manager} has ${ftCount} free transfer${ftCount > 1 ? 's' : ''} stacked up for upcoming deadline (max 5)">
         <span class="ft-stacked-badge ${ftBadgeClass}">${ftCount} FT</span>
       </td>
-      <td class="col-fdr-gw text-center" title="Gameweek ${currentGW} Schedule · Avg Opponent Standing: ${fdrGwScore.toFixed(2)} (Higher is easiest matchup · #${fdrGwRank} in league)">
+      <td class="col-fdr-gw text-center" title="Gameweek ${fdrMetrics.gwFdrTarget || currentGW} Schedule · Avg Opponent Standing: ${fdrGwScore.toFixed(2)} (Higher is easiest matchup · #${fdrGwRank} in league)">
         <div class="fdr-mgr-cell">
           <span class="fdr-rank-badge ${rankGwBadgeClass}">#${fdrGwRank}</span>
           <span class="fdr-sub-num">${fdrGwScore.toFixed(2)}</span>
@@ -1352,8 +1366,12 @@ function renderFdrGrid() {
     return;
   }
 
-  // Determine horizon gameweeks starting directly from the selected currentGW (e.g. GW 9 -> GW 9 & GW 10 for 2 GWs)
-  const startGW = fdrHorizon === 38 ? 1 : currentGW;
+  // Determine horizon gameweeks: when viewing the latest completed GW, advance to upcoming_gw (e.g. GW 12)
+  const upcomingGw = appData.upcoming_gw ? parseInt(appData.upcoming_gw, 10) : (latestGW < 38 ? latestGW + 1 : latestGW);
+  const fdrBaseGW = (currentGW === latestGW && upcomingGw > latestGW)
+    ? upcomingGw
+    : currentGW;
+  const startGW = fdrHorizon === 38 ? 1 : fdrBaseGW;
   const endGW = fdrHorizon === 38 ? 38 : Math.min(38, startGW + fdrHorizon - 1);
   const horizonGWs = [];
   for (let g = startGW; g <= endGW; g++) {
@@ -1403,7 +1421,7 @@ function renderFdrGrid() {
       });
     });
 
-    const highlightGW = fdrHorizon === 38 ? latestGW : startGW;
+    const highlightGW = fdrHorizon === 38 ? fdrBaseGW : startGW;
     horizonGWs.forEach(gw => {
       const th = document.createElement('th');
       th.innerText = `GW ${gw}`;
